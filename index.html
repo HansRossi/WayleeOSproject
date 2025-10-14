@@ -830,29 +830,126 @@
 
         .option-button {
             background: var(--bg-secondary);
-            border: 2px solid var(--border);
-            border-radius: 8px;
-            padding: 15px;
+            border: 3px solid var(--border);
+            border-radius: 12px;
+            padding: 18px 20px;
             color: var(--text-primary);
             text-align: left;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             font-size: 16px;
+            font-weight: 500;
+            position: relative;
+            overflow: hidden;
         }
 
-        .option-button:hover {
+        .option-button::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 5px;
+            background: transparent;
+            transition: all 0.3s;
+        }
+
+        .option-button:hover:not(:disabled) {
             border-color: var(--primary);
-            background: rgba(88, 166, 255, 0.05);
+            background: rgba(88, 166, 255, 0.08);
+            transform: translateX(5px);
         }
 
         .option-button.correct {
             border-color: var(--success);
-            background: rgba(63, 185, 80, 0.1);
+            border-width: 4px;
+            background: linear-gradient(90deg, rgba(52, 199, 89, 0.2) 0%, rgba(52, 199, 89, 0.05) 100%);
+            animation: correctPulse 0.6s ease-out;
+            box-shadow: 0 0 20px rgba(52, 199, 89, 0.3), inset 0 0 20px rgba(52, 199, 89, 0.1);
+        }
+
+        .option-button.correct::before {
+            background: var(--success);
+            width: 6px;
+            box-shadow: 0 0 10px var(--success);
+        }
+
+        .option-button.correct::after {
+            content: '✓';
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%) scale(0);
+            font-size: 28px;
+            color: var(--success);
+            font-weight: bold;
+            animation: checkmarkAppear 0.4s 0.2s forwards;
         }
 
         .option-button.incorrect {
             border-color: var(--error);
-            background: rgba(218, 54, 51, 0.1);
+            border-width: 4px;
+            background: linear-gradient(90deg, rgba(255, 59, 48, 0.2) 0%, rgba(255, 59, 48, 0.05) 100%);
+            animation: incorrectShake 0.5s ease-out;
+            box-shadow: 0 0 20px rgba(255, 59, 48, 0.3), inset 0 0 20px rgba(255, 59, 48, 0.1);
+        }
+
+        .option-button.incorrect::before {
+            background: var(--error);
+            width: 6px;
+            box-shadow: 0 0 10px var(--error);
+        }
+
+        .option-button.incorrect::after {
+            content: '✗';
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%) scale(0);
+            font-size: 28px;
+            color: var(--error);
+            font-weight: bold;
+            animation: crossAppear 0.4s 0.1s forwards;
+        }
+
+        @keyframes correctPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes incorrectShake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            75% { transform: translateX(10px); }
+        }
+
+        @keyframes checkmarkAppear {
+            0% { 
+                transform: translateY(-50%) scale(0) rotate(-180deg);
+                opacity: 0;
+            }
+            50% { 
+                transform: translateY(-50%) scale(1.2) rotate(0deg);
+            }
+            100% { 
+                transform: translateY(-50%) scale(1) rotate(0deg);
+                opacity: 1;
+            }
+        }
+
+        @keyframes crossAppear {
+            0% { 
+                transform: translateY(-50%) scale(0) rotate(180deg);
+                opacity: 0;
+            }
+            50% { 
+                transform: translateY(-50%) scale(1.2) rotate(0deg);
+            }
+            100% { 
+                transform: translateY(-50%) scale(1) rotate(0deg);
+                opacity: 1;
+            }
         }
 
         /* Enhanced VS Code Style Coding Modal */
@@ -1013,6 +1110,34 @@
             box-shadow: 0 0 0 1px #007AFF inset;
         }
 
+        .code-option.correct {
+            background: rgba(52, 199, 89, 0.15);
+            border-color: #34C759;
+            border-width: 2px;
+            box-shadow: 0 0 0 1px #34C759 inset, 0 0 15px rgba(52, 199, 89, 0.3);
+            animation: codeCorrectPulse 0.6s ease-out;
+        }
+
+        .code-option.incorrect {
+            background: rgba(255, 59, 48, 0.15);
+            border-color: #FF3B30;
+            border-width: 2px;
+            box-shadow: 0 0 0 1px #FF3B30 inset, 0 0 15px rgba(255, 59, 48, 0.3);
+            animation: codeIncorrectShake 0.5s ease-out;
+        }
+
+        @keyframes codeCorrectPulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes codeIncorrectShake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
         .option-letter {
             position: absolute;
             top: 8px;
@@ -1028,11 +1153,32 @@
             font-size: 11px;
             font-weight: 600;
             font-family: 'Montserrat', sans-serif;
+            transition: all 0.3s;
         }
 
         .code-option.selected .option-letter {
             background: #007AFF;
             color: #FFFFFF;
+        }
+
+        .code-option.correct .option-letter {
+            background: #34C759;
+            color: #FFFFFF;
+        }
+
+        .code-option.correct .option-letter::after {
+            content: ' ✓';
+            margin-left: 2px;
+        }
+
+        .code-option.incorrect .option-letter {
+            background: #FF3B30;
+            color: #FFFFFF;
+        }
+
+        .code-option.incorrect .option-letter::after {
+            content: ' ✗';
+            margin-left: 2px;
         }
 
         .code-input-section {
@@ -1192,15 +1338,17 @@
         }
 
         .rest-description {
-            font-size: 14px;
+            font-size: 13px;
             color: var(--text-secondary);
-            line-height: 1.4;
+            line-height: 1.5;
+            margin-bottom: 8px;
         }
 
         .rest-cost {
-            font-size: 14px;
+            font-size: 12px;
             color: var(--gold);
             font-weight: 600;
+            line-height: 1.4;
         }
 
         /* ===== NOTIFICATION SYSTEM ===== */
@@ -1482,7 +1630,7 @@
             <!-- Tobias Horvart - Databases -->
             <div class="character-card" data-character="tobias">
                 <div class="character-pixel tobias"></div>
-                <div class="character-name">Tobias Horvart</div>
+                <div class="character-name">Tobias Horvarth</div>
                 <div class="character-bonus">Database Architect • +20% Database Earnings</div>
                 <div class="character-stats">
                     <div class="stat-tag">SQL: 95</div>
@@ -1810,29 +1958,29 @@
                 <div class="rest-option" data-action="sleep">
                     <div class="rest-icon">😴</div>
                     <div class="rest-name">Sleep</div>
-                    <div class="rest-description">Rest and recover energy</div>
-                    <div class="rest-cost">+50 Energy</div>
+                    <div class="rest-description">Rest when tired (Energy < 70%)<br>⚠️ Makes you hungry & thirsty!</div>
+                    <div class="rest-cost">+60 Energy, +10 Mood<br>-20 Hunger, -25 Thirst</div>
                 </div>
                 
                 <div class="rest-option" data-action="eat">
                     <div class="rest-icon">🍗</div>
                     <div class="rest-name">Eat Food</div>
-                    <div class="rest-description">Satisfy your hunger</div>
-                    <div class="rest-cost">-$25 • +40 Hunger</div>
+                    <div class="rest-description">Satisfy hunger (when < 80%)<br>⚠️ Makes you thirsty!</div>
+                    <div class="rest-cost">-$25 • +45 Hunger, +8 Mood<br>-10 Thirst</div>
                 </div>
                 
                 <div class="rest-option" data-action="drink">
                     <div class="rest-icon">💧</div>
                     <div class="rest-name">Drink Water</div>
-                    <div class="rest-description">Quench your thirst</div>
-                    <div class="rest-cost">-$15 • +30 Thirst</div>
+                    <div class="rest-description">Quench thirst (when < 85%)<br>Slightly reduces hunger</div>
+                    <div class="rest-cost">-$15 • +40 Thirst, +5 Mood<br>-5 Hunger</div>
                 </div>
                 
                 <div class="rest-option" data-action="walk">
                     <div class="rest-icon">🚶</div>
                     <div class="rest-name">Take a Walk</div>
-                    <div class="rest-description">Clear your mind and improve mood</div>
-                    <div class="rest-cost">+25 Mood • -10 Energy</div>
+                    <div class="rest-description">Boost mood (when < 85%)<br>⚠️ Uses energy & resources!</div>
+                    <div class="rest-cost">+30 Mood<br>-12 Energy, -8 Hunger, -12 Thirst</div>
                 </div>
             </div>
         </div>
@@ -1912,6 +2060,7 @@
                 this.isSubmitting = false; // Prevent multiple code submissions
                 this.rewardAlreadyGiven = false; // Prevent duplicate rewards
                 this.isAnswering = false; // Prevent multiple answer clicks in freelance work
+                this.workModalTimeout = null; // Store timeout ID for auto-closing work modal
                 
                 this.initializeGame();
             }
@@ -2306,16 +2455,34 @@
                 const optionsContainer = document.getElementById('optionsContainer');
                 optionsContainer.innerHTML = '';
 
-                question.options.forEach((option, index) => {
+                // Create array of options with their original indices
+                const shuffledOptions = question.options.map((option, index) => ({
+                    text: option,
+                    originalIndex: index,
+                    isCorrect: index === question.correct
+                }));
+
+                // Shuffle the options array using Fisher-Yates algorithm
+                for (let i = shuffledOptions.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [shuffledOptions[i], shuffledOptions[j]] = [shuffledOptions[j], shuffledOptions[i]];
+                }
+
+                // Display shuffled options
+                shuffledOptions.forEach((option) => {
                     const button = document.createElement('button');
                     button.className = 'option-button';
-                    button.textContent = option;
-                    button.onclick = () => this.handleAnswer(index, question.correct, question.explanation);
+                    button.textContent = option.text;
+                    // Store if this is the correct answer as data attribute
+                    button.dataset.isCorrect = option.isCorrect;
+                    button.dataset.originalIndex = option.originalIndex;
+                    // Pass the button element itself to handler
+                    button.onclick = () => this.handleAnswer(button, question.correct, question.explanation);
                     optionsContainer.appendChild(button);
                 });
             }
 
-            handleAnswer(selectedIndex, correctIndex, explanation) {
+            handleAnswer(clickedButton, correctIndex, explanation) {
                 // Prevent multiple clicks - if already answering, ignore
                 if (this.isAnswering) {
                     return;
@@ -2325,18 +2492,23 @@
                 this.isAnswering = true;
                 
                 const options = document.querySelectorAll('.option-button');
+                
+                // Disable all buttons to prevent further clicks
                 options.forEach(option => {
-                    option.classList.remove('correct', 'incorrect');
-                    // Disable all buttons to prevent further clicks
                     option.disabled = true;
                     option.style.cursor = 'not-allowed';
-                    option.style.opacity = '0.7';
                 });
 
                 this.gameState.completedQuestions++;
 
-                if (selectedIndex === correctIndex) {
-                    options[selectedIndex].classList.add('correct');
+                // Check if clicked button is correct
+                const isCorrect = clickedButton.dataset.isCorrect === 'true';
+
+                if (isCorrect) {
+                    // User selected correct answer
+                    clickedButton.classList.add('correct');
+                    clickedButton.style.opacity = '1';
+                    
                     this.gameState.correctStreak++;
                     this.handleCorrectAnswer();
                     
@@ -2345,25 +2517,44 @@
                         this.showCombo(this.gameState.correctStreak);
                     }
                     
-                    let message = `Correct! ${explanation}`;
+                    let message = `✓ Correct! ${explanation}`;
                     if (this.gameState.correctStreak >= 5) {
                         message += ` 🔥 ${this.gameState.correctStreak} streak!`;
                     }
                     this.showNotification(message, 'success');
                 } else {
-                    options[selectedIndex].classList.add('incorrect');
-                    options[correctIndex].classList.add('correct');
+                    // User selected wrong answer
+                    clickedButton.classList.add('incorrect');
+                    clickedButton.style.opacity = '1';
+                    
+                    // Find and highlight the correct answer
+                    options.forEach(option => {
+                        if (option.dataset.isCorrect === 'true') {
+                            option.classList.add('correct');
+                            option.style.opacity = '1';
+                        } else if (option !== clickedButton) {
+                            option.style.opacity = '0.5';
+                        }
+                    });
+                    
                     this.gameState.correctStreak = 0;
                     this.handleIncorrectAnswer();
-                    this.showNotification(`Incorrect. ${explanation}`, 'error');
+                    this.showNotification(`✗ Incorrect. ${explanation}`, 'error');
                 }
 
-                setTimeout(() => {
+                // Clear any existing timeout before setting a new one
+                if (this.workModalTimeout) {
+                    clearTimeout(this.workModalTimeout);
+                }
+
+                // Set new timeout and save its ID
+                this.workModalTimeout = setTimeout(() => {
                     this.closeModal('workModal');
                     this.loadRandomQuestion();
                     // Reset flag after modal closes
                     this.isAnswering = false;
-                }, 2000);
+                    this.workModalTimeout = null;
+                }, 2500);
             }
 
             handleCorrectAnswer() {
@@ -2491,23 +2682,30 @@
                 if (optionsContainer && task.options && task.options.length > 0) {
                     optionsContainer.innerHTML = '';
                     
+                    // Create array with options and mark which is correct
+                    const optionsWithCorrectness = task.options.map((option, idx) => ({
+                        text: option,
+                        isCorrect: idx === 0 // First option is always correct
+                    }));
+                    
                     // Shuffle options to randomize order
-                    const shuffledOptions = [...task.options];
-                    for (let i = shuffledOptions.length - 1; i > 0; i--) {
+                    for (let i = optionsWithCorrectness.length - 1; i > 0; i--) {
                         const j = Math.floor(Math.random() * (i + 1));
-                        [shuffledOptions[i], shuffledOptions[j]] = [shuffledOptions[j], shuffledOptions[i]];
+                        [optionsWithCorrectness[i], optionsWithCorrectness[j]] = [optionsWithCorrectness[j], optionsWithCorrectness[i]];
                     }
                     
-                    shuffledOptions.forEach((option, index) => {
+                    optionsWithCorrectness.forEach((optionData, index) => {
                         const optionCard = document.createElement('div');
                         optionCard.className = 'code-option';
                         optionCard.dataset.index = index;
+                        optionCard.dataset.isCorrect = optionData.isCorrect;
+                        optionCard.dataset.code = optionData.text;
                         
                         const letter = String.fromCharCode(65 + index); // A, B, C, D
                         
                         optionCard.innerHTML = `
                             <div class="option-letter">${letter}</div>
-                            <code class="option-code">${this.escapeHtml(option)}</code>
+                            <code class="option-code">${this.escapeHtml(optionData.text)}</code>
                         `;
                         
                         // Click handler to help user
@@ -2523,7 +2721,7 @@
                             // Optionally auto-fill the input (user can still edit)
                             const codeInput = document.getElementById('codeInput');
                             if (codeInput) {
-                                codeInput.value = option;
+                                codeInput.value = optionData.text;
                                 codeInput.focus();
                             }
                         });
@@ -2633,29 +2831,58 @@
                     const normalizedUserCode = userCode.toLowerCase().replace(/\s+/g, ' ').trim();
                     const normalizedSolution = task.solution.toLowerCase().replace(/\s+/g, ' ').trim();
 
+                    const codeOptions = document.querySelectorAll('.code-option');
+                    
                     if (normalizedUserCode === normalizedSolution) {
                         submitBtn.textContent = '✓ Success!';
                         submitBtn.style.background = '#34C759';
+                        
+                        // Highlight correct option
+                        codeOptions.forEach(option => {
+                            if (option.dataset.isCorrect === 'true') {
+                                option.classList.add('correct');
+                                option.classList.remove('selected');
+                            } else {
+                                option.style.opacity = '0.5';
+                            }
+                        });
+                        
                         this.handleSuccessfulCode();
                         this.showNotification(`✓ Compilation successful! ${task.explanation}`, 'success');
                     } else {
                         submitBtn.textContent = '✗ Failed';
                         submitBtn.style.background = '#FF3B30';
                         
-                        // Check if user selected a wrong option
-                        let feedbackMessage = `✗ Compilation failed! ${task.explanation}`;
-                        if (task.options) {
-                            const wrongOptionIndex = task.options.findIndex(opt => 
-                                opt.toLowerCase().replace(/\s+/g, ' ').trim() === normalizedUserCode
-                            );
-                            if (wrongOptionIndex > -1 && wrongOptionIndex !== 0) {
-                                const letter = String.fromCharCode(65 + wrongOptionIndex);
-                                feedbackMessage = `✗ Option ${letter} is incorrect. ${task.explanation}`;
+                        // Find which option user selected (if any)
+                        let userSelectedOption = null;
+                        codeOptions.forEach(option => {
+                            const optionCode = option.dataset.code.toLowerCase().replace(/\s+/g, ' ').trim();
+                            if (optionCode === normalizedUserCode) {
+                                userSelectedOption = option;
                             }
-                        }
+                        });
+                        
+                        // Highlight correct and incorrect options
+                        codeOptions.forEach(option => {
+                            if (option.dataset.isCorrect === 'true') {
+                                // Show correct answer
+                                option.classList.add('correct');
+                                option.classList.remove('selected');
+                                option.style.opacity = '1';
+                            } else if (option === userSelectedOption) {
+                                // User selected wrong option
+                                option.classList.add('incorrect');
+                                option.classList.remove('selected');
+                                option.style.opacity = '1';
+                            } else {
+                                // Dim other options
+                                option.style.opacity = '0.4';
+                                option.classList.remove('selected');
+                            }
+                        });
                         
                         this.handleFailedCode();
-                        this.showNotification(feedbackMessage, 'error');
+                        this.showNotification(`✗ Compilation failed! ${task.explanation}`, 'error');
                     }
 
                     setTimeout(() => {
@@ -2673,7 +2900,7 @@
                         setTimeout(() => {
                             this.isSubmitting = false;
                         }, 100);
-                    }, 1500);
+                    }, 2000); // Increased from 1500 to 2000ms to see the highlighting
                 }, 800);
             }
 
@@ -2713,43 +2940,109 @@
 
             handleRestAction(action) {
                 switch (action) {
-                    case 'sleep':
-                        this.gameState.energy = Math.min(100, this.gameState.energy + 50);
-                        this.showNotification('Good sleep! +50 Energy', 'success');
-                        break;
+                    case 'sleep': {
+                        // Проверка: можно спать только если энергия меньше 70
+                        if (this.gameState.energy >= 70) {
+                            this.showNotification("😴 You're not tired enough to sleep! (Need energy < 70%)", 'warning');
+                            return;
+                        }
                         
-                    case 'eat':
+                        // Спать можно только если есть минимум энергии для сна (не в обмороке)
+                        if (this.gameState.energy < 5) {
+                            this.showNotification("😵 Too exhausted to sleep! Take a walk or rest first.", 'error');
+                            return;
+                        }
+                        
+                        // Реалистичная механика сна
+                        const energyGain = 60; // Восстанавливаем больше энергии
+                        const hungerLoss = 20; // Во время сна становишься голодным
+                        const thirstLoss = 25; // Во время сна хочется пить
+                        
+                        this.gameState.energy = Math.min(100, this.gameState.energy + energyGain);
+                        this.gameState.hunger = Math.max(0, this.gameState.hunger - hungerLoss);
+                        this.gameState.thirst = Math.max(0, this.gameState.thirst - thirstLoss);
+                        this.gameState.mood = Math.min(100, this.gameState.mood + 10);
+                        
+                        this.showNotification(`😴 Good sleep! +${energyGain} Energy, +10 Mood\n⚠️ -${hungerLoss} Hunger, -${thirstLoss} Thirst`, 'success');
+                        break;
+                    }
+                        
+                    case 'eat': {
+                        // Проверка: нельзя есть если голод больше 80
+                        if (this.gameState.hunger >= 80) {
+                            this.showNotification("🍽️ You're too full to eat! (Hunger must be < 80%)", 'warning');
+                            return;
+                        }
+                        
                         if (this.gameState.money >= 25) {
+                            const hungerGain = 45;
+                            const thirstLoss = 10; // Еда делает тебя более жаждущим
+                            const moodGain = 8;
+                            
                             this.gameState.money -= 25;
-                            this.gameState.hunger = Math.min(100, this.gameState.hunger + 40);
-                            this.showNotification('Yum! +40 Hunger, -$25', 'success');
+                            this.gameState.hunger = Math.min(100, this.gameState.hunger + hungerGain);
+                            this.gameState.thirst = Math.max(0, this.gameState.thirst - thirstLoss);
+                            this.gameState.mood = Math.min(100, this.gameState.mood + moodGain);
+                            
+                            this.showNotification(`🍗 Delicious! +${hungerGain} Hunger, +${moodGain} Mood, -$25\n💧 -${thirstLoss} Thirst (food makes you thirsty)`, 'success');
                         } else {
-                            this.showNotification("Not enough money for food! Need $25", 'error');
+                            this.showNotification("💰 Not enough money for food! Need $25", 'error');
                             return;
                         }
                         break;
+                    }
                         
-                    case 'drink':
+                    case 'drink': {
+                        // Проверка: нельзя пить если жажда больше 85
+                        if (this.gameState.thirst >= 85) {
+                            this.showNotification("💧 You're not thirsty! (Thirst must be < 85%)", 'warning');
+                            return;
+                        }
+                        
                         if (this.gameState.money >= 15) {
+                            const thirstGain = 40;
+                            const hungerLoss = 5; // Напитки немного снижают голод
+                            const moodGain = 5;
+                            
                             this.gameState.money -= 15;
-                            this.gameState.thirst = Math.min(100, this.gameState.thirst + 30);
-                            this.showNotification('Refreshing! +30 Thirst, -$15', 'success');
+                            this.gameState.thirst = Math.min(100, this.gameState.thirst + thirstGain);
+                            this.gameState.hunger = Math.max(0, this.gameState.hunger - hungerLoss);
+                            this.gameState.mood = Math.min(100, this.gameState.mood + moodGain);
+                            
+                            this.showNotification(`💧 Refreshing! +${thirstGain} Thirst, +${moodGain} Mood, -$15`, 'success');
                         } else {
-                            this.showNotification("Not enough money for drinks! Need $15", 'error');
+                            this.showNotification("💰 Not enough money for drinks! Need $15", 'error');
                             return;
                         }
                         break;
+                    }
                         
-                    case 'walk':
-                        if (this.gameState.energy >= 10) {
-                            this.gameState.mood = Math.min(100, this.gameState.mood + 25);
-                            this.gameState.energy = Math.max(0, this.gameState.energy - 10);
-                            this.showNotification('Nice walk! +25 Mood, -10 Energy', 'success');
-                        } else {
-                            this.showNotification("Too tired for a walk!", 'error');
+                    case 'walk': {
+                        // Проверка: нужна минимальная энергия для прогулки
+                        if (this.gameState.energy < 15) {
+                            this.showNotification("😫 Too tired for a walk! Need at least 15% energy.", 'error');
                             return;
                         }
+                        
+                        // Проверка: нельзя гулять если настроение уже высокое
+                        if (this.gameState.mood >= 85) {
+                            this.showNotification("😊 Your mood is already great! No need for a walk.", 'warning');
+                            return;
+                        }
+                        
+                        const moodGain = 30;
+                        const energyLoss = 12;
+                        const hungerLoss = 8; // Прогулка делает голодным
+                        const thirstLoss = 12; // Прогулка делает жаждущим
+                        
+                        this.gameState.mood = Math.min(100, this.gameState.mood + moodGain);
+                        this.gameState.energy = Math.max(0, this.gameState.energy - energyLoss);
+                        this.gameState.hunger = Math.max(0, this.gameState.hunger - hungerLoss);
+                        this.gameState.thirst = Math.max(0, this.gameState.thirst - thirstLoss);
+                        
+                        this.showNotification(`🚶 Nice walk! +${moodGain} Mood\n⚠️ -${energyLoss} Energy, -${hungerLoss} Hunger, -${thirstLoss} Thirst`, 'success');
                         break;
+                    }
                 }
                 
                 this.closeModal('restModal');
@@ -2830,6 +3123,13 @@
 
             closeModal(modalId) {
                 document.getElementById(modalId).style.display = 'none';
+                
+                // Clear work modal timeout if closing work modal
+                if (modalId === 'workModal' && this.workModalTimeout) {
+                    clearTimeout(this.workModalTimeout);
+                    this.workModalTimeout = null;
+                    this.isAnswering = false; // Reset answering flag too
+                }
             }
 
             showNotification(message, type = 'info') {
@@ -2872,7 +3172,7 @@
 
             getCharacterName() {
                 const names = {
-                    tobias: 'Tobias Horvart',
+                    tobias: 'Tobias Horvarth',
                     vojtech: 'Vojtech Aloy',
                     hynek: 'Hynek Schiffner',
                     adam: 'Adam Hojer'
