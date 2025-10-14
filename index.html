@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>OS TYCOON: Code for Life</title>
+    <title>INFOS: Code for Life</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -157,6 +157,11 @@
             animation: fadeInTitle 0.8s ease-out 0.2s forwards;
         }
 
+        .loading-title span {
+            color: #6366f1;
+            text-shadow: 0 0 20px rgba(99, 102, 241, 0.6);
+        }
+
         @keyframes fadeInTitle {
             from {
                 opacity: 0;
@@ -271,6 +276,11 @@
             margin-bottom: 12px;
             font-weight: 700;
             letter-spacing: -2px;
+        }
+
+        .game-title span {
+            color: #6366f1;
+            text-shadow: 0 0 20px rgba(99, 102, 241, 0.6);
         }
 
         .game-subtitle {
@@ -478,7 +488,7 @@
         }
 
         .character-display.adam {
-            background: url('photos/hojer.png') center center / cover no-repeat;
+            background: url('photos/hojer2.png') center center / cover no-repeat;
         }
 
         .character-details h2 {
@@ -2262,7 +2272,7 @@
 
     <!-- Enhanced Loading Screen -->
     <div class="loading-screen" id="loadingScreen">
-        <div class="loading-title">OS TYCOON</div>
+        <div class="loading-title">INF<span style="color: #6366f1;">OS</span></div>
         <div class="loading-container">
             <div class="loading-text" id="loadingText">Initializing kernel modules...</div>
             <div class="loading-bar-container">
@@ -2278,7 +2288,7 @@
 
     <!-- Character Selection Screen -->
     <div class="character-selection" id="characterSelection">
-        <h1 class="game-title">OS TYCOON</h1>
+        <h1 class="game-title">INF<span style="color: #6366f1;">OS</span></h1>
         <div class="game-subtitle">Build Your Operating System from Scratch • Master IT & Economics • Become a Coding Legend</div>
         
         <div class="characters-grid">
@@ -2641,12 +2651,6 @@
                 </div>
             </div>
         </div>
-    </div>
-
-    <!-- Achievements Panel -->
-    <div class="achievements-panel">
-        <div class="achievements-button" id="achievementsButton" style="margin-bottom: 10px;">🏆</div>
-        <div class="achievements-button" id="resetButton" style="background: var(--error); border-color: var(--error);">🔄</div>
     </div>
 
     <!-- Achievements Modal -->
