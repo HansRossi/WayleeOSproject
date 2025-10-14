@@ -2917,12 +2917,6 @@
                     if (e.key === 'Enter') this.submitCode();
                 });
 
-                // Achievements
-                document.getElementById('achievementsButton').addEventListener('click', () => this.showAchievementsModal());
-
-                // Reset button
-                document.getElementById('resetButton').addEventListener('click', () => this.resetGame());
-
                 // Close modals on outside click
                 document.querySelectorAll('.modal').forEach(modal => {
                     modal.addEventListener('click', (e) => {
