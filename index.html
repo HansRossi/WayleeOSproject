@@ -964,11 +964,81 @@
         .operator { color: #d4d4d4; }
         .bracket { color: #ffd700; }
 
+        /* Code Options Section */
+        .code-options-section {
+            background: #1e1e1e;
+            padding: 20px 30px;
+            margin: 0 -30px;
+            border-top: 1px solid #333;
+            border-bottom: 1px solid #333;
+        }
+
+        .options-label {
+            color: #d4d4d4;
+            font-size: 13px;
+            font-family: 'Montserrat', sans-serif;
+            margin-bottom: 16px;
+            font-weight: 500;
+        }
+
+        .code-options-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .code-option {
+            background: #252526;
+            border: 1px solid #3c3c3c;
+            border-radius: 8px;
+            padding: 16px;
+            color: #d4d4d4;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: left;
+            word-break: break-word;
+            position: relative;
+        }
+
+        .code-option:hover {
+            background: #2d2d30;
+            border-color: #007AFF;
+        }
+
+        .code-option.selected {
+            background: rgba(0, 122, 255, 0.1);
+            border-color: #007AFF;
+            box-shadow: 0 0 0 1px #007AFF inset;
+        }
+
+        .option-letter {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: #3c3c3c;
+            color: #858585;
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: 600;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        .code-option.selected .option-letter {
+            background: #007AFF;
+            color: #FFFFFF;
+        }
+
         .code-input-section {
             background: #252526;
             padding: 20px 30px;
             margin: 0 -30px;
-            border-top: 1px solid #333;
         }
 
         .input-label {
@@ -1705,10 +1775,18 @@
                     </div>
                 </div>
                 
+                <!-- Options Section -->
+                <div class="code-options-section">
+                    <div class="options-label">💡 Choose the correct code and type it below:</div>
+                    <div class="code-options-grid" id="codeOptionsGrid">
+                        <!-- Options will be inserted here by JavaScript -->
+                    </div>
+                </div>
+                
                 <!-- Input Section -->
                 <div class="code-input-section">
-                    <div class="input-label">Complete the missing line of code:</div>
-                    <input type="text" class="code-input" id="codeInput" placeholder="Type your code here..." autocomplete="off" spellcheck="false">
+                    <div class="input-label">Type your answer here:</div>
+                    <input type="text" class="code-input" id="codeInput" placeholder="Type the correct code here..." autocomplete="off" spellcheck="false">
                     
                     <div class="code-hint" id="codeHint">
                         <span id="hintText">Hint: Complete the code above</span>
@@ -1831,6 +1909,9 @@
                 this.currentCategory = 'databases';
                 this.gameInterval = null;
                 this.notificationId = 0;
+                this.isSubmitting = false; // Prevent multiple code submissions
+                this.rewardAlreadyGiven = false; // Prevent duplicate rewards
+                this.isAnswering = false; // Prevent multiple answer clicks in freelance work
                 
                 this.initializeGame();
             }
@@ -2235,8 +2316,22 @@
             }
 
             handleAnswer(selectedIndex, correctIndex, explanation) {
+                // Prevent multiple clicks - if already answering, ignore
+                if (this.isAnswering) {
+                    return;
+                }
+                
+                // Set flag to prevent duplicate clicks
+                this.isAnswering = true;
+                
                 const options = document.querySelectorAll('.option-button');
-                options.forEach(option => option.classList.remove('correct', 'incorrect'));
+                options.forEach(option => {
+                    option.classList.remove('correct', 'incorrect');
+                    // Disable all buttons to prevent further clicks
+                    option.disabled = true;
+                    option.style.cursor = 'not-allowed';
+                    option.style.opacity = '0.7';
+                });
 
                 this.gameState.completedQuestions++;
 
@@ -2266,6 +2361,8 @@
                 setTimeout(() => {
                     this.closeModal('workModal');
                     this.loadRandomQuestion();
+                    // Reset flag after modal closes
+                    this.isAnswering = false;
                 }, 2000);
             }
 
@@ -2301,6 +2398,10 @@
                     this.showNotification("Too tired to code! Get some rest.", 'error');
                     return;
                 }
+
+                // Reset flags for new task
+                this.isSubmitting = false;
+                this.rewardAlreadyGiven = false;
 
                 // Load random coding task BEFORE showing modal
                 this.loadRandomCodingTask();
@@ -2385,6 +2486,52 @@
                     hintElement.textContent = task.hint;
                 }
                 
+                // Display code options
+                const optionsContainer = document.getElementById('codeOptionsGrid');
+                if (optionsContainer && task.options && task.options.length > 0) {
+                    optionsContainer.innerHTML = '';
+                    
+                    // Shuffle options to randomize order
+                    const shuffledOptions = [...task.options];
+                    for (let i = shuffledOptions.length - 1; i > 0; i--) {
+                        const j = Math.floor(Math.random() * (i + 1));
+                        [shuffledOptions[i], shuffledOptions[j]] = [shuffledOptions[j], shuffledOptions[i]];
+                    }
+                    
+                    shuffledOptions.forEach((option, index) => {
+                        const optionCard = document.createElement('div');
+                        optionCard.className = 'code-option';
+                        optionCard.dataset.index = index;
+                        
+                        const letter = String.fromCharCode(65 + index); // A, B, C, D
+                        
+                        optionCard.innerHTML = `
+                            <div class="option-letter">${letter}</div>
+                            <code class="option-code">${this.escapeHtml(option)}</code>
+                        `;
+                        
+                        // Click handler to help user
+                        optionCard.addEventListener('click', () => {
+                            // Remove selected class from all options
+                            document.querySelectorAll('.code-option').forEach(opt => {
+                                opt.classList.remove('selected');
+                            });
+                            
+                            // Add selected class to clicked option
+                            optionCard.classList.add('selected');
+                            
+                            // Optionally auto-fill the input (user can still edit)
+                            const codeInput = document.getElementById('codeInput');
+                            if (codeInput) {
+                                codeInput.value = option;
+                                codeInput.focus();
+                            }
+                        });
+                        
+                        optionsContainer.appendChild(optionCard);
+                    });
+                }
+                
                 // Focus on input field
                 setTimeout(() => {
                     const codeInput = document.getElementById('codeInput');
@@ -2393,6 +2540,12 @@
                         codeInput.focus();
                     }
                 }, 100);
+            }
+
+            escapeHtml(text) {
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
             }
 
             highlightSyntax(code, language) {
@@ -2444,19 +2597,36 @@
             }
 
             submitCode() {
+                const submitBtn = document.getElementById('submitCode');
+                
+                // FIRST CHECK: If button is disabled, STOP IMMEDIATELY
+                if (submitBtn.disabled || this.isSubmitting) {
+                    console.log('Blocked duplicate submission attempt');
+                    return;
+                }
+                
+                // IMMEDIATELY disable button and set flag (BEFORE ANYTHING ELSE)
+                submitBtn.disabled = true;
+                this.isSubmitting = true;
+                
                 const userCode = document.getElementById('codeInput').value.trim();
                 const task = this.currentCodingTask;
 
                 if (!userCode) {
                     this.showNotification('⚠️ Please enter some code before submitting!', 'warning');
+                    // Re-enable if no code entered
+                    submitBtn.disabled = false;
+                    this.isSubmitting = false;
                     return;
                 }
 
-                // Show compiling animation
-                const submitBtn = document.getElementById('submitCode');
+                // Update UI
                 const originalText = submitBtn.textContent;
                 submitBtn.textContent = '⏳ Compiling...';
-                submitBtn.disabled = true;
+                
+                // Disable input field too
+                const codeInput = document.getElementById('codeInput');
+                if (codeInput) codeInput.disabled = true;
 
                 setTimeout(() => {
                     // Normalize comparison (case insensitive, ignore extra spaces)
@@ -2465,26 +2635,56 @@
 
                     if (normalizedUserCode === normalizedSolution) {
                         submitBtn.textContent = '✓ Success!';
-                        submitBtn.style.background = 'linear-gradient(135deg, #4caf50, #45a049)';
+                        submitBtn.style.background = '#34C759';
                         this.handleSuccessfulCode();
                         this.showNotification(`✓ Compilation successful! ${task.explanation}`, 'success');
                     } else {
                         submitBtn.textContent = '✗ Failed';
-                        submitBtn.style.background = 'linear-gradient(135deg, #f44336, #d32f2f)';
+                        submitBtn.style.background = '#FF3B30';
+                        
+                        // Check if user selected a wrong option
+                        let feedbackMessage = `✗ Compilation failed! ${task.explanation}`;
+                        if (task.options) {
+                            const wrongOptionIndex = task.options.findIndex(opt => 
+                                opt.toLowerCase().replace(/\s+/g, ' ').trim() === normalizedUserCode
+                            );
+                            if (wrongOptionIndex > -1 && wrongOptionIndex !== 0) {
+                                const letter = String.fromCharCode(65 + wrongOptionIndex);
+                                feedbackMessage = `✗ Option ${letter} is incorrect. ${task.explanation}`;
+                            }
+                        }
+                        
                         this.handleFailedCode();
-                        this.showNotification(`✗ Compilation failed! ${task.explanation}`, 'error');
+                        this.showNotification(feedbackMessage, 'error');
                     }
 
                     setTimeout(() => {
+                        // Re-enable everything
                         submitBtn.textContent = originalText;
                         submitBtn.disabled = false;
                         submitBtn.style.background = '';
+                        
+                        const codeInput = document.getElementById('codeInput');
+                        if (codeInput) codeInput.disabled = false;
+                        
                         this.closeModal('codingModal');
+                        
+                        // CRITICAL: Reset flag AFTER closing modal
+                        setTimeout(() => {
+                            this.isSubmitting = false;
+                        }, 100);
                     }, 1500);
                 }, 800);
             }
 
             handleSuccessfulCode() {
+                // Prevent duplicate rewards if called multiple times
+                if (this.rewardAlreadyGiven) {
+                    console.log('Reward already given, skipping');
+                    return;
+                }
+                this.rewardAlreadyGiven = true;
+                
                 let progressIncrease = 3.5; // Base progress
                 
                 // Adam Hojer bonus for programming +50%
@@ -3407,6 +3607,12 @@
                             "}"
                         ],
                         solution: 'printf("Hello, World!\\n");',
+                        options: [
+                            'printf("Hello, World!\\n");',
+                            'print("Hello, World!");',
+                            'cout << "Hello, World!";',
+                            'echo "Hello, World!";'
+                        ],
                         hint: "Use printf to display text to the console",
                         explanation: "The printf function is used for output in C programs."
                     },
@@ -3419,6 +3625,12 @@
                             "}"
                         ],
                         solution: "return a + b;",
+                        options: [
+                            "return a + b;",
+                            "return a - b;",
+                            "return a * b;",
+                            "return sum(a, b);"
+                        ],
                         hint: "Return the result of adding a and b",
                         explanation: "The function should return the sum of its two parameters."
                     },
@@ -3432,6 +3644,12 @@
                             "}"
                         ],
                         solution: "kernel_struct = kmalloc(sizeof(struct kernel));",
+                        options: [
+                            "kernel_struct = kmalloc(sizeof(struct kernel));",
+                            "kernel_struct = malloc(sizeof(struct kernel));",
+                            "kernel_struct = new kernel_struct();",
+                            "kernel_struct = alloc(kernel);"
+                        ],
                         hint: "Allocate memory for kernel structure using kmalloc",
                         explanation: "Kernel memory allocation requires special functions like kmalloc."
                     },
@@ -3444,6 +3662,12 @@
                             "}"
                         ],
                         solution: "return number % 2 == 0;",
+                        options: [
+                            "return number % 2 == 0;",
+                            "return number / 2 == 0;",
+                            "return number % 2 == 1;",
+                            "return (number & 1) == 1;"
+                        ],
                         hint: "Use modulo operator to check divisibility by 2",
                         explanation: "Even numbers have remainder 0 when divided by 2."
                     },
@@ -3457,6 +3681,12 @@
                             "}"
                         ],
                         solution: "struct process* new_process = kmalloc(sizeof(struct process));",
+                        options: [
+                            "struct process* new_process = kmalloc(sizeof(struct process));",
+                            "process* new_process = malloc(sizeof(process));",
+                            "struct process* new_process = new process();",
+                            "new_process = create(sizeof(struct process));"
+                        ],
                         hint: "Allocate memory for process structure",
                         explanation: "Process creation requires memory allocation for process control block."
                     },
@@ -3472,6 +3702,12 @@
                             "    int 0x80"
                         ],
                         solution: "mov ebx, 0",
+                        options: [
+                            "mov ebx, 0",
+                            "mov eax, 0",
+                            "mov ecx, 0",
+                            "set ebx, 0"
+                        ],
                         hint: "Set exit status code in ebx register",
                         explanation: "System call 1 (exit) requires exit status in ebx register."
                     },
@@ -3484,6 +3720,12 @@
                             "    return block"
                         ],
                         solution: "block = bytearray(size)",
+                        options: [
+                            "block = bytearray(size)",
+                            "block = array(size)",
+                            "block = malloc(size)",
+                            "block = new byte[size]"
+                        ],
                         hint: "Create a byte array of specified size",
                         explanation: "bytearray creates a mutable sequence of bytes for memory simulation."
                     },
@@ -3498,6 +3740,12 @@
                             "        pass"
                         ],
                         solution: "self.files = {}",
+                        options: [
+                            "self.files = {}",
+                            "self.files = []",
+                            "this.files = new Map()",
+                            "files = dict()"
+                        ],
                         hint: "Initialize a dictionary to store files",
                         explanation: "File systems typically use dictionary-like structures for file management."
                     },
@@ -3511,6 +3759,12 @@
                             "}"
                         ],
                         solution: "console.log(`Handling IRQ: ${irq}`);",
+                        options: [
+                            "console.log(`Handling IRQ: ${irq}`);",
+                            "print(f\"Handling IRQ: {irq}\")",
+                            "System.out.println(\"Handling IRQ: \" + irq);",
+                            "printf(\"Handling IRQ: %d\", irq);"
+                        ],
                         hint: "Log the interrupt request number",
                         explanation: "Interrupt handlers often log which interrupt they're processing."
                     },
@@ -3526,6 +3780,12 @@
                             "}"
                         ],
                         solution: "MemoryBlock block = new MemoryBlock(size);",
+                        options: [
+                            "MemoryBlock block = new MemoryBlock(size);",
+                            "var block = new MemoryBlock(size);",
+                            "MemoryBlock block = malloc(size);",
+                            "let block = new MemoryBlock(size);"
+                        ],
                         hint: "Create a new MemoryBlock object",
                         explanation: "Memory allocation creates new block objects in managed systems."
                     },
@@ -3539,6 +3799,12 @@
                             "}"
                         ],
                         solution: "scheduler_queue = create_queue();",
+                        options: [
+                            "scheduler_queue = create_queue();",
+                            "scheduler_queue = new Queue();",
+                            "scheduler_queue = queue.Queue()",
+                            "scheduler_queue = init_queue();"
+                        ],
                         hint: "Create a queue for process scheduling",
                         explanation: "Schedulers use queues to manage process execution order."
                     },
@@ -3551,6 +3817,12 @@
                             "}"
                         ],
                         solution: "return n * factorial(n - 1);",
+                        options: [
+                            "return n * factorial(n - 1);",
+                            "return n + factorial(n - 1);",
+                            "return factorial(n - 1) / n;",
+                            "return n * factorial(n + 1);"
+                        ],
                         hint: "Recursive call with n-1",
                         explanation: "Factorial is commonly implemented using recursion."
                     },
@@ -3563,6 +3835,12 @@
                             "    return a, b"
                         ],
                         solution: "a, b = b, a",
+                        options: [
+                            "a, b = b, a",
+                            "temp = a; a = b; b = temp",
+                            "swap(a, b)",
+                            "[a, b] = [b, a]"
+                        ],
                         hint: "Use Python tuple unpacking",
                         explanation: "Python allows elegant variable swapping with tuple unpacking."
                     },
@@ -3577,6 +3855,12 @@
                             "}"
                         ],
                         solution: "if (!ptr) return NULL;",
+                        options: [
+                            "if (!ptr) return NULL;",
+                            "if (ptr == NULL) return NULL;",
+                            "if (ptr == 0) return 0;",
+                            "if ptr is None: return None"
+                        ],
                         hint: "Check if malloc returned NULL",
                         explanation: "Always check malloc return value for allocation failures."
                     },
@@ -3590,6 +3874,12 @@
                             "}"
                         ],
                         solution: "try {",
+                        options: [
+                            "try {",
+                            "try:",
+                            "begin",
+                            "catch {"
+                        ],
                         hint: "Start a try-catch block for error handling",
                         explanation: "Async operations should be wrapped in try-catch."
                     },
@@ -3604,6 +3894,12 @@
                             "}"
                         ],
                         solution: "new->data = data;",
+                        options: [
+                            "new->data = data;",
+                            "new.data = data;",
+                            "new->value = data;",
+                            "(*new).data = data;"
+                        ],
                         hint: "Set the data field of the new node",
                         explanation: "Linked list nodes need data initialization."
                     },
@@ -3619,6 +3915,12 @@
                             "        pass"
                         ],
                         solution: "self.state = 'ready'",
+                        options: [
+                            "self.state = 'ready'",
+                            "this.state = 'ready'",
+                            "self.status = 'ready'",
+                            "state = 'ready'"
+                        ],
                         hint: "Initialize thread state",
                         explanation: "Threads typically start in a 'ready' state."
                     },
@@ -3633,6 +3935,12 @@
                             "}"
                         ],
                         solution: "save_context(old);",
+                        options: [
+                            "save_context(old);",
+                            "store_context(old);",
+                            "save_state(old);",
+                            "context_save(old);"
+                        ],
                         hint: "Call save_context with old process",
                         explanation: "Context switching requires saving current state before loading new one."
                     },
@@ -3648,6 +3956,12 @@
                             "}"
                         ],
                         solution: "return function(...args) {",
+                        options: [
+                            "return function(...args) {",
+                            "return (...args) => {",
+                            "function(...args) {",
+                            "return lambda(...args): {"
+                        ],
                         hint: "Return a function that accepts arguments",
                         explanation: "Debounce delays function execution until after a pause."
                     },
@@ -3662,6 +3976,12 @@
                             "}"
                         ],
                         solution: "for (int i = 1; i < size; i++)",
+                        options: [
+                            "for (int i = 1; i < size; i++)",
+                            "for (int i = 0; i < size; i++)",
+                            "for (i = 1; i <= size; i++)",
+                            "for i in range(1, size):"
+                        ],
                         hint: "Loop from index 1 to size",
                         explanation: "Find maximum by comparing all elements."
                     },
@@ -3678,6 +3998,12 @@
                             "    return -1"
                         ],
                         solution: "mid = (left + right) // 2",
+                        options: [
+                            "mid = (left + right) // 2",
+                            "mid = (left + right) / 2",
+                            "int mid = (left + right) / 2;",
+                            "mid = Math.floor((left + right) / 2)"
+                        ],
                         hint: "Calculate middle index",
                         explanation: "Binary search divides the array in half each iteration."
                     },
@@ -3697,6 +4023,12 @@
                             "}"
                         ],
                         solution: "if (arr[j] > arr[j+1]) {",
+                        options: [
+                            "if (arr[j] > arr[j+1]) {",
+                            "if (arr[j] < arr[j+1]) {",
+                            "if arr[j] > arr[j+1]:",
+                            "while (arr[j] > arr[j+1]) {"
+                        ],
                         hint: "Compare adjacent elements",
                         explanation: "Bubble sort swaps adjacent elements if they're in wrong order."
                     },
@@ -3709,6 +4041,12 @@
                             ""
                         ],
                         solution: "return fibonacci(n-1) + fibonacci(n-2)",
+                        options: [
+                            "return fibonacci(n-1) + fibonacci(n-2)",
+                            "return fibonacci(n-2) + fibonacci(n-1)",
+                            "return n-1 + n-2",
+                            "return fib(n-1) + fib(n-2)"
+                        ],
                         hint: "Sum of previous two Fibonacci numbers",
                         explanation: "Fibonacci sequence is defined recursively."
                     },
