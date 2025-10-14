@@ -183,7 +183,7 @@
         @keyframes fadeInContainer {
             from {
                 opacity: 0;
-                transform: translateY(20px);
+                transform: translateY(20px)
             }
             to {
                 opacity: 1;
@@ -910,6 +910,7 @@
             background: linear-gradient(135deg, transparent, rgba(88, 166, 255, 0.5), transparent);
             -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
             -webkit-mask-composite: xor;
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
             mask-composite: exclude;
             opacity: 0;
             transition: opacity 0.3s;
@@ -1013,8 +1014,9 @@
         .os-milestones {
             display: flex;
             flex-direction: column;
-            gap: 14px;
+            gap: 0;
             flex: 1;
+            justify-content: space-evenly;
         }
 
         .milestone {
@@ -1023,6 +1025,7 @@
             align-items: center;
             gap: 14px;
             padding: 16px 18px;
+            margin: 8px 0;
             background: rgba(255, 255, 255, 0.03);
             border-radius: 12px;
             border: 1px solid rgba(255, 255, 255, 0.08);
@@ -2296,52 +2299,28 @@
             <div class="character-card" data-character="tobias">
                 <div class="character-pixel tobias"></div>
                 <div class="character-name">Tobias Horvarth</div>
-                <div class="character-bonus">Database Architect • +20% Database Earnings</div>
-                <div class="character-stats">
-                    <div class="stat-tag">SQL: 95</div>
-                    <div class="stat-tag">NoSQL: 85</div>
-                    <div class="stat-tag">OPTIM: 90</div>
-                    <div class="stat-tag">BACKUP: 80</div>
-                </div>
+                <div class="character-bonus">Database Architect • <strong>+20% Database Earnings</strong></div>
             </div>
             
             <!-- Vojtech Aloy - Networks -->
             <div class="character-card" data-character="vojtech">
                 <div class="character-pixel vojtech"></div>
                 <div class="character-name">Vojtech Aloy</div>
-                <div class="character-bonus">Network Specialist • +20% Network Earnings</div>
-                <div class="character-stats">
-                    <div class="stat-tag">TCP/IP: 90</div>
-                    <div class="stat-tag">SECURITY: 85</div>
-                    <div class="stat-tag">ROUTING: 88</div>
-                    <div class="stat-tag">PROTO: 87</div>
-                </div>
+                <div class="character-bonus">Network Specialist • <strong>+20% Network Earnings</strong></div>
             </div>
             
             <!-- Hynek Schiffner - Hardware -->
             <div class="character-card" data-character="hynek">
                 <div class="character-pixel hynek"></div>
                 <div class="character-name">Hynek Schiffner</div>
-                <div class="character-bonus">Hardware Engineer • +20% Hardware Earnings</div>
-                <div class="character-stats">
-                    <div class="stat-tag">CPU: 92</div>
-                    <div class="stat-tag">MEMORY: 88</div>
-                    <div class="stat-tag">IO: 85</div>
-                    <div class="stat-tag">ARCH: 90</div>
-                </div>
+                <div class="character-bonus">Hardware Engineer • <strong>+20% Hardware Earnings</strong></div>
             </div>
             
             <!-- Adam Hojer - Programming -->
             <div class="character-card" data-character="adam">
                 <div class="character-pixel adam"></div>
                 <div class="character-name">Adam Hojer</div>
-                <div class="character-bonus">Programming Guru • +50% Coding Progress</div>
-                <div class="character-stats">
-                    <div class="stat-tag">C/C++: 95</div>
-                    <div class="stat-tag">ALGO: 92</div>
-                    <div class="stat-tag">DEBUG: 88</div>
-                    <div class="stat-tag">OPTIM: 90</div>
-                </div>
+                <div class="character-bonus">Programming Guru • <strong>+20% Coding Progress</strong></div>
             </div>
         </div>
         
@@ -2776,6 +2755,7 @@
 
                 this.warningShownHunger = false;
                 this.warningShownThirst = false;
+                this.difficulty = 'normal'; // easy, normal, hard
 
                 this.questions = this.initializeQuestions();
                 this.codingTasks = this.initializeCodingTasks();
@@ -2923,6 +2903,12 @@
                         if (e.target === modal) this.closeModal(modal.id);
                     });
                 });
+
+                // Difficulty selector
+                document.getElementById('difficultySelect').addEventListener('change', (e) => {
+                    this.difficulty = e.target.value;
+                    this.showNotification(`Difficulty changed to: ${e.target.value.toUpperCase()}`, 'success');
+                });
             }
 
             selectCharacter(card) {
@@ -2963,20 +2949,28 @@
             }
 
             decreaseStats() {
-                // Более сбалансированное падение статов
-                this.gameState.hunger = Math.max(0, this.gameState.hunger - 0.4);
-                this.gameState.thirst = Math.max(0, this.gameState.thirst - 0.6);
-                this.gameState.energy = Math.max(0, this.gameState.energy - 0.25);
-                this.gameState.mood = Math.max(0, this.gameState.mood - 0.15);
+                // Difficulty multipliers
+                const difficultyMultipliers = {
+                    easy: 0.7,    // 30% slower decrease
+                    normal: 1.0,  // Standard
+                    hard: 1.5     // 50% faster decrease
+                };
+                const multiplier = difficultyMultipliers[this.difficulty] || 1.0;
+
+                // Более сбалансированное падение статов с учетом сложности
+                this.gameState.hunger = Math.max(0, this.gameState.hunger - (0.4 * multiplier));
+                this.gameState.thirst = Math.max(0, this.gameState.thirst - (0.6 * multiplier));
+                this.gameState.energy = Math.max(0, this.gameState.energy - (0.25 * multiplier));
+                this.gameState.mood = Math.max(0, this.gameState.mood - (0.15 * multiplier));
 
                 // Health penalties for critical needs
                 if (this.gameState.hunger < 20 || this.gameState.thirst < 20) {
-                    this.gameState.health = Math.max(0, this.gameState.health - 0.3);
+                    this.gameState.health = Math.max(0, this.gameState.health - (0.3 * multiplier));
                     this.showWarningIfNeeded();
                 }
 
                 if (this.gameState.energy < 10) {
-                    this.gameState.mood = Math.max(0, this.gameState.mood - 0.5);
+                    this.gameState.mood = Math.max(0, this.gameState.mood - (0.5 * multiplier));
                 }
 
                 // Update milestone progress based on OS progress
@@ -3287,6 +3281,14 @@
 
             handleCorrectAnswer() {
                 let baseEarnings = 10 + Math.floor(Math.random() * 11); // $10-20
+                
+                // Difficulty earnings multiplier
+                const difficultyEarnings = {
+                    easy: 1.3,    // +30% money
+                    normal: 1.0,  // Standard
+                    hard: 0.7     // -30% money
+                };
+                baseEarnings = Math.floor(baseEarnings * (difficultyEarnings[this.difficulty] || 1.0));
                 
                 // Character bonuses +20%
                 if ((this.gameState.character === 'tobias' && this.currentCategory === 'databases') ||
@@ -3642,9 +3644,9 @@
                 
                 let progressIncrease = 3.5; // Base progress
                 
-                // Adam Hojer bonus for programming +50%
+                // Adam Hojer bonus for programming +20%
                 if (this.gameState.character === 'adam') {
-                    progressIncrease = 5.25; // +50% bonus
+                    progressIncrease = 4.2; // +20% bonus
                 }
                 
                 this.gameState.osProgress = Math.min(100, this.gameState.osProgress + progressIncrease);
