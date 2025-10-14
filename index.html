@@ -1,0 +1,3981 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OS TYCOON: Code for Life</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <style>
+        /* ===== RESET & BASE STYLES ===== */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Montserrat', -apple-system, BlinkMacSystemFont, sans-serif;
+            image-rendering: pixelated;
+        }
+
+        :root {
+            --primary: #007AFF;
+            --primary-dark: #0051D5;
+            --success: #34C759;
+            --warning: #FF9500;
+            --error: #FF3B30;
+            --purple: #AF52DE;
+            --gold: #FFD60A;
+            --bg-primary: #000000;
+            --bg-secondary: #1C1C1E;
+            --bg-tertiary: #2C2C2E;
+            --border: #38383A;
+            --text-primary: #FFFFFF;
+            --text-secondary: #8E8E93;
+        }
+
+        body {
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            overflow: hidden;
+            user-select: none;
+        }
+
+        /* Allow text selection in input fields */
+        input, textarea {
+            user-select: text !important;
+            -webkit-user-select: text !important;
+            -moz-user-select: text !important;
+            -ms-user-select: text !important;
+        }
+
+        /* ===== APPLE-STYLE LOADING SCREEN ===== */
+        .loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000000;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+        }
+
+        .loading-title {
+            font-size: 56px;
+            font-weight: 600;
+            color: #FFFFFF;
+            margin-bottom: 60px;
+            letter-spacing: -1px;
+        }
+
+        .loading-container {
+            width: 320px;
+        }
+
+        .loading-bar-container {
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+
+        .loading-bar {
+            height: 100%;
+            background: #FFFFFF;
+            width: 0%;
+            transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .loading-text {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 13px;
+            text-align: center;
+            font-weight: 400;
+            letter-spacing: 0.2px;
+        }
+
+        .loading-details {
+            display: flex;
+            justify-content: center;
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 12px;
+            font-weight: 300;
+            margin-top: 12px;
+        }
+
+        .loading-animation {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 32px;
+            opacity: 0.8;
+        }
+
+        /* ===== CHARACTER SELECTION ===== */
+        .character-selection {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000000;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            padding: 60px 40px;
+        }
+
+        .game-title {
+            font-size: 64px;
+            color: #FFFFFF;
+            margin-bottom: 12px;
+            font-weight: 700;
+            letter-spacing: -2px;
+        }
+
+        .game-subtitle {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 17px;
+            margin-bottom: 64px;
+            text-align: center;
+            max-width: 580px;
+            line-height: 1.5;
+            font-weight: 400;
+            letter-spacing: 0.2px;
+        }
+
+        .characters-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 16px;
+            max-width: 1200px;
+            margin-bottom: 48px;
+        }
+
+        .character-card {
+            background: rgba(28, 28, 30, 0.6);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 24px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        .character-card:hover {
+            background: rgba(28, 28, 30, 0.8);
+            border-color: rgba(0, 122, 255, 0.6);
+            transform: translateY(-4px);
+        }
+
+        .character-card.selected {
+            border-color: var(--primary);
+            background: rgba(0, 122, 255, 0.1);
+            box-shadow: 0 0 0 1px var(--primary) inset;
+        }
+
+        .character-pixel {
+            width: 140px;
+            height: 140px;
+            margin: 0 auto 20px;
+            background: rgba(44, 44, 46, 0.6);
+            position: relative;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .character-pixel img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Character images */
+        .character-pixel.tobias {
+            background: url('photos/horvath.png') center center / cover no-repeat;
+        }
+
+        .character-pixel.vojtech {
+            background: url('photos/aloy.png') center center / cover no-repeat;
+        }
+
+        .character-pixel.hynek {
+            background: url('photos/schiffner.png') center center / cover no-repeat;
+        }
+
+        .character-pixel.adam {
+            background: url('photos/hojer2.png') center center / cover no-repeat;
+        }
+
+        .character-name {
+            font-size: 19px;
+            color: #FFFFFF;
+            margin-bottom: 6px;
+            font-weight: 600;
+            letter-spacing: -0.3px;
+        }
+
+        .character-bonus {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 13px;
+            margin-bottom: 16px;
+            min-height: 38px;
+            font-weight: 400;
+            line-height: 1.4;
+        }
+
+        .character-stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-top: 16px;
+        }
+
+        .stat-tag {
+            background: rgba(44, 44, 46, 0.6);
+            padding: 6px 10px;
+            border-radius: 8px;
+            font-size: 11px;
+            color: rgba(255, 255, 255, 0.7);
+            font-weight: 500;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .start-button {
+            background: var(--primary);
+            color: #FFFFFF;
+            border: none;
+            padding: 16px 48px;
+            font-size: 17px;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            font-weight: 600;
+            letter-spacing: -0.2px;
+        }
+
+        .start-button:hover {
+            background: var(--primary-dark);
+            transform: translateY(-1px);
+        }
+
+        .start-button:active {
+            transform: scale(0.98);
+        }
+
+        /* ===== IMPROVED GAME INTERFACE ===== */
+        .game-container {
+            display: none;
+            width: 100vw;
+            height: 100vh;
+            background: #000000;
+        }
+
+        .game-interface {
+            display: none;
+            width: 100%;
+            height: 100%;
+            padding: 20px;
+            gap: 20px;
+            flex-direction: column;
+        }
+
+        /* Top Bar */
+        .game-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 15px 30px;
+            background: var(--bg-secondary);
+            border-radius: 10px;
+            border: 2px solid var(--border);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+            gap: 30px;
+            flex-shrink: 0;
+        }
+
+        .character-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex: 0 0 auto;
+        }
+
+        .character-display {
+            width: 60px;
+            height: 60px;
+            background: var(--bg-tertiary);
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            position: relative;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .character-display.tobias {
+            background: url('photos/horvath.png') center center / cover no-repeat;
+        }
+
+        .character-display.vojtech {
+            background: url('photos/aloy.png') center center / cover no-repeat;
+        }
+
+        .character-display.hynek {
+            background: url('photos/schiffner.png') center center / cover no-repeat;
+        }
+
+        .character-display.adam {
+            background: url('photos/hojer.png') center center / cover no-repeat;
+        }
+
+        .character-details h2 {
+            color: var(--text-primary);
+            margin-bottom: 2px;
+            font-size: 16px;
+            font-weight: 600;
+        }
+
+        .character-class {
+            color: var(--text-secondary);
+            font-size: 12px;
+        }
+
+        .money-display {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: var(--bg-tertiary);
+            padding: 8px 16px;
+            border-radius: 8px;
+            border: 2px solid var(--border);
+            flex: 0 0 auto;
+        }
+
+        .money-amount {
+            font-size: 24px;
+            color: var(--gold);
+            font-weight: bold;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+        }
+
+        .money-label {
+            font-size: 12px;
+            color: var(--text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .os-progress-display {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex: 1;
+            min-width: 0;
+        }
+
+        .os-progress-text {
+            font-size: 14px;
+            color: var(--text-secondary);
+            white-space: nowrap;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .os-progress-bar {
+            flex: 1;
+            height: 16px;
+            background: var(--bg-tertiary);
+            border-radius: 8px;
+            overflow: hidden;
+            border: 2px solid var(--border);
+            min-width: 200px;
+        }
+
+        .os-progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--primary), var(--purple));
+            width: 0%;
+            transition: width 0.5s ease;
+            position: relative;
+        }
+
+        .os-progress-fill::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        /* Main Content Area */
+        .game-content {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            flex: 1;
+            min-height: 0;
+        }
+
+        /* Left Panel - Stats */
+        .stats-panel {
+            background: var(--bg-secondary);
+            border: 2px solid var(--border);
+            border-radius: 15px;
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            overflow-y: auto;
+        }
+
+        .stats-panel h3, .os-panel h3, .actions-panel h3 {
+            font-size: 16px;
+            color: var(--text-primary);
+            margin-bottom: 20px;
+            font-weight: 700;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            text-align: center;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .stats-grid {
+            display: grid;
+            gap: 12px;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            background: var(--bg-tertiary);
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            transition: all 0.3s;
+        }
+
+        .stat-item:hover {
+            border-color: var(--primary);
+            transform: translateX(5px);
+        }
+
+        .stat-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        .health .stat-icon { background: rgba(218, 54, 51, 0.2); color: var(--error); }
+        .hunger .stat-icon { background: rgba(210, 153, 34, 0.2); color: var(--warning); }
+        .thirst .stat-icon { background: rgba(88, 166, 255, 0.2); color: var(--primary); }
+        .energy .stat-icon { background: rgba(63, 185, 80, 0.2); color: var(--success); }
+        .mood .stat-icon { background: rgba(163, 113, 247, 0.2); color: var(--purple); }
+
+        .stat-info {
+            flex: 1;
+        }
+
+        .stat-name {
+            font-size: 12px;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-bar {
+            height: 6px;
+            background: var(--bg-primary);
+            border-radius: 3px;
+            overflow: hidden;
+        }
+
+        .stat-fill {
+            height: 100%;
+            transition: width 0.5s ease;
+        }
+
+        .health .stat-fill { background: linear-gradient(90deg, var(--error), #ff6b6b); }
+        .hunger .stat-fill { background: linear-gradient(90deg, var(--warning), #ffd93d); }
+        .thirst .stat-fill { background: linear-gradient(90deg, var(--primary), #4dabf7); }
+        .energy .stat-fill { background: linear-gradient(90deg, var(--success), #69db7c); }
+        .mood .stat-fill { background: linear-gradient(90deg, var(--purple), #cc5de8); }
+
+        .stat-value {
+            font-size: 11px;
+            color: var(--text-secondary);
+            min-width: 38px;
+            text-align: right;
+            font-weight: 600;
+        }
+
+        /* Actions Panel */
+        .actions-panel {
+            background: var(--bg-secondary);
+            border: 2px solid var(--border);
+            border-radius: 15px;
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        .actions-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+        }
+
+        .action-button {
+            background: var(--bg-tertiary);
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            padding: 30px 20px;
+            color: var(--text-primary);
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .action-button::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(88, 166, 255, 0.1), transparent);
+            transition: left 0.5s;
+        }
+
+        .action-button:hover::before {
+            left: 100%;
+        }
+
+        .action-button:hover {
+            border-color: var(--primary);
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .action-button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .action-icon {
+            font-size: 42px;
+            filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.3));
+        }
+
+        .action-name {
+            font-size: 16px;
+            font-weight: 700;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .action-description {
+            font-size: 12px;
+            color: var(--text-secondary);
+            text-align: center;
+            line-height: 1.3;
+        }
+
+        /* Right Panel - OS Progress */
+        .os-panel {
+            background: var(--bg-secondary);
+            border: 2px solid var(--border);
+            border-radius: 15px;
+            padding: 25px;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        .os-milestones {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .milestone {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            background: var(--bg-tertiary);
+            border-radius: 8px;
+            border: 1px solid var(--border);
+            transition: all 0.3s;
+        }
+
+        .milestone:hover {
+            border-color: var(--primary);
+            transform: translateX(5px);
+        }
+
+        .milestone.completed {
+            border-color: var(--success);
+            background: rgba(63, 185, 80, 0.1);
+        }
+
+        .milestone-icon {
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            background: var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+
+        .milestone.completed .milestone-icon {
+            background: var(--success);
+            color: white;
+            font-size: 14px;
+        }
+
+        .milestone-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .milestone-name {
+            font-size: 13px;
+            color: var(--text-primary);
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .milestone-description {
+            font-size: 11px;
+            color: var(--text-secondary);
+            line-height: 1.2;
+        }
+
+        .milestone-progress {
+            font-size: 11px;
+            color: var(--text-secondary);
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        /* ===== MODAL WINDOWS ===== */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            animation: fadeIn 0.3s;
+        }
+
+        .modal-content {
+            background: var(--bg-secondary);
+            border: 2px solid var(--border);
+            border-radius: 15px;
+            padding: 30px;
+            max-width: 800px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .coding-modal-content {
+            max-width: 1200px !important;
+            width: 95% !important;
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--border);
+        }
+
+        .modal-title {
+            color: var(--text-primary);
+            font-size: 24px;
+            font-weight: 600;
+        }
+
+        .close-button {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 28px;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+        }
+
+        .close-button:hover {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+        }
+
+        /* Work Modal Improvements */
+        .work-categories {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 12px;
+            margin-bottom: 25px;
+        }
+
+        .category-button {
+            background: var(--bg-tertiary);
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .category-button:hover {
+            border-color: var(--primary);
+            transform: translateY(-3px);
+        }
+
+        .category-button.active {
+            border-color: var(--primary);
+            background: rgba(88, 166, 255, 0.1);
+        }
+
+        .category-icon {
+            font-size: 24px;
+            margin-bottom: 8px;
+        }
+
+        .category-name {
+            font-size: 14px;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+            font-weight: 600;
+        }
+
+        .category-bonus {
+            font-size: 12px;
+            color: var(--text-secondary);
+        }
+
+        .question-container {
+            background: var(--bg-tertiary);
+            border-radius: 10px;
+            padding: 25px;
+            margin-bottom: 20px;
+        }
+
+        .question-text {
+            font-size: 18px;
+            color: var(--text-primary);
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .options-container {
+            display: grid;
+            gap: 10px;
+        }
+
+        .option-button {
+            background: var(--bg-secondary);
+            border: 2px solid var(--border);
+            border-radius: 8px;
+            padding: 15px;
+            color: var(--text-primary);
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 16px;
+        }
+
+        .option-button:hover {
+            border-color: var(--primary);
+            background: rgba(88, 166, 255, 0.05);
+        }
+
+        .option-button.correct {
+            border-color: var(--success);
+            background: rgba(63, 185, 80, 0.1);
+        }
+
+        .option-button.incorrect {
+            border-color: var(--error);
+            background: rgba(218, 54, 51, 0.1);
+        }
+
+        /* Enhanced VS Code Style Coding Modal */
+        .coding-editor-header {
+            background: #252526;
+            padding: 8px 20px;
+            border-radius: 8px 8px 0 0;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid #1e1e1e;
+            margin: -30px -30px 0 -30px;
+        }
+
+        .editor-tab {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: #2d2d2d;
+            padding: 6px 14px;
+            border-radius: 6px 6px 0 0;
+            color: #d4d4d4;
+            font-size: 12px;
+            font-family: 'Segoe UI', sans-serif;
+        }
+
+        .file-icon {
+            width: 16px;
+            height: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .language-badge {
+            background: rgba(88, 166, 255, 0.2);
+            color: var(--primary);
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .coding-task {
+            background: #1e1e1e;
+            border-radius: 0 0 8px 8px;
+            padding: 0;
+            margin: 0 -30px 20px -30px;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            border: none;
+            overflow: hidden;
+        }
+
+        .code-editor {
+            background: #1e1e1e;
+            padding: 15px 0;
+            max-height: 450px;
+            overflow-x: auto;
+            overflow-y: auto;
+            min-height: 200px;
+        }
+
+        .code-line {
+            margin: 0;
+            padding: 4px 0;
+            color: #d4d4d4;
+            font-size: 13px;
+            display: flex;
+            align-items: flex-start;
+            line-height: 19px;
+            position: relative;
+            white-space: nowrap;
+            min-width: fit-content;
+        }
+
+        .code-line:hover {
+            background: rgba(255, 255, 255, 0.03);
+        }
+
+        .line-number {
+            color: #858585;
+            min-width: 45px;
+            text-align: right;
+            padding-right: 15px;
+            padding-left: 15px;
+            font-size: 12px;
+            user-select: none;
+            flex-shrink: 0;
+        }
+
+        .code-content {
+            flex: 1;
+            padding-right: 20px;
+            white-space: pre;
+            min-width: 0;
+            word-wrap: normal;
+            overflow-wrap: normal;
+        }
+
+        /* Syntax highlighting */
+        .keyword { color: #569cd6; font-weight: 500; }
+        .function-name { color: #dcdcaa; }
+        .string { color: #ce9178; }
+        .comment { color: #6a9955; font-style: italic; }
+        .type { color: #4ec9b0; }
+        .number { color: #b5cea8; }
+        .operator { color: #d4d4d4; }
+        .bracket { color: #ffd700; }
+
+        .code-input-section {
+            background: #252526;
+            padding: 20px 30px;
+            margin: 0 -30px;
+            border-top: 1px solid #333;
+        }
+
+        .input-label {
+            color: #858585;
+            font-size: 12px;
+            font-family: 'Segoe UI', sans-serif;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .input-label::before {
+            content: '▶';
+            color: var(--primary);
+            font-size: 10px;
+        }
+
+        .code-input {
+            background: #1e1e1e;
+            border: 1px solid #3c3c3c;
+            border-radius: 4px;
+            padding: 10px 14px;
+            color: #d4d4d4;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 13px;
+            width: 100%;
+            box-sizing: border-box;
+            transition: all 0.2s;
+            line-height: 19px;
+        }
+
+        .code-input:focus {
+            border-color: var(--primary);
+            outline: none;
+            background: #252526;
+            box-shadow: 0 0 0 1px var(--primary);
+        }
+        
+        .code-input:hover {
+            border-color: #555;
+        }
+
+        .code-hint {
+            color: #858585;
+            font-size: 12px;
+            margin-top: 12px;
+            font-style: normal;
+            background: rgba(88, 166, 255, 0.1);
+            padding: 12px 16px;
+            border-radius: 6px;
+            border-left: 3px solid var(--primary);
+            font-family: 'Segoe UI', sans-serif;
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+        }
+
+        .code-hint::before {
+            content: '💡';
+            font-style: normal;
+            flex-shrink: 0;
+        }
+
+        .submit-button {
+            background: linear-gradient(135deg, #4caf50, #45a049);
+            color: white;
+            border: none;
+            padding: 14px 30px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.3s;
+            margin: 20px -30px -30px -30px;
+            width: calc(100% + 60px);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-family: 'Segoe UI', sans-serif;
+            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+        }
+
+        .submit-button:hover {
+            background: linear-gradient(135deg, #45a049, #3d8b40);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(76, 175, 80, 0.4);
+        }
+
+        .submit-button:active {
+            transform: translateY(0);
+        }
+
+        /* Custom scrollbar for code editor */
+        .code-editor::-webkit-scrollbar {
+            width: 10px;
+            height: 10px;
+        }
+
+        .code-editor::-webkit-scrollbar-track {
+            background: #1e1e1e;
+        }
+
+        .code-editor::-webkit-scrollbar-thumb {
+            background: #424242;
+            border-radius: 5px;
+        }
+
+        .code-editor::-webkit-scrollbar-thumb:hover {
+            background: #4e4e4e;
+        }
+
+        .code-editor::-webkit-scrollbar-corner {
+            background: #1e1e1e;
+        }
+
+        /* Rest Modal */
+        .rest-options {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 15px;
+        }
+
+        .rest-option {
+            background: var(--bg-tertiary);
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .rest-option:hover {
+            border-color: var(--primary);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .rest-icon {
+            font-size: 32px;
+        }
+
+        .rest-name {
+            font-size: 16px;
+            color: var(--text-primary);
+            font-weight: 600;
+        }
+
+        .rest-description {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+
+        .rest-cost {
+            font-size: 14px;
+            color: var(--gold);
+            font-weight: 600;
+        }
+
+        /* ===== NOTIFICATION SYSTEM ===== */
+        .notification-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 3000;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-width: 400px;
+        }
+
+        .notification {
+            background: var(--bg-secondary);
+            border-left: 5px solid var(--primary);
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+            transform: translateX(400px);
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+        }
+
+        .notification.show {
+            transform: translateX(0);
+        }
+
+        .notification.success { border-left-color: var(--success); }
+        .notification.error { border-left-color: var(--error); }
+        .notification.warning { border-left-color: var(--warning); }
+        .notification.info { border-left-color: var(--primary); }
+
+        .notification-icon {
+            font-size: 24px;
+            flex-shrink: 0;
+        }
+
+        .notification-content {
+            flex: 1;
+        }
+
+        .notification-title {
+            font-size: 16px;
+            color: var(--text-primary);
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .notification-message {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+
+        .notification-close {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 18px;
+            flex-shrink: 0;
+        }
+
+        /* ===== ACHIEVEMENTS ===== */
+        .achievements-panel {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .achievements-button {
+            background: var(--bg-secondary);
+            border: 2px solid var(--border);
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 24px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .achievements-button:hover {
+            border-color: var(--gold);
+            transform: scale(1.1);
+        }
+
+        .achievements-button:active {
+            transform: scale(0.95);
+        }
+
+        /* Combo display */
+        .combo-display {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            z-index: 5000;
+            pointer-events: none;
+            display: none;
+        }
+
+        .combo-text {
+            font-size: 72px;
+            font-weight: 800;
+            background: linear-gradient(45deg, #ff6b6b, #ffd93d, #6bff6b, #6bb0ff);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 30px rgba(255, 255, 255, 0.5);
+            animation: comboAppear 1s ease-out;
+        }
+
+        @keyframes comboAppear {
+            0% { transform: scale(0) rotate(-180deg); opacity: 0; }
+            50% { transform: scale(1.2) rotate(10deg); opacity: 1; }
+            100% { transform: scale(1) rotate(0deg); opacity: 0; }
+        }
+
+        .achievements-modal {
+            display: none;
+        }
+
+        .achievements-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .achievement-card {
+            background: var(--bg-tertiary);
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .achievement-card.unlocked {
+            border-color: var(--gold);
+            background: rgba(227, 179, 65, 0.1);
+        }
+
+        .achievement-icon {
+            font-size: 32px;
+            margin-bottom: 10px;
+            color: var(--gold);
+        }
+
+        .achievement-name {
+            font-size: 16px;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .achievement-description {
+            font-size: 14px;
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+
+        /* ===== ANIMATIONS ===== */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes slideUp {
+            from { 
+                transform: translateY(20px); 
+                opacity: 0; 
+            }
+            to { 
+                transform: translateY(0); 
+                opacity: 1; 
+            }
+        }
+
+        .achievement-notification {
+            background: linear-gradient(135deg, #1a1f2e 0%, #2d1810 100%) !important;
+            border-left: 5px solid #e3b341 !important;
+            box-shadow: 0 10px 40px rgba(227, 179, 65, 0.3) !important;
+            animation: achievementPop 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        @keyframes achievementPop {
+            0% { transform: translateX(400px) scale(0.8); opacity: 0; }
+            50% { transform: translateX(-20px) scale(1.05); }
+            100% { transform: translateX(0) scale(1); opacity: 1; }
+        }
+
+        /* ===== RESPONSIVE DESIGN ===== */
+        @media (max-width: 1400px) {
+            .game-content {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 1200px) {
+            .characters-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .work-categories {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .game-header {
+                flex-wrap: wrap;
+                gap: 15px;
+            }
+            
+            .os-progress-display {
+                flex: 1 1 100%;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .game-title {
+                font-size: 36px;
+            }
+            
+            .characters-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .game-header {
+                grid-template-columns: 1fr;
+                gap: 15px;
+                text-align: center;
+            }
+            
+            .work-categories {
+                grid-template-columns: 1fr;
+            }
+            
+            .rest-options {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Enhanced Loading Screen -->
+    <div class="loading-screen" id="loadingScreen">
+        <div class="loading-title">OS TYCOON</div>
+        <div class="loading-container">
+            <div class="loading-text" id="loadingText">Initializing kernel modules...</div>
+            <div class="loading-bar-container">
+                <div class="loading-bar" id="loadingBar"></div>
+            </div>
+            <div class="loading-details">
+                <span>Loading core systems</span>
+                <span id="loadingPercent">0%</span>
+            </div>
+        </div>
+        <div class="loading-animation">💻</div>
+    </div>
+
+    <!-- Character Selection Screen -->
+    <div class="character-selection" id="characterSelection">
+        <h1 class="game-title">OS TYCOON</h1>
+        <div class="game-subtitle">Build Your Operating System from Scratch • Master IT & Economics • Become a Coding Legend</div>
+        
+        <div class="characters-grid">
+            <!-- Tobias Horvart - Databases -->
+            <div class="character-card" data-character="tobias">
+                <div class="character-pixel tobias"></div>
+                <div class="character-name">Tobias Horvart</div>
+                <div class="character-bonus">Database Architect • +20% Database Earnings</div>
+                <div class="character-stats">
+                    <div class="stat-tag">SQL: 95</div>
+                    <div class="stat-tag">NoSQL: 85</div>
+                    <div class="stat-tag">OPTIM: 90</div>
+                    <div class="stat-tag">BACKUP: 80</div>
+                </div>
+            </div>
+            
+            <!-- Vojtech Aloy - Networks -->
+            <div class="character-card" data-character="vojtech">
+                <div class="character-pixel vojtech"></div>
+                <div class="character-name">Vojtech Aloy</div>
+                <div class="character-bonus">Network Specialist • +20% Network Earnings</div>
+                <div class="character-stats">
+                    <div class="stat-tag">TCP/IP: 90</div>
+                    <div class="stat-tag">SECURITY: 85</div>
+                    <div class="stat-tag">ROUTING: 88</div>
+                    <div class="stat-tag">PROTO: 87</div>
+                </div>
+            </div>
+            
+            <!-- Hynek Schiffner - Hardware -->
+            <div class="character-card" data-character="hynek">
+                <div class="character-pixel hynek"></div>
+                <div class="character-name">Hynek Schiffner</div>
+                <div class="character-bonus">Hardware Engineer • +20% Hardware Earnings</div>
+                <div class="character-stats">
+                    <div class="stat-tag">CPU: 92</div>
+                    <div class="stat-tag">MEMORY: 88</div>
+                    <div class="stat-tag">IO: 85</div>
+                    <div class="stat-tag">ARCH: 90</div>
+                </div>
+            </div>
+            
+            <!-- Adam Hojer - Programming -->
+            <div class="character-card" data-character="adam">
+                <div class="character-pixel adam"></div>
+                <div class="character-name">Adam Hojer</div>
+                <div class="character-bonus">Programming Guru • +50% Coding Progress</div>
+                <div class="character-stats">
+                    <div class="stat-tag">C/C++: 95</div>
+                    <div class="stat-tag">ALGO: 92</div>
+                    <div class="stat-tag">DEBUG: 88</div>
+                    <div class="stat-tag">OPTIM: 90</div>
+                </div>
+            </div>
+        </div>
+        
+        <button class="start-button" id="startButton">LAUNCH DEVELOPMENT</button>
+    </div>
+
+    <!-- Improved Game Interface -->
+    <div class="game-container" id="gameContainer">
+        <div class="game-interface" id="gameInterface">
+            <!-- Top Header -->
+            <div class="game-header">
+                <div class="character-info">
+                    <div class="character-display" id="currentCharacterDisplay"></div>
+                    <div class="character-details">
+                        <h2 id="characterName">Select Character</h2>
+                        <div class="character-class" id="characterClass">Developer</div>
+                    </div>
+                </div>
+                
+                <div class="money-display">
+                    <div class="money-label">💰</div>
+                    <div class="money-amount">$<span id="money">0</span></div>
+                </div>
+                
+                <div class="os-progress-display">
+                    <div class="os-progress-text">OS Progress:</div>
+                    <div class="os-progress-bar">
+                        <div class="os-progress-fill" id="osProgressBar"></div>
+                    </div>
+                    <div class="os-progress-text" id="osProgressText">0%</div>
+                </div>
+            </div>
+
+            <!-- Main Content -->
+            <div class="game-content">
+                <!-- Left Panel - Stats -->
+                <div class="stats-panel">
+                    <h3>VITAL STATISTICS</h3>
+                    <div class="stats-grid">
+                        <div class="stat-item health">
+                            <div class="stat-icon">❤️</div>
+                            <div class="stat-info">
+                                <div class="stat-name">HEALTH</div>
+                                <div class="stat-bar">
+                                    <div class="stat-fill" id="healthBar" style="width: 100%"></div>
+                                </div>
+                            </div>
+                            <div class="stat-value" id="healthValue">100%</div>
+                        </div>
+                        
+                        <div class="stat-item hunger">
+                            <div class="stat-icon">🍗</div>
+                            <div class="stat-info">
+                                <div class="stat-name">HUNGER</div>
+                                <div class="stat-bar">
+                                    <div class="stat-fill" id="hungerBar" style="width: 100%"></div>
+                                </div>
+                            </div>
+                            <div class="stat-value" id="hungerValue">100%</div>
+                        </div>
+                        
+                        <div class="stat-item thirst">
+                            <div class="stat-icon">💧</div>
+                            <div class="stat-info">
+                                <div class="stat-name">THIRST</div>
+                                <div class="stat-bar">
+                                    <div class="stat-fill" id="thirstBar" style="width: 100%"></div>
+                                </div>
+                            </div>
+                            <div class="stat-value" id="thirstValue">100%</div>
+                        </div>
+                        
+                        <div class="stat-item energy">
+                            <div class="stat-icon">⚡</div>
+                            <div class="stat-info">
+                                <div class="stat-name">ENERGY</div>
+                                <div class="stat-bar">
+                                    <div class="stat-fill" id="energyBar" style="width: 100%"></div>
+                                </div>
+                            </div>
+                            <div class="stat-value" id="energyValue">100%</div>
+                        </div>
+                        
+                        <div class="stat-item mood">
+                            <div class="stat-icon">😊</div>
+                            <div class="stat-info">
+                                <div class="stat-name">MOOD</div>
+                                <div class="stat-bar">
+                                    <div class="stat-fill" id="moodBar" style="width: 100%"></div>
+                                </div>
+                            </div>
+                            <div class="stat-value" id="moodValue">100%</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Middle Panel - Actions -->
+                <div class="actions-panel">
+                    <h3>Actions</h3>
+                    <div class="actions-grid">
+                        <button class="action-button" id="workButton">
+                            <div class="action-icon">💼</div>
+                            <div class="action-name">FREELANCE WORK</div>
+                            <div class="action-description">Answer questions to earn money</div>
+                        </button>
+                        
+                        <button class="action-button" id="codeButton">
+                            <div class="action-icon">💻</div>
+                            <div class="action-name">DEVELOP OS</div>
+                            <div class="action-description">Write code to build your system</div>
+                        </button>
+                        
+                        <button class="action-button" id="restButton">
+                            <div class="action-icon">😴</div>
+                            <div class="action-name">REST & RECOVER</div>
+                            <div class="action-description">Manage your basic needs</div>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Right Panel - OS Progress -->
+                <div class="os-panel">
+                    <h3>OS DEVELOPMENT ROADMAP</h3>
+                    <div class="os-milestones" id="osMilestones">
+                        <div class="milestone" id="milestone-kernel">
+                            <div class="milestone-icon">1</div>
+                            <div class="milestone-info">
+                                <div class="milestone-name">Kernel Development</div>
+                                <div class="milestone-description">Core system operations</div>
+                            </div>
+                            <div class="milestone-progress">0%</div>
+                        </div>
+                        
+                        <div class="milestone" id="milestone-memory">
+                            <div class="milestone-icon">2</div>
+                            <div class="milestone-info">
+                                <div class="milestone-name">Memory Management</div>
+                                <div class="milestone-description">RAM allocation and paging</div>
+                            </div>
+                            <div class="milestone-progress">0%</div>
+                        </div>
+                        
+                        <div class="milestone" id="milestone-filesystem">
+                            <div class="milestone-icon">3</div>
+                            <div class="milestone-info">
+                                <div class="milestone-name">File System</div>
+                                <div class="milestone-description">Storage and data management</div>
+                            </div>
+                            <div class="milestone-progress">0%</div>
+                        </div>
+                        
+                        <div class="milestone" id="milestone-drivers">
+                            <div class="milestone-icon">4</div>
+                            <div class="milestone-info">
+                                <div class="milestone-name">Device Drivers</div>
+                                <div class="milestone-description">Hardware communication</div>
+                            </div>
+                            <div class="milestone-progress">0%</div>
+                        </div>
+                        
+                        <div class="milestone" id="milestone-network">
+                            <div class="milestone-icon">5</div>
+                            <div class="milestone-info">
+                                <div class="milestone-name">Networking Stack</div>
+                                <div class="milestone-description">Internet and local connectivity</div>
+                            </div>
+                            <div class="milestone-progress">0%</div>
+                        </div>
+                        
+                        <div class="milestone" id="milestone-ui">
+                            <div class="milestone-icon">6</div>
+                            <div class="milestone-info">
+                                <div class="milestone-name">User Interface</div>
+                                <div class="milestone-description">GUI and user experience</div>
+                            </div>
+                            <div class="milestone-progress">0%</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Work Modal -->
+    <div class="modal" id="workModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Freelance Development Work</h2>
+                <button class="close-button" id="closeWorkModal">&times;</button>
+            </div>
+            
+            <div class="work-categories">
+                <div class="category-button active" data-category="databases">
+                    <div class="category-icon">🗄️</div>
+                    <div class="category-name">Databases</div>
+                    <div class="category-bonus" id="databasesBonus">+$15-25</div>
+                </div>
+                <div class="category-button" data-category="networks">
+                    <div class="category-icon">🌐</div>
+                    <div class="category-name">Networks</div>
+                    <div class="category-bonus" id="networksBonus">+$15-25</div>
+                </div>
+                <div class="category-button" data-category="hardware">
+                    <div class="category-icon">🔧</div>
+                    <div class="category-name">Hardware</div>
+                    <div class="category-bonus" id="hardwareBonus">+$15-25</div>
+                </div>
+                <div class="category-button" data-category="economics">
+                    <div class="category-icon">📈</div>
+                    <div class="category-name">Economics</div>
+                    <div class="category-bonus" id="economicsBonus">+$15-25</div>
+                </div>
+            </div>
+            
+            <div class="question-container">
+                <div class="question-text" id="questionText">Select a category to start working...</div>
+                <div class="options-container" id="optionsContainer"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Coding Modal -->
+    <div class="modal" id="codingModal">
+        <div class="modal-content coding-modal-content">
+            <div class="modal-header" style="border-bottom: none; padding-bottom: 0;">
+                <h2 class="modal-title">💻 OS Development - Code Editor</h2>
+                <button class="close-button" id="closeCodingModal">&times;</button>
+            </div>
+            
+            <div class="coding-container">
+                <!-- VS Code Style Editor Header -->
+                <div class="coding-editor-header">
+                    <div class="editor-tab">
+                        <div class="file-icon">📄</div>
+                        <span id="fileName">main.c</span>
+                        <div class="language-badge" id="languageBadge">C</div>
+                    </div>
+                </div>
+                
+                <!-- Code Editor Area -->
+                <div class="coding-task" id="codingTask">
+                    <div class="code-editor" id="codeEditor">
+                        <!-- Code will be inserted here by JavaScript -->
+                    </div>
+                </div>
+                
+                <!-- Input Section -->
+                <div class="code-input-section">
+                    <div class="input-label">Complete the missing line of code:</div>
+                    <input type="text" class="code-input" id="codeInput" placeholder="Type your code here..." autocomplete="off" spellcheck="false">
+                    
+                    <div class="code-hint" id="codeHint">
+                        <span id="hintText">Hint: Complete the code above</span>
+                    </div>
+                </div>
+                
+                <button class="submit-button" id="submitCode">▶ Compile & Run</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rest Modal -->
+    <div class="modal" id="restModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Rest & Recovery</h2>
+                <button class="close-button" id="closeRestModal">&times;</button>
+            </div>
+            
+            <div class="rest-options">
+                <div class="rest-option" data-action="sleep">
+                    <div class="rest-icon">😴</div>
+                    <div class="rest-name">Sleep</div>
+                    <div class="rest-description">Rest and recover energy</div>
+                    <div class="rest-cost">+50 Energy</div>
+                </div>
+                
+                <div class="rest-option" data-action="eat">
+                    <div class="rest-icon">🍗</div>
+                    <div class="rest-name">Eat Food</div>
+                    <div class="rest-description">Satisfy your hunger</div>
+                    <div class="rest-cost">-$25 • +40 Hunger</div>
+                </div>
+                
+                <div class="rest-option" data-action="drink">
+                    <div class="rest-icon">💧</div>
+                    <div class="rest-name">Drink Water</div>
+                    <div class="rest-description">Quench your thirst</div>
+                    <div class="rest-cost">-$15 • +30 Thirst</div>
+                </div>
+                
+                <div class="rest-option" data-action="walk">
+                    <div class="rest-icon">🚶</div>
+                    <div class="rest-name">Take a Walk</div>
+                    <div class="rest-description">Clear your mind and improve mood</div>
+                    <div class="rest-cost">+25 Mood • -10 Energy</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Achievements Panel -->
+    <div class="achievements-panel">
+        <div class="achievements-button" id="achievementsButton" style="margin-bottom: 10px;">🏆</div>
+        <div class="achievements-button" id="resetButton" style="background: var(--error); border-color: var(--error);">🔄</div>
+    </div>
+
+    <!-- Achievements Modal -->
+    <div class="modal achievements-modal" id="achievementsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Achievements</h2>
+                <button class="close-button" id="closeAchievementsModal">&times;</button>
+            </div>
+            
+            <div class="achievements-grid" id="achievementsGrid">
+                <!-- Achievements will be dynamically added here -->
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Container -->
+    <div class="notification-container" id="notificationContainer">
+        <!-- Notifications will be dynamically added here -->
+    </div>
+
+    <!-- Combo Display -->
+    <div class="combo-display" id="comboDisplay">
+        <div class="combo-text" id="comboText"></div>
+    </div>
+
+    <script>
+        // ===== ENHANCED GAME ENGINE =====
+        class OSTycoonGame {
+            constructor() {
+                this.gameState = {
+                    character: null,
+                    money: 0,
+                    health: 100,
+                    hunger: 100,
+                    thirst: 100,
+                    energy: 100,
+                    mood: 100,
+                    osProgress: 0,
+                    gameTime: 0,
+                    selectedCharacter: null,
+                    achievements: [],
+                    completedQuestions: 0,
+                    correctAnswers: 0,
+                    codingTasksCompleted: 0,
+                    correctStreak: 0,
+                    milestones: {
+                        kernel: 0,
+                        memory: 0,
+                        filesystem: 0,
+                        drivers: 0,
+                        network: 0,
+                        ui: 0
+                    }
+                };
+
+                this.warningShownHunger = false;
+                this.warningShownThirst = false;
+
+                this.questions = this.initializeQuestions();
+                this.codingTasks = this.initializeCodingTasks();
+                this.achievements = this.initializeAchievements();
+                this.currentQuestion = null;
+                this.currentCodingTask = null;
+                this.currentCategory = 'databases';
+                this.gameInterval = null;
+                this.notificationId = 0;
+                
+                this.initializeGame();
+            }
+
+            initializeGame() {
+                this.setupEventListeners();
+                this.showEnhancedLoadingScreen();
+            }
+
+            saveGameState() {
+                try {
+                    localStorage.setItem('ostycoon_save', JSON.stringify(this.gameState));
+                } catch (e) {
+                    console.error('Failed to save game:', e);
+                }
+            }
+
+            loadGameState() {
+                try {
+                    const saved = localStorage.getItem('ostycoon_save');
+                    if (saved) {
+                        const data = JSON.parse(saved);
+                        if (data.osProgress < 100) {
+                            Object.assign(this.gameState, data);
+                        }
+                    }
+                } catch (e) {
+                    console.error('Failed to load game:', e);
+                }
+            }
+
+            resetGame() {
+                if (confirm('Are you sure you want to reset all progress?')) {
+                    localStorage.removeItem('ostycoon_save');
+                    location.reload();
+                }
+            }
+
+            showEnhancedLoadingScreen() {
+                const loadingBar = document.getElementById('loadingBar');
+                const loadingText = document.getElementById('loadingText');
+                const loadingPercent = document.getElementById('loadingPercent');
+                
+                const steps = [
+                    { text: 'Initializing kernel modules...', duration: 800 },
+                    { text: 'Loading memory management...', duration: 700 },
+                    { text: 'Setting up file systems...', duration: 900 },
+                    { text: 'Configuring network stack...', duration: 600 },
+                    { text: 'Compiling device drivers...', duration: 850 },
+                    { text: 'Initializing user interface...', duration: 750 },
+                    { text: 'Starting development environment...', duration: 500 }
+                ];
+
+                let progress = 0;
+                let currentStep = 0;
+
+                const loadStep = () => {
+                    if (currentStep < steps.length) {
+                        const step = steps[currentStep];
+                        loadingText.textContent = step.text;
+                        
+                        const interval = setInterval(() => {
+                            progress += Math.random() * 5;
+                            if (progress >= ((currentStep + 1) * (100 / steps.length))) {
+                                progress = ((currentStep + 1) * (100 / steps.length));
+                                clearInterval(interval);
+                                currentStep++;
+                                setTimeout(loadStep, 100);
+                            }
+                            
+                            loadingBar.style.width = `${progress}%`;
+                            loadingPercent.textContent = `${Math.floor(progress)}%`;
+                        }, step.duration / 30);
+                    } else {
+                        loadingBar.style.width = '100%';
+                        loadingPercent.textContent = '100%';
+                        loadingText.textContent = 'Ready to develop!';
+                        
+                        setTimeout(() => {
+                            document.getElementById('loadingScreen').style.display = 'none';
+                            document.getElementById('characterSelection').style.display = 'flex';
+                        }, 1000);
+                    }
+                };
+
+                loadStep();
+            }
+
+            setupEventListeners() {
+                // Character selection
+                document.querySelectorAll('.character-card').forEach(card => {
+                    card.addEventListener('click', () => this.selectCharacter(card));
+                });
+
+                document.getElementById('startButton').addEventListener('click', () => this.startGame());
+
+                // Action buttons
+                document.getElementById('workButton').addEventListener('click', () => this.showWorkModal());
+                document.getElementById('codeButton').addEventListener('click', () => this.showCodingModal());
+                document.getElementById('restButton').addEventListener('click', () => this.showRestModal());
+
+                // Modal close buttons
+                document.getElementById('closeWorkModal').addEventListener('click', () => this.closeModal('workModal'));
+                document.getElementById('closeCodingModal').addEventListener('click', () => this.closeModal('codingModal'));
+                document.getElementById('closeRestModal').addEventListener('click', () => this.closeModal('restModal'));
+                document.getElementById('closeAchievementsModal').addEventListener('click', () => this.closeModal('achievementsModal'));
+
+                // Work category selection
+                document.querySelectorAll('.category-button').forEach(button => {
+                    button.addEventListener('click', () => this.selectCategory(button));
+                });
+
+                // Rest actions
+                document.querySelectorAll('.rest-option').forEach(option => {
+                    option.addEventListener('click', () => this.handleRestAction(option.dataset.action));
+                });
+
+                // Code submission
+                document.getElementById('submitCode').addEventListener('click', () => this.submitCode());
+                document.getElementById('codeInput').addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') this.submitCode();
+                });
+
+                // Achievements
+                document.getElementById('achievementsButton').addEventListener('click', () => this.showAchievementsModal());
+
+                // Reset button
+                document.getElementById('resetButton').addEventListener('click', () => this.resetGame());
+
+                // Close modals on outside click
+                document.querySelectorAll('.modal').forEach(modal => {
+                    modal.addEventListener('click', (e) => {
+                        if (e.target === modal) this.closeModal(modal.id);
+                    });
+                });
+            }
+
+            selectCharacter(card) {
+                document.querySelectorAll('.character-card').forEach(c => c.classList.remove('selected'));
+                card.classList.add('selected');
+                this.gameState.selectedCharacter = card.dataset.character;
+            }
+
+            startGame() {
+                if (!this.gameState.selectedCharacter) {
+                    this.showNotification('Please select a character first!', 'error');
+                    return;
+                }
+
+                this.gameState.character = this.gameState.selectedCharacter;
+                this.gameState.money = 0; // Начальный баланс 0$
+                document.getElementById('characterSelection').style.display = 'none';
+                document.getElementById('gameContainer').style.display = 'block';
+                document.getElementById('gameInterface').style.display = 'flex';
+
+                this.updateUI();
+                this.startGameLoop();
+
+                this.showNotification(`Welcome, ${this.getCharacterName()}! Begin your OS development journey.`, 'success');
+            }
+
+            startGameLoop() {
+                this.gameInterval = setInterval(() => {
+                    this.decreaseStats();
+                    this.checkAchievements();
+                    this.gameState.gameTime++;
+                    
+                    // Автосохранение каждые 15 секунд
+                    if (this.gameState.gameTime % 5 === 0) {
+                        this.saveGameState();
+                    }
+                }, 3000);
+            }
+
+            decreaseStats() {
+                // Более сбалансированное падение статов
+                this.gameState.hunger = Math.max(0, this.gameState.hunger - 0.4);
+                this.gameState.thirst = Math.max(0, this.gameState.thirst - 0.6);
+                this.gameState.energy = Math.max(0, this.gameState.energy - 0.25);
+                this.gameState.mood = Math.max(0, this.gameState.mood - 0.15);
+
+                // Health penalties for critical needs
+                if (this.gameState.hunger < 20 || this.gameState.thirst < 20) {
+                    this.gameState.health = Math.max(0, this.gameState.health - 0.3);
+                    this.showWarningIfNeeded();
+                }
+
+                if (this.gameState.energy < 10) {
+                    this.gameState.mood = Math.max(0, this.gameState.mood - 0.5);
+                }
+
+                // Update milestone progress based on OS progress
+                this.updateMilestones();
+
+                // Game over condition
+                if (this.gameState.health <= 0) {
+                    this.gameOver();
+                }
+
+                this.updateUI();
+            }
+
+            showWarningIfNeeded() {
+                if (this.gameState.hunger < 15 && !this.warningShownHunger) {
+                    this.showNotification('⚠️ Critical hunger level! Your health is decreasing!', 'warning');
+                    this.warningShownHunger = true;
+                    setTimeout(() => this.warningShownHunger = false, 30000);
+                }
+                if (this.gameState.thirst < 15 && !this.warningShownThirst) {
+                    this.showNotification('⚠️ Critical thirst level! Your health is decreasing!', 'warning');
+                    this.warningShownThirst = true;
+                    setTimeout(() => this.warningShownThirst = false, 30000);
+                }
+            }
+
+            showCombo(streak) {
+                if (streak < 5) return;
+                
+                const comboDisplay = document.getElementById('comboDisplay');
+                const comboText = document.getElementById('comboText');
+                
+                let message = '';
+                if (streak === 5) message = '🔥 COMBO x5!';
+                else if (streak === 10) message = '🔥🔥 AMAZING x10!';
+                else if (streak === 15) message = '🔥🔥🔥 LEGENDARY x15!';
+                else if (streak >= 20) message = `🔥🔥🔥🔥 GODLIKE x${streak}!`;
+                else message = `🔥 COMBO x${streak}!`;
+                
+                comboText.textContent = message;
+                comboDisplay.style.display = 'block';
+                
+                setTimeout(() => {
+                    comboDisplay.style.display = 'none';
+                }, 1000);
+            }
+
+            updateMilestones() {
+                const totalProgress = this.gameState.osProgress;
+                const milestones = this.gameState.milestones;
+                
+                // Более реалистичное распределение прогресса по этапам
+                if (totalProgress < 20) {
+                    // Начальная фаза - Kernel
+                    milestones.kernel = Math.min(100, totalProgress * 5);
+                } else if (totalProgress < 35) {
+                    milestones.kernel = 100;
+                    milestones.memory = Math.min(100, (totalProgress - 20) * 6.67);
+                } else if (totalProgress < 50) {
+                    milestones.kernel = 100;
+                    milestones.memory = 100;
+                    milestones.filesystem = Math.min(100, (totalProgress - 35) * 6.67);
+                } else if (totalProgress < 65) {
+                    milestones.kernel = 100;
+                    milestones.memory = 100;
+                    milestones.filesystem = 100;
+                    milestones.drivers = Math.min(100, (totalProgress - 50) * 6.67);
+                } else if (totalProgress < 85) {
+                    milestones.kernel = 100;
+                    milestones.memory = 100;
+                    milestones.filesystem = 100;
+                    milestones.drivers = 100;
+                    milestones.network = Math.min(100, (totalProgress - 65) * 5);
+                } else {
+                    milestones.kernel = 100;
+                    milestones.memory = 100;
+                    milestones.filesystem = 100;
+                    milestones.drivers = 100;
+                    milestones.network = 100;
+                    milestones.ui = Math.min(100, (totalProgress - 85) * 6.67);
+                }
+
+                // Update UI
+                Object.keys(milestones).forEach(milestone => {
+                    const element = document.getElementById(`milestone-${milestone}`);
+                    if (element) {
+                        const progress = milestones[milestone];
+                        const progressElement = element.querySelector('.milestone-progress');
+                        if (progressElement) progressElement.textContent = `${Math.floor(progress)}%`;
+                        
+                        if (progress >= 100 && !element.classList.contains('completed')) {
+                            element.classList.add('completed');
+                            element.querySelector('.milestone-icon').textContent = '✓';
+                            this.showNotification(`✅ Milestone Complete: ${this.getMilestoneName(milestone)}`, 'success');
+                        }
+                    }
+                });
+            }
+
+            getMilestoneName(milestone) {
+                const names = {
+                    kernel: 'Kernel Development',
+                    memory: 'Memory Management',
+                    filesystem: 'File System',
+                    drivers: 'Device Drivers',
+                    network: 'Networking Stack',
+                    ui: 'User Interface'
+                };
+                return names[milestone] || milestone;
+            }
+
+            gameOver() {
+                clearInterval(this.gameInterval);
+                this.showNotification('Game Over! Your health reached zero. Refresh to restart.', 'error');
+                document.querySelectorAll('.action-button').forEach(btn => btn.disabled = true);
+            }
+
+            updateUI() {
+                // Update money
+                document.getElementById('money').textContent = Math.floor(this.gameState.money);
+
+                // Update progress bars
+                this.updateProgressBar('health', this.gameState.health);
+                this.updateProgressBar('hunger', this.gameState.hunger);
+                this.updateProgressBar('thirst', this.gameState.thirst);
+                this.updateProgressBar('energy', this.gameState.energy);
+                this.updateProgressBar('mood', this.gameState.mood);
+
+                // Update OS progress
+                document.getElementById('osProgressText').textContent = `${Math.floor(this.gameState.osProgress)}% COMPLETE`;
+                document.getElementById('osProgressBar').style.width = `${this.gameState.osProgress}%`;
+
+                // Update character display
+                if (this.gameState.character) {
+                    document.getElementById('currentCharacterDisplay').className = `character-display ${this.gameState.character}`;
+                    document.getElementById('characterName').textContent = this.getCharacterName();
+                    document.getElementById('characterClass').textContent = this.getCharacterClass();
+                }
+
+                // Update action button states
+                document.getElementById('workButton').disabled = this.gameState.energy < 10;
+                document.getElementById('codeButton').disabled = this.gameState.energy < 15;
+            }
+
+            updateProgressBar(stat, value) {
+                const bar = document.getElementById(`${stat}Bar`);
+                const valueElement = document.getElementById(`${stat}Value`);
+                
+                if (bar) bar.style.width = `${value}%`;
+                if (valueElement) valueElement.textContent = `${Math.floor(value)}%`;
+            }
+
+            showWorkModal() {
+                if (this.gameState.energy < 10) {
+                    this.showNotification("Too tired to work! Get some rest.", 'error');
+                    return;
+                }
+
+                this.currentCategory = 'databases';
+                this.updateCategoryBonuses();
+                this.loadRandomQuestion();
+                this.showModal('workModal');
+
+                // Deduct energy for working
+                this.gameState.energy = Math.max(0, this.gameState.energy - 8);
+                this.updateUI();
+            }
+
+            updateCategoryBonuses() {
+                const baseBonus = '+$10-20';
+                const boostedBonus = '+$12-24'; // +20% бонус
+                
+                const bonuses = {
+                    databases: this.gameState.character === 'tobias' ? boostedBonus : baseBonus,
+                    networks: this.gameState.character === 'vojtech' ? boostedBonus : baseBonus,
+                    hardware: this.gameState.character === 'hynek' ? boostedBonus : baseBonus,
+                    economics: baseBonus // No specific character bonus for economics
+                };
+
+                document.getElementById('databasesBonus').textContent = bonuses.databases;
+                document.getElementById('networksBonus').textContent = bonuses.networks;
+                document.getElementById('hardwareBonus').textContent = bonuses.hardware;
+                document.getElementById('economicsBonus').textContent = bonuses.economics;
+            }
+
+            selectCategory(button) {
+                document.querySelectorAll('.category-button').forEach(btn => btn.classList.remove('active'));
+                button.classList.add('active');
+                this.currentCategory = button.dataset.category;
+                this.loadRandomQuestion();
+            }
+
+            loadRandomQuestion() {
+                const categoryQuestions = this.questions[this.currentCategory];
+                if (!categoryQuestions || categoryQuestions.length === 0) return;
+
+                this.currentQuestion = categoryQuestions[Math.floor(Math.random() * categoryQuestions.length)];
+                this.displayQuestion(this.currentQuestion);
+            }
+
+            displayQuestion(question) {
+                document.getElementById('questionText').textContent = question.question;
+                const optionsContainer = document.getElementById('optionsContainer');
+                optionsContainer.innerHTML = '';
+
+                question.options.forEach((option, index) => {
+                    const button = document.createElement('button');
+                    button.className = 'option-button';
+                    button.textContent = option;
+                    button.onclick = () => this.handleAnswer(index, question.correct, question.explanation);
+                    optionsContainer.appendChild(button);
+                });
+            }
+
+            handleAnswer(selectedIndex, correctIndex, explanation) {
+                const options = document.querySelectorAll('.option-button');
+                options.forEach(option => option.classList.remove('correct', 'incorrect'));
+
+                this.gameState.completedQuestions++;
+
+                if (selectedIndex === correctIndex) {
+                    options[selectedIndex].classList.add('correct');
+                    this.gameState.correctStreak++;
+                    this.handleCorrectAnswer();
+                    
+                    // Показываем комбо
+                    if (this.gameState.correctStreak >= 5) {
+                        this.showCombo(this.gameState.correctStreak);
+                    }
+                    
+                    let message = `Correct! ${explanation}`;
+                    if (this.gameState.correctStreak >= 5) {
+                        message += ` 🔥 ${this.gameState.correctStreak} streak!`;
+                    }
+                    this.showNotification(message, 'success');
+                } else {
+                    options[selectedIndex].classList.add('incorrect');
+                    options[correctIndex].classList.add('correct');
+                    this.gameState.correctStreak = 0;
+                    this.handleIncorrectAnswer();
+                    this.showNotification(`Incorrect. ${explanation}`, 'error');
+                }
+
+                setTimeout(() => {
+                    this.closeModal('workModal');
+                    this.loadRandomQuestion();
+                }, 2000);
+            }
+
+            handleCorrectAnswer() {
+                let baseEarnings = 10 + Math.floor(Math.random() * 11); // $10-20
+                
+                // Character bonuses +20%
+                if ((this.gameState.character === 'tobias' && this.currentCategory === 'databases') ||
+                    (this.gameState.character === 'vojtech' && this.currentCategory === 'networks') ||
+                    (this.gameState.character === 'hynek' && this.currentCategory === 'hardware')) {
+                    baseEarnings = Math.floor(baseEarnings * 1.2);
+                }
+
+                // Combo bonus!
+                if (this.gameState.correctStreak >= 5) {
+                    const comboMultiplier = 1 + (this.gameState.correctStreak * 0.05);
+                    baseEarnings = Math.floor(baseEarnings * comboMultiplier);
+                }
+
+                this.gameState.money += baseEarnings;
+                this.gameState.correctAnswers++;
+                this.gameState.mood = Math.min(100, this.gameState.mood + 3);
+                // Убрали прогресс ОС за ответы на вопросы!
+            }
+
+            handleIncorrectAnswer() {
+                this.gameState.money = Math.max(0, this.gameState.money - 5);
+                this.gameState.mood = Math.max(0, this.gameState.mood - 5);
+            }
+
+            showCodingModal() {
+                if (this.gameState.energy < 15) {
+                    this.showNotification("Too tired to code! Get some rest.", 'error');
+                    return;
+                }
+
+                // Load random coding task BEFORE showing modal
+                this.loadRandomCodingTask();
+                
+                // Make sure modal is properly displayed
+                this.showModal('codingModal');
+                
+                // Focus on input after a short delay to ensure modal is visible
+                setTimeout(() => {
+                    const codeInput = document.getElementById('codeInput');
+                    if (codeInput) {
+                        codeInput.focus();
+                    }
+                }, 100);
+
+                // Deduct energy for coding
+                this.gameState.energy = Math.max(0, this.gameState.energy - 12);
+                this.updateUI();
+            }
+
+            loadRandomCodingTask() {
+                if (!this.codingTasks || this.codingTasks.length === 0) {
+                    console.error('No coding tasks available!');
+                    this.showNotification('No coding tasks available!', 'error');
+                    return;
+                }
+                
+                this.currentCodingTask = this.codingTasks[Math.floor(Math.random() * this.codingTasks.length)];
+                console.log('Loaded coding task:', this.currentCodingTask);
+                this.displayCodingTask(this.currentCodingTask);
+            }
+
+            displayCodingTask(task) {
+                const codeEditor = document.getElementById('codeEditor');
+                if (!codeEditor) {
+                    console.error('Code editor element not found!');
+                    return;
+                }
+                
+                // Update language badge and file name
+                const languageMap = {
+                    'c': { name: 'C', icon: '📄', file: 'main.c' },
+                    'python': { name: 'Python', icon: '🐍', file: 'script.py' },
+                    'javascript': { name: 'JavaScript', icon: '📜', file: 'app.js' },
+                    'java': { name: 'Java', icon: '☕', file: 'Main.java' },
+                    'asm': { name: 'Assembly', icon: '⚙️', file: 'boot.asm' }
+                };
+                
+                const langInfo = languageMap[task.language] || { name: task.language.toUpperCase(), icon: '📄', file: 'code.txt' };
+                
+                document.getElementById('languageBadge').textContent = langInfo.name;
+                document.getElementById('fileName').textContent = langInfo.file;
+                
+                // Build code with syntax highlighting
+                let htmlContent = '';
+                
+                task.code.forEach((line, index) => {
+                    if (line !== '{{INPUT}}') {
+                        const highlightedLine = this.highlightSyntax(line, task.language);
+                        htmlContent += `
+                            <div class="code-line">
+                                <span class="line-number">${index + 1}</span>
+                                <span class="code-content">${highlightedLine}</span>
+                            </div>
+                        `;
+                    } else {
+                        // Show placeholder for missing line with blinking cursor effect
+                        htmlContent += `
+                            <div class="code-line" style="background: rgba(88, 166, 255, 0.05);">
+                                <span class="line-number" style="color: var(--primary);">${index + 1}</span>
+                                <span class="code-content comment">    // ⟨ Complete this line below ⟩</span>
+                            </div>
+                        `;
+                    }
+                });
+                
+                codeEditor.innerHTML = htmlContent;
+
+                // Update hint
+                const hintElement = document.getElementById('hintText');
+                if (hintElement) {
+                    hintElement.textContent = task.hint;
+                }
+                
+                // Focus on input field
+                setTimeout(() => {
+                    const codeInput = document.getElementById('codeInput');
+                    if (codeInput) {
+                        codeInput.value = '';
+                        codeInput.focus();
+                    }
+                }, 100);
+            }
+
+            highlightSyntax(code, language) {
+                // Escape HTML first
+                let highlighted = code
+                    .replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;');
+                
+                // Comments first (they should not be processed further)
+                highlighted = highlighted.replace(/\/\/(.*)/g, '<span class="comment">//$1</span>');
+                highlighted = highlighted.replace(/#(.*)/g, '<span class="comment">#$1</span>');
+                
+                // Strings (protect them from keyword replacement)
+                const stringPlaceholders = [];
+                highlighted = highlighted.replace(/"([^"]*)"/g, (match) => {
+                    const index = stringPlaceholders.length;
+                    stringPlaceholders.push(`<span class="string">${match}</span>`);
+                    return `__STRING_${index}__`;
+                });
+                highlighted = highlighted.replace(/'([^']*)'/g, (match) => {
+                    const index = stringPlaceholders.length;
+                    stringPlaceholders.push(`<span class="string">${match}</span>`);
+                    return `__STRING_${index}__`;
+                });
+                
+                // Keywords (only if not inside comments or strings)
+                const keywords = ['return', 'if', 'else', 'for', 'while', 'int', 'void', 'char', 'float', 'double', 
+                                'const', 'struct', 'class', 'public', 'private', 'def', 'async', 'await', 'function',
+                                'var', 'let', 'import', 'from', 'include', 'using', 'namespace'];
+                
+                keywords.forEach(keyword => {
+                    const regex = new RegExp(`\\b(${keyword})\\b(?![^<]*<\/span>)`, 'g');
+                    highlighted = highlighted.replace(regex, '<span class="keyword">$1</span>');
+                });
+                
+                // Function calls
+                highlighted = highlighted.replace(/\b([a-zA-Z_][a-zA-Z0-9_]*)\s*\(/g, '<span class="function-name">$1</span>(');
+                
+                // Numbers
+                highlighted = highlighted.replace(/\b(\d+)\b(?![^<]*<\/span>)/g, '<span class="number">$1</span>');
+                
+                // Restore strings
+                stringPlaceholders.forEach((str, index) => {
+                    highlighted = highlighted.replace(`__STRING_${index}__`, str);
+                });
+                
+                return highlighted;
+            }
+
+            submitCode() {
+                const userCode = document.getElementById('codeInput').value.trim();
+                const task = this.currentCodingTask;
+
+                if (!userCode) {
+                    this.showNotification('⚠️ Please enter some code before submitting!', 'warning');
+                    return;
+                }
+
+                // Show compiling animation
+                const submitBtn = document.getElementById('submitCode');
+                const originalText = submitBtn.textContent;
+                submitBtn.textContent = '⏳ Compiling...';
+                submitBtn.disabled = true;
+
+                setTimeout(() => {
+                    // Normalize comparison (case insensitive, ignore extra spaces)
+                    const normalizedUserCode = userCode.toLowerCase().replace(/\s+/g, ' ').trim();
+                    const normalizedSolution = task.solution.toLowerCase().replace(/\s+/g, ' ').trim();
+
+                    if (normalizedUserCode === normalizedSolution) {
+                        submitBtn.textContent = '✓ Success!';
+                        submitBtn.style.background = 'linear-gradient(135deg, #4caf50, #45a049)';
+                        this.handleSuccessfulCode();
+                        this.showNotification(`✓ Compilation successful! ${task.explanation}`, 'success');
+                    } else {
+                        submitBtn.textContent = '✗ Failed';
+                        submitBtn.style.background = 'linear-gradient(135deg, #f44336, #d32f2f)';
+                        this.handleFailedCode();
+                        this.showNotification(`✗ Compilation failed! ${task.explanation}`, 'error');
+                    }
+
+                    setTimeout(() => {
+                        submitBtn.textContent = originalText;
+                        submitBtn.disabled = false;
+                        submitBtn.style.background = '';
+                        this.closeModal('codingModal');
+                    }, 1500);
+                }, 800);
+            }
+
+            handleSuccessfulCode() {
+                let progressIncrease = 3.5; // Base progress
+                
+                // Adam Hojer bonus for programming +50%
+                if (this.gameState.character === 'adam') {
+                    progressIncrease = 5.25; // +50% bonus
+                }
+                
+                this.gameState.osProgress = Math.min(100, this.gameState.osProgress + progressIncrease);
+                this.gameState.money += 10;
+                this.gameState.codingTasksCompleted++;
+                this.gameState.mood = Math.min(100, this.gameState.mood + 5);
+
+                if (this.gameState.osProgress >= 100) {
+                    this.showNotification('🎉 CONGRATULATIONS! You completed your OS! You are the new Linus Torvalds!', 'success');
+                    this.unlockAchievement('os_completed');
+                }
+            }
+
+            handleFailedCode() {
+                this.gameState.mood = Math.max(0, this.gameState.mood - 3);
+            }
+
+            showRestModal() {
+                this.showModal('restModal');
+            }
+
+            handleRestAction(action) {
+                switch (action) {
+                    case 'sleep':
+                        this.gameState.energy = Math.min(100, this.gameState.energy + 50);
+                        this.showNotification('Good sleep! +50 Energy', 'success');
+                        break;
+                        
+                    case 'eat':
+                        if (this.gameState.money >= 25) {
+                            this.gameState.money -= 25;
+                            this.gameState.hunger = Math.min(100, this.gameState.hunger + 40);
+                            this.showNotification('Yum! +40 Hunger, -$25', 'success');
+                        } else {
+                            this.showNotification("Not enough money for food! Need $25", 'error');
+                            return;
+                        }
+                        break;
+                        
+                    case 'drink':
+                        if (this.gameState.money >= 15) {
+                            this.gameState.money -= 15;
+                            this.gameState.thirst = Math.min(100, this.gameState.thirst + 30);
+                            this.showNotification('Refreshing! +30 Thirst, -$15', 'success');
+                        } else {
+                            this.showNotification("Not enough money for drinks! Need $15", 'error');
+                            return;
+                        }
+                        break;
+                        
+                    case 'walk':
+                        if (this.gameState.energy >= 10) {
+                            this.gameState.mood = Math.min(100, this.gameState.mood + 25);
+                            this.gameState.energy = Math.max(0, this.gameState.energy - 10);
+                            this.showNotification('Nice walk! +25 Mood, -10 Energy', 'success');
+                        } else {
+                            this.showNotification("Too tired for a walk!", 'error');
+                            return;
+                        }
+                        break;
+                }
+                
+                this.closeModal('restModal');
+                this.updateUI();
+            }
+
+            showAchievementsModal() {
+                this.updateAchievementsDisplay();
+                this.showModal('achievementsModal');
+            }
+
+            updateAchievementsDisplay() {
+                const grid = document.getElementById('achievementsGrid');
+                grid.innerHTML = '';
+
+                this.achievements.forEach(achievement => {
+                    const card = document.createElement('div');
+                    card.className = `achievement-card ${achievement.unlocked ? 'unlocked' : ''}`;
+                    
+                    card.innerHTML = `
+                        <div class="achievement-icon">${achievement.icon}</div>
+                        <div class="achievement-name">${achievement.name}</div>
+                        <div class="achievement-description">${achievement.description}</div>
+                    `;
+                    
+                    grid.appendChild(card);
+                });
+            }
+
+            checkAchievements() {
+                this.achievements.forEach(achievement => {
+                    if (!achievement.unlocked && achievement.check(this.gameState)) {
+                        this.unlockAchievement(achievement.id);
+                    }
+                });
+            }
+
+            unlockAchievement(achievementId) {
+                const achievement = this.achievements.find(a => a.id === achievementId);
+                if (achievement && !achievement.unlocked) {
+                    achievement.unlocked = true;
+                    this.gameState.achievements.push(achievementId);
+                    
+                    // Специальное уведомление для достижения
+                    const notificationContainer = document.getElementById('notificationContainer');
+                    const notification = document.createElement('div');
+                    notification.className = 'notification success achievement-notification';
+                    notification.style.borderLeft = '5px solid #e3b341';
+                    
+                    notification.innerHTML = `
+                        <div class="notification-icon" style="font-size: 32px;">${achievement.icon}</div>
+                        <div class="notification-content">
+                            <div class="notification-title">🏆 Achievement Unlocked!</div>
+                            <div class="notification-message"><strong>${achievement.name}</strong><br>${achievement.description}</div>
+                        </div>
+                        <button class="notification-close" onclick="this.parentElement.remove()">&times;</button>
+                    `;
+                    
+                    notificationContainer.appendChild(notification);
+                    setTimeout(() => notification.classList.add('show'), 10);
+                    
+                    // Bonus за достижение
+                    this.gameState.money += 50;
+                    this.gameState.mood = Math.min(100, this.gameState.mood + 10);
+                    
+                    setTimeout(() => {
+                        if (notification.parentNode) {
+                            notification.classList.remove('show');
+                            setTimeout(() => notification.remove(), 300);
+                        }
+                    }, 8000);
+                }
+            }
+
+            showModal(modalId) {
+                document.getElementById(modalId).style.display = 'flex';
+            }
+
+            closeModal(modalId) {
+                document.getElementById(modalId).style.display = 'none';
+            }
+
+            showNotification(message, type = 'info') {
+                const notificationContainer = document.getElementById('notificationContainer');
+                const notificationId = ++this.notificationId;
+
+                const notification = document.createElement('div');
+                notification.className = `notification ${type}`;
+                notification.id = `notification-${notificationId}`;
+
+                const icons = {
+                    success: '✅',
+                    error: '❌',
+                    warning: '⚠️',
+                    info: 'ℹ️'
+                };
+
+                notification.innerHTML = `
+                    <div class="notification-icon">${icons[type]}</div>
+                    <div class="notification-content">
+                        <div class="notification-title">${type.charAt(0).toUpperCase() + type.slice(1)}</div>
+                        <div class="notification-message">${message}</div>
+                    </div>
+                    <button class="notification-close" onclick="document.getElementById('notification-${notificationId}').remove()">&times;</button>
+                `;
+
+                notificationContainer.appendChild(notification);
+
+                // Show notification
+                setTimeout(() => notification.classList.add('show'), 10);
+
+                // Auto-remove after 5 seconds
+                setTimeout(() => {
+                    if (notification.parentNode) {
+                        notification.classList.remove('show');
+                        setTimeout(() => notification.remove(), 300);
+                    }
+                }, 5000);
+            }
+
+            getCharacterName() {
+                const names = {
+                    tobias: 'Tobias Horvart',
+                    vojtech: 'Vojtech Aloy',
+                    hynek: 'Hynek Schiffner',
+                    adam: 'Adam Hojer'
+                };
+                return names[this.gameState.character] || 'Unknown';
+            }
+
+            getCharacterClass() {
+                const classes = {
+                    tobias: 'Database Architect',
+                    vojtech: 'Network Specialist',
+                    hynek: 'Hardware Engineer',
+                    adam: 'Programming Guru'
+                };
+                return classes[this.gameState.character] || 'Developer';
+            }
+
+            initializeQuestions() {
+                return {
+                    databases: [
+                        {
+                            question: "What is ACID in database transactions?",
+                            options: [
+                                "A) Atomicity, Consistency, Isolation, Durability",
+                                "B) A coding interface for databases",
+                                "C) A type of database architecture"
+                            ],
+                            correct: 0,
+                            explanation: "ACID properties ensure reliable processing of database transactions."
+                        },
+                        {
+                            question: "Which SQL command is used to create a new table?",
+                            options: [
+                                "A) CREATE TABLE",
+                                "B) NEW TABLE", 
+                                "C) ADD TABLE"
+                            ],
+                            correct: 0,
+                            explanation: "CREATE TABLE is the standard SQL command for creating new tables."
+                        },
+                        {
+                            question: "What is the purpose of database indexing?",
+                            options: [
+                                "A) To improve query performance",
+                                "B) To encrypt database contents",
+                                "C) To backup database files"
+                            ],
+                            correct: 0,
+                            explanation: "Indexes speed up data retrieval operations on database tables."
+                        },
+                        {
+                            question: "Which database model uses documents instead of tables?",
+                            options: [
+                                "A) NoSQL databases like MongoDB",
+                                "B) Relational databases",
+                                "C) Graph databases"
+                            ],
+                            correct: 0,
+                            explanation: "NoSQL document databases store data in flexible, JSON-like documents."
+                        },
+                        {
+                            question: "What does SQL stand for?",
+                            options: [
+                                "A) Structured Query Language",
+                                "B) Simple Question Language",
+                                "C) System Query Logic"
+                            ],
+                            correct: 0,
+                            explanation: "SQL is the standard language for relational database management systems."
+                        },
+                        {
+                            question: "Which normal form eliminates transitive dependencies?",
+                            options: [
+                                "A) Third Normal Form (3NF)",
+                                "B) Second Normal Form (2NF)",
+                                "C) First Normal Form (1NF)"
+                            ],
+                            correct: 0,
+                            explanation: "3NF requires that every non-prime attribute is non-transitively dependent on every key."
+                        },
+                        {
+                            question: "What is a primary key in database design?",
+                            options: [
+                                "A) A unique identifier for each record",
+                                "B) The first column in a table",
+                                "C) A backup encryption key"
+                            ],
+                            correct: 0,
+                            explanation: "A primary key uniquely identifies each record in a database table."
+                        },
+                        {
+                            question: "Which join returns all records when there is a match in either table?",
+                            options: [
+                                "A) FULL OUTER JOIN",
+                                "B) INNER JOIN",
+                                "C) LEFT JOIN"
+                            ],
+                            correct: 0,
+                            explanation: "FULL OUTER JOIN returns all records when there is a match in left or right table."
+                        },
+                        {
+                            question: "What is database sharding?",
+                            options: [
+                                "A) Horizontal partitioning of data across multiple servers",
+                                "B) Vertical partitioning of columns",
+                                "C) Database backup strategy"
+                            ],
+                            correct: 0,
+                            explanation: "Sharding distributes data across multiple machines to improve performance."
+                        },
+                        {
+                            question: "Which database property ensures committed transactions survive failures?",
+                            options: [
+                                "A) Durability",
+                                "B) Atomicity",
+                                "C) Consistency"
+                            ],
+                            correct: 0,
+                            explanation: "Durability guarantees that committed transactions remain committed despite system failures."
+                        }
+                    ],
+                    networks: [
+                        {
+                            question: "What is the main purpose of TCP?",
+                            options: [
+                                "A) Reliable, ordered data delivery",
+                                "B) Fast, connectionless communication",
+                                "C) Real-time multimedia streaming"
+                            ],
+                            correct: 0,
+                            explanation: "TCP provides reliable, ordered, and error-checked delivery of data."
+                        },
+                        {
+                            question: "Which protocol is used for secure web browsing?",
+                            options: [
+                                "A) HTTPS",
+                                "B) HTTP",
+                                "C) FTP"
+                            ],
+                            correct: 0,
+                            explanation: "HTTPS encrypts web traffic using SSL/TLS for secure communication."
+                        },
+                        {
+                            question: "What does DNS translate?",
+                            options: [
+                                "A) Domain names to IP addresses",
+                                "B) IP addresses to MAC addresses",
+                                "C) Domain names to email servers"
+                            ],
+                            correct: 0,
+                            explanation: "DNS translates human-readable domain names to numerical IP addresses."
+                        },
+                        {
+                            question: "Which network device operates at Layer 2 of OSI model?",
+                            options: [
+                                "A) Switch",
+                                "B) Router",
+                                "C) Hub"
+                            ],
+                            correct: 0,
+                            explanation: "Switches operate at the Data Link layer (Layer 2) using MAC addresses."
+                        },
+                        {
+                            question: "What is the purpose of a subnet mask?",
+                            options: [
+                                "A) To divide IP networks into subnets",
+                                "B) To hide IP addresses from hackers",
+                                "C) To filter network traffic"
+                            ],
+                            correct: 0,
+                            explanation: "Subnet masks define which part of an IP address is network and which is host."
+                        },
+                        {
+                            question: "Which protocol is used for email delivery?",
+                            options: [
+                                "A) SMTP",
+                                "B) POP3",
+                                "C) IMAP"
+                            ],
+                            correct: 0,
+                            explanation: "SMTP is used for sending email between servers."
+                        },
+                        {
+                            question: "What is a VLAN used for?",
+                            options: [
+                                "A) Logical segmentation of network",
+                                "B) Virtual private network",
+                                "C) Virus protection"
+                            ],
+                            correct: 0,
+                            explanation: "VLANs logically segment networks without requiring physical separation."
+                        },
+                        {
+                            question: "Which wireless security protocol is most secure?",
+                            options: [
+                                "A) WPA3",
+                                "B) WEP",
+                                "C) WPA"
+                            ],
+                            correct: 0,
+                            explanation: "WPA3 provides the strongest security for wireless networks."
+                        },
+                        {
+                            question: "What is the purpose of NAT?",
+                            options: [
+                                "A) To share public IP addresses",
+                                "B) To translate domain names",
+                                "C) To encrypt network traffic"
+                            ],
+                            correct: 0,
+                            explanation: "NAT allows multiple devices to share a single public IP address."
+                        },
+                        {
+                            question: "Which port does HTTP typically use?",
+                            options: [
+                                "A) Port 80",
+                                "B) Port 443",
+                                "C) Port 21"
+                            ],
+                            correct: 0,
+                            explanation: "HTTP typically uses port 80 for unencrypted web traffic."
+                        }
+                    ],
+                    hardware: [
+                        {
+                            question: "What is the purpose of a CPU cache?",
+                            options: [
+                                "A) Faster access to frequently used data",
+                                "B) Long-term data storage",
+                                "C) Graphics processing"
+                            ],
+                            correct: 0,
+                            explanation: "CPU cache stores frequently accessed data for faster retrieval than main memory."
+                        },
+                        {
+                            question: "Which component is responsible for graphics rendering?",
+                            options: [
+                                "A) GPU",
+                                "B) CPU",
+                                "C) RAM"
+                            ],
+                            correct: 0,
+                            explanation: "GPU is specialized for parallel processing of graphics data."
+                        },
+                        {
+                            question: "What does BIOS stand for?",
+                            options: [
+                                "A) Basic Input/Output System",
+                                "B) Binary Input Operating System",
+                                "C) Basic Integrated Operating Software"
+                            ],
+                            correct: 0,
+                            explanation: "BIOS initializes hardware during boot process."
+                        },
+                        {
+                            question: "Which memory type is non-volatile?",
+                            options: [
+                                "A) ROM",
+                                "B) RAM",
+                                "C) Cache"
+                            ],
+                            correct: 0,
+                            explanation: "ROM retains data without power, unlike volatile RAM."
+                        },
+                        {
+                            question: "What is the function of a motherboard?",
+                            options: [
+                                "A) Connect all computer components",
+                                "B) Process graphics",
+                                "C) Store operating system"
+                            ],
+                            correct: 0,
+                            explanation: "Motherboard provides electrical connections between components."
+                        },
+                        {
+                            question: "Which interface is commonly used for SSDs?",
+                            options: [
+                                "A) SATA and NVMe",
+                                "B) USB and Ethernet",
+                                "C) HDMI and DisplayPort"
+                            ],
+                            correct: 0,
+                            explanation: "SSDs typically use SATA or faster NVMe interfaces."
+                        },
+                        {
+                            question: "What is overclocking?",
+                            options: [
+                                "A) Running hardware beyond specifications",
+                                "B) Cooling system enhancement",
+                                "C) Memory optimization"
+                            ],
+                            correct: 0,
+                            explanation: "Overclocking increases clock rates for better performance."
+                        },
+                        {
+                            question: "Which component manages memory allocation?",
+                            options: [
+                                "A) Memory Controller",
+                                "B) CPU",
+                                "C) Operating System"
+                            ],
+                            correct: 0,
+                            explanation: "Memory controller handles RAM access and allocation."
+                        },
+                        {
+                            question: "What is the purpose of heatsinks?",
+                            options: [
+                                "A) Dissipate heat from components",
+                                "B) Store thermal energy",
+                                "C) Measure temperature"
+                            ],
+                            correct: 0,
+                            explanation: "Heatsinks transfer heat away from electronic components."
+                        },
+                        {
+                            question: "Which bus standard is used for graphics cards?",
+                            options: [
+                                "A) PCI Express",
+                                "B) USB-C",
+                                "C) SATA"
+                            ],
+                            correct: 0,
+                            explanation: "PCI Express is the standard interface for modern graphics cards."
+                        }
+                    ],
+                    economics: [
+                        {
+                            question: "What are variable costs in software development?",
+                            options: [
+                                "A) Costs that change with production levels",
+                                "B) Fixed monthly expenses",
+                                "C) One-time setup costs"
+                            ],
+                            correct: 0,
+                            explanation: "Variable costs scale with usage, like cloud computing expenses."
+                        },
+                        {
+                            question: "What does ROI measure?",
+                            options: [
+                                "A) Return on Investment",
+                                "B) Rate of Interest",
+                                "C) Risk of Inflation"
+                            ],
+                            correct: 0,
+                            explanation: "ROI calculates the profitability of an investment."
+                        },
+                        {
+                            question: "What is opportunity cost?",
+                            options: [
+                                "A) Value of the next best alternative",
+                                "B) Cost of opportunities",
+                                "C) Investment return rate"
+                            ],
+                            correct: 0,
+                            explanation: "Opportunity cost is what you give up when choosing one option over another."
+                        },
+                        {
+                            question: "Which pricing strategy uses psychological pricing?",
+                            options: [
+                                "A) $9.99 instead of $10.00",
+                                "B) Cost-plus pricing",
+                                "C) Competitive pricing"
+                            ],
+                            correct: 0,
+                            explanation: "Psychological pricing makes prices seem lower than they are."
+                        },
+                        {
+                            question: "What is a sunk cost?",
+                            options: [
+                                "A) Irrecoverable past expense",
+                                "B) Future investment cost",
+                                "C) Variable operating cost"
+                            ],
+                            correct: 0,
+                            explanation: "Sunk costs are past expenses that cannot be recovered."
+                        },
+                        {
+                            question: "What does MVP stand for in business?",
+                            options: [
+                                "A) Minimum Viable Product",
+                                "B) Most Valuable Player",
+                                "C) Maximum Value Proposition"
+                            ],
+                            correct: 0,
+                            explanation: "MVP is the simplest version of a product that can be released."
+                        },
+                        {
+                            question: "What is economies of scale?",
+                            options: [
+                                "A) Cost advantages from increased production",
+                                "B) Scaling business operations",
+                                "C) Economic growth measurement"
+                            ],
+                            correct: 0,
+                            explanation: "Larger production volumes lead to lower per-unit costs."
+                        },
+                        {
+                            question: "Which financial statement shows profitability?",
+                            options: [
+                                "A) Income Statement",
+                                "B) Balance Sheet",
+                                "C) Cash Flow Statement"
+                            ],
+                            correct: 0,
+                            explanation: "Income statement shows revenues, expenses, and profits."
+                        },
+                        {
+                            question: "What is a monopoly?",
+                            options: [
+                                "A) Single seller in a market",
+                                "B) Multiple competing sellers",
+                                "C) Government-controlled market"
+                            ],
+                            correct: 0,
+                            explanation: "Monopoly exists when one company dominates a market."
+                        },
+                        {
+                            question: "What does GDP measure?",
+                            options: [
+                                "A) Total economic output",
+                                "B) Government debt",
+                                "C) Personal income"
+                            ],
+                            correct: 0,
+                            explanation: "GDP measures the total value of goods and services produced."
+                        },
+                        {
+                            question: "What is the function of a stored procedure?",
+                            options: [
+                                "A) Execute pre-compiled database logic",
+                                "B) Store backup copies",
+                                "C) Encrypt database data"
+                            ],
+                            correct: 0,
+                            explanation: "Stored procedures improve performance by pre-compiling SQL statements."
+                        },
+                        {
+                            question: "Which technique prevents SQL injection attacks?",
+                            options: [
+                                "A) Parameterized queries",
+                                "B) String concatenation",
+                                "C) Direct user input"
+                            ],
+                            correct: 0,
+                            explanation: "Parameterized queries separate SQL code from data."
+                        },
+                        {
+                            question: "What is database replication used for?",
+                            options: [
+                                "A) High availability and failover",
+                                "B) Deleting old records",
+                                "C) Compressing data"
+                            ],
+                            correct: 0,
+                            explanation: "Replication creates redundant copies for reliability."
+                        },
+                        {
+                            question: "Which isolation level prevents dirty reads?",
+                            options: [
+                                "A) READ COMMITTED",
+                                "B) READ UNCOMMITTED",
+                                "C) SERIALIZABLE"
+                            ],
+                            correct: 0,
+                            explanation: "READ COMMITTED ensures only committed data is read."
+                        },
+                        {
+                            question: "What is denormalization in database design?",
+                            options: [
+                                "A) Adding redundancy for performance",
+                                "B) Removing all relationships",
+                                "C) Encrypting sensitive data"
+                            ],
+                            correct: 0,
+                            explanation: "Denormalization trades storage for query speed."
+                        },
+                        {
+                            question: "What is CAP theorem about?",
+                            options: [
+                                "A) Consistency, Availability, Partition tolerance",
+                                "B) Cache, Application, Performance",
+                                "C) Create, Alter, Purge operations"
+                            ],
+                            correct: 0,
+                            explanation: "CAP theorem states you can only guarantee 2 of 3 properties in distributed systems."
+                        },
+                        {
+                            question: "Which command removes all records from a table?",
+                            options: [
+                                "A) TRUNCATE TABLE",
+                                "B) REMOVE TABLE",
+                                "C) CLEAR TABLE"
+                            ],
+                            correct: 0,
+                            explanation: "TRUNCATE quickly deletes all rows without logging individual deletions."
+                        },
+                        {
+                            question: "What is a composite key?",
+                            options: [
+                                "A) Primary key made of multiple columns",
+                                "B) Encrypted key",
+                                "C) Foreign key reference"
+                            ],
+                            correct: 0,
+                            explanation: "Composite keys use multiple columns to uniquely identify rows."
+                        },
+                        {
+                            question: "What does OLAP stand for?",
+                            options: [
+                                "A) Online Analytical Processing",
+                                "B) Object Linked Application Protocol",
+                                "C) Optimized Linear Access Pattern"
+                            ],
+                            correct: 0,
+                            explanation: "OLAP systems are optimized for complex analytical queries."
+                        },
+                        {
+                            question: "What is the OSI model used for?",
+                            options: [
+                                "A) Standardizing network communications",
+                                "B) Operating system installation",
+                                "C) Optical signal interference"
+                            ],
+                            correct: 0,
+                            explanation: "OSI model defines 7 layers of network communication."
+                        },
+                        {
+                            question: "Which protocol provides connectionless communication?",
+                            options: [
+                                "A) UDP",
+                                "B) TCP",
+                                "C) HTTP"
+                            ],
+                            correct: 0,
+                            explanation: "UDP sends packets without establishing a connection."
+                        },
+                        {
+                            question: "What is a MAC address?",
+                            options: [
+                                "A) Unique hardware identifier",
+                                "B) Apple computer address",
+                                "C) Maximum access control"
+                            ],
+                            correct: 0,
+                            explanation: "MAC addresses uniquely identify network interface cards."
+                        },
+                        {
+                            question: "Which attack floods a network with traffic?",
+                            options: [
+                                "A) DDoS attack",
+                                "B) SQL injection",
+                                "C) Cross-site scripting"
+                            ],
+                            correct: 0,
+                            explanation: "DDoS overwhelms targets with excessive requests."
+                        },
+                        {
+                            question: "What does QoS stand for in networking?",
+                            options: [
+                                "A) Quality of Service",
+                                "B) Queue of Servers",
+                                "C) Quick Operating System"
+                            ],
+                            correct: 0,
+                            explanation: "QoS prioritizes certain types of network traffic."
+                        },
+                        {
+                            question: "Which device operates at Layer 3 of OSI?",
+                            options: [
+                                "A) Router",
+                                "B) Switch",
+                                "C) Hub"
+                            ],
+                            correct: 0,
+                            explanation: "Routers work at the Network layer using IP addresses."
+                        },
+                        {
+                            question: "What is the purpose of ARP?",
+                            options: [
+                                "A) Map IP to MAC addresses",
+                                "B) Authenticate remote users",
+                                "C) Route packets between networks"
+                            ],
+                            correct: 0,
+                            explanation: "ARP resolves IP addresses to MAC addresses."
+                        },
+                        {
+                            question: "Which encryption protocol secures WiFi?",
+                            options: [
+                                "A) WPA2/WPA3",
+                                "B) SSL/TLS",
+                                "C) IPSec"
+                            ],
+                            correct: 0,
+                            explanation: "WPA2 and WPA3 provide wireless network encryption."
+                        },
+                        {
+                            question: "What is bandwidth measured in?",
+                            options: [
+                                "A) Bits per second",
+                                "B) Bytes per packet",
+                                "C) Connections per minute"
+                            ],
+                            correct: 0,
+                            explanation: "Bandwidth indicates data transfer rate in bps."
+                        },
+                        {
+                            question: "What does TTL stand for in networking?",
+                            options: [
+                                "A) Time To Live",
+                                "B) Total Transfer Limit",
+                                "C) Transmission Tracking Log"
+                            ],
+                            correct: 0,
+                            explanation: "TTL prevents packets from circulating indefinitely."
+                        },
+                        {
+                            question: "What is Moore's Law about?",
+                            options: [
+                                "A) Transistor density doubling every 2 years",
+                                "B) Memory speed improvements",
+                                "C) Hard drive capacity growth"
+                            ],
+                            correct: 0,
+                            explanation: "Moore's Law predicted exponential growth in transistor counts."
+                        },
+                        {
+                            question: "Which memory is fastest to access?",
+                            options: [
+                                "A) CPU Cache",
+                                "B) RAM",
+                                "C) SSD"
+                            ],
+                            correct: 0,
+                            explanation: "CPU cache provides nanosecond-level access times."
+                        },
+                        {
+                            question: "What does RAID stand for?",
+                            options: [
+                                "A) Redundant Array of Independent Disks",
+                                "B) Rapid Access Integrated Drive",
+                                "C) Remote Authentication In Devices"
+                            ],
+                            correct: 0,
+                            explanation: "RAID combines multiple disks for redundancy or performance."
+                        },
+                        {
+                            question: "Which component supplies power to PC components?",
+                            options: [
+                                "A) PSU (Power Supply Unit)",
+                                "B) Motherboard",
+                                "C) Battery"
+                            ],
+                            correct: 0,
+                            explanation: "PSU converts AC power to DC for computer components."
+                        },
+                        {
+                            question: "What is thermal throttling?",
+                            options: [
+                                "A) Reducing performance to prevent overheating",
+                                "B) Increasing fan speed",
+                                "C) Shutting down the system"
+                            ],
+                            correct: 0,
+                            explanation: "Thermal throttling protects hardware from heat damage."
+                        },
+                        {
+                            question: "Which interface connects CPUs to RAM?",
+                            options: [
+                                "A) Memory Bus",
+                                "B) PCI Express",
+                                "C) SATA"
+                            ],
+                            correct: 0,
+                            explanation: "Memory bus transfers data between CPU and RAM."
+                        },
+                        {
+                            question: "What is the function of a chipset?",
+                            options: [
+                                "A) Manage data flow between components",
+                                "B) Generate graphics",
+                                "C) Store BIOS"
+                            ],
+                            correct: 0,
+                            explanation: "Chipset coordinates communication between CPU, RAM, and peripherals."
+                        },
+                        {
+                            question: "Which technology improves HDD performance?",
+                            options: [
+                                "A) Higher RPM",
+                                "B) Lower cache",
+                                "C) Smaller platters"
+                            ],
+                            correct: 0,
+                            explanation: "Higher RPM reduces seek times and increases transfer rates."
+                        },
+                        {
+                            question: "What does ECC stand for in memory?",
+                            options: [
+                                "A) Error Correcting Code",
+                                "B) Enhanced Cache Control",
+                                "C) External Clock Cycle"
+                            ],
+                            correct: 0,
+                            explanation: "ECC memory detects and corrects data corruption."
+                        },
+                        {
+                            question: "What is hyper-threading?",
+                            options: [
+                                "A) Virtual cores for parallel processing",
+                                "B) Faster thread manufacturing",
+                                "C) Network cable technology"
+                            ],
+                            correct: 0,
+                            explanation: "Hyper-threading allows one physical core to act as two logical cores."
+                        }
+                    ]
+                };
+            }
+
+            initializeCodingTasks() {
+                return [
+                    {
+                        language: "c",
+                        code: [
+                            "#include <stdio.h>",
+                            "",
+                            "int main() {",
+                            "    // Print welcome message",
+                            "    {{INPUT}}",
+                            "    return 0;",
+                            "}"
+                        ],
+                        solution: 'printf("Hello, World!\\n");',
+                        hint: "Use printf to display text to the console",
+                        explanation: "The printf function is used for output in C programs."
+                    },
+                    {
+                        language: "c",
+                        code: [
+                            "int calculate_sum(int a, int b) {",
+                            "    // Calculate and return the sum",
+                            "    {{INPUT}}",
+                            "}"
+                        ],
+                        solution: "return a + b;",
+                        hint: "Return the result of adding a and b",
+                        explanation: "The function should return the sum of its two parameters."
+                    },
+                    {
+                        language: "c",
+                        code: [
+                            "void initialize_kernel() {",
+                            "    // Set up basic kernel structures",
+                            "    {{INPUT}}",
+                            "    printk(\"Kernel initialized\\n\");",
+                            "}"
+                        ],
+                        solution: "kernel_struct = kmalloc(sizeof(struct kernel));",
+                        hint: "Allocate memory for kernel structure using kmalloc",
+                        explanation: "Kernel memory allocation requires special functions like kmalloc."
+                    },
+                    {
+                        language: "c",
+                        code: [
+                            "int is_even(int number) {",
+                            "    // Check if number is even",
+                            "    {{INPUT}}",
+                            "}"
+                        ],
+                        solution: "return number % 2 == 0;",
+                        hint: "Use modulo operator to check divisibility by 2",
+                        explanation: "Even numbers have remainder 0 when divided by 2."
+                    },
+                    {
+                        language: "c",
+                        code: [
+                            "struct process* create_process() {",
+                            "    // Allocate and initialize new process",
+                            "    {{INPUT}}",
+                            "    return new_process;",
+                            "}"
+                        ],
+                        solution: "struct process* new_process = kmalloc(sizeof(struct process));",
+                        hint: "Allocate memory for process structure",
+                        explanation: "Process creation requires memory allocation for process control block."
+                    },
+                    {
+                        language: "asm",
+                        code: [
+                            "section .text",
+                            "global _start",
+                            "",
+                            "_start:",
+                            "    {{INPUT}}",
+                            "    mov eax, 1",
+                            "    int 0x80"
+                        ],
+                        solution: "mov ebx, 0",
+                        hint: "Set exit status code in ebx register",
+                        explanation: "System call 1 (exit) requires exit status in ebx register."
+                    },
+                    {
+                        language: "python",
+                        code: [
+                            "def memory_allocate(size):",
+                            "    # Allocate memory block",
+                            "    {{INPUT}}",
+                            "    return block"
+                        ],
+                        solution: "block = bytearray(size)",
+                        hint: "Create a byte array of specified size",
+                        explanation: "bytearray creates a mutable sequence of bytes for memory simulation."
+                    },
+                    {
+                        language: "python",
+                        code: [
+                            "class FileSystem:",
+                            "    def __init__(self):",
+                            "        {{INPUT}}",
+                            "        ",
+                            "    def create_file(self, name):",
+                            "        pass"
+                        ],
+                        solution: "self.files = {}",
+                        hint: "Initialize a dictionary to store files",
+                        explanation: "File systems typically use dictionary-like structures for file management."
+                    },
+                    {
+                        language: "javascript",
+                        code: [
+                            "function handleInterrupt(irq) {",
+                            "    // Process hardware interrupt",
+                            "    {{INPUT}}",
+                            "    return true;",
+                            "}"
+                        ],
+                        solution: "console.log(`Handling IRQ: ${irq}`);",
+                        hint: "Log the interrupt request number",
+                        explanation: "Interrupt handlers often log which interrupt they're processing."
+                    },
+                    {
+                        language: "java",
+                        code: [
+                            "public class MemoryManager {",
+                            "    public void allocateMemory(int size) {",
+                            "        // Allocate memory block",
+                            "        {{INPUT}}",
+                            "        System.out.println(\"Allocated: \" + size + \" bytes\");",
+                            "    }",
+                            "}"
+                        ],
+                        solution: "MemoryBlock block = new MemoryBlock(size);",
+                        hint: "Create a new MemoryBlock object",
+                        explanation: "Memory allocation creates new block objects in managed systems."
+                    },
+                    {
+                        language: "c",
+                        code: [
+                            "void init_scheduler() {",
+                            "    // Initialize process scheduler",
+                            "    {{INPUT}}",
+                            "    schedule_next_process();",
+                            "}"
+                        ],
+                        solution: "scheduler_queue = create_queue();",
+                        hint: "Create a queue for process scheduling",
+                        explanation: "Schedulers use queues to manage process execution order."
+                    },
+                    {
+                        language: "c",
+                        code: [
+                            "int factorial(int n) {",
+                            "    if (n <= 1) return 1;",
+                            "    {{INPUT}}",
+                            "}"
+                        ],
+                        solution: "return n * factorial(n - 1);",
+                        hint: "Recursive call with n-1",
+                        explanation: "Factorial is commonly implemented using recursion."
+                    },
+                    {
+                        language: "python",
+                        code: [
+                            "def swap(a, b):",
+                            "    # Swap two variables",
+                            "    {{INPUT}}",
+                            "    return a, b"
+                        ],
+                        solution: "a, b = b, a",
+                        hint: "Use Python tuple unpacking",
+                        explanation: "Python allows elegant variable swapping with tuple unpacking."
+                    },
+                    {
+                        language: "c",
+                        code: [
+                            "void* malloc_wrapper(size_t size) {",
+                            "    // Safe memory allocation",
+                            "    void* ptr = malloc(size);",
+                            "    {{INPUT}}",
+                            "    return ptr;",
+                            "}"
+                        ],
+                        solution: "if (!ptr) return NULL;",
+                        hint: "Check if malloc returned NULL",
+                        explanation: "Always check malloc return value for allocation failures."
+                    },
+                    {
+                        language: "javascript",
+                        code: [
+                            "async function loadKernel() {",
+                            "    {{INPUT}}",
+                            "    const kernel = await fetch('/kernel.bin');",
+                            "    return kernel;",
+                            "}"
+                        ],
+                        solution: "try {",
+                        hint: "Start a try-catch block for error handling",
+                        explanation: "Async operations should be wrapped in try-catch."
+                    },
+                    {
+                        language: "c",
+                        code: [
+                            "struct node* create_node(int data) {",
+                            "    struct node* new = malloc(sizeof(struct node));",
+                            "    {{INPUT}}",
+                            "    new->next = NULL;",
+                            "    return new;",
+                            "}"
+                        ],
+                        solution: "new->data = data;",
+                        hint: "Set the data field of the new node",
+                        explanation: "Linked list nodes need data initialization."
+                    },
+                    {
+                        language: "python",
+                        code: [
+                            "class Thread:",
+                            "    def __init__(self, tid):",
+                            "        self.tid = tid",
+                            "        {{INPUT}}",
+                            "        ",
+                            "    def run(self):",
+                            "        pass"
+                        ],
+                        solution: "self.state = 'ready'",
+                        hint: "Initialize thread state",
+                        explanation: "Threads typically start in a 'ready' state."
+                    },
+                    {
+                        language: "c",
+                        code: [
+                            "void context_switch(process* old, process* new) {",
+                            "    // Save old process state",
+                            "    {{INPUT}}",
+                            "    // Load new process state",
+                            "    load_context(new);",
+                            "}"
+                        ],
+                        solution: "save_context(old);",
+                        hint: "Call save_context with old process",
+                        explanation: "Context switching requires saving current state before loading new one."
+                    },
+                    {
+                        language: "javascript",
+                        code: [
+                            "function debounce(func, delay) {",
+                            "    let timeout;",
+                            "    {{INPUT}}",
+                            "        clearTimeout(timeout);",
+                            "        timeout = setTimeout(() => func(...args), delay);",
+                            "    };",
+                            "}"
+                        ],
+                        solution: "return function(...args) {",
+                        hint: "Return a function that accepts arguments",
+                        explanation: "Debounce delays function execution until after a pause."
+                    },
+                    {
+                        language: "c",
+                        code: [
+                            "int find_max(int arr[], int size) {",
+                            "    int max = arr[0];",
+                            "    {{INPUT}}",
+                            "        if (arr[i] > max) max = arr[i];",
+                            "    return max;",
+                            "}"
+                        ],
+                        solution: "for (int i = 1; i < size; i++)",
+                        hint: "Loop from index 1 to size",
+                        explanation: "Find maximum by comparing all elements."
+                    },
+                    {
+                        language: "python",
+                        code: [
+                            "def binary_search(arr, target):",
+                            "    left, right = 0, len(arr) - 1",
+                            "    while left <= right:",
+                            "        {{INPUT}}",
+                            "        if arr[mid] == target: return mid",
+                            "        elif arr[mid] < target: left = mid + 1",
+                            "        else: right = mid - 1",
+                            "    return -1"
+                        ],
+                        solution: "mid = (left + right) // 2",
+                        hint: "Calculate middle index",
+                        explanation: "Binary search divides the array in half each iteration."
+                    },
+                    {
+                        language: "c",
+                        code: [
+                            "void bubble_sort(int arr[], int n) {",
+                            "    for (int i = 0; i < n-1; i++) {",
+                            "        for (int j = 0; j < n-i-1; j++) {",
+                            "            {{INPUT}}",
+                            "                int temp = arr[j];",
+                            "                arr[j] = arr[j+1];",
+                            "                arr[j+1] = temp;",
+                            "            }",
+                            "        }",
+                            "    }",
+                            "}"
+                        ],
+                        solution: "if (arr[j] > arr[j+1]) {",
+                        hint: "Compare adjacent elements",
+                        explanation: "Bubble sort swaps adjacent elements if they're in wrong order."
+                    },
+                    {
+                        language: "python",
+                        code: [
+                            "def fibonacci(n):",
+                            "    if n <= 1: return n",
+                            "    {{INPUT}}",
+                            ""
+                        ],
+                        solution: "return fibonacci(n-1) + fibonacci(n-2)",
+                        hint: "Sum of previous two Fibonacci numbers",
+                        explanation: "Fibonacci sequence is defined recursively."
+                    },
+                    {
+                        language: "c",
+                        code: [
+                            "void reverse_string(char* str) {",
+                            "    int len = strlen(str);",
+                            "    {{INPUT}}",
+                            "        char temp = str[i];",
+                            "        str[i] = str[len-1-i];",
+                            "        str[len-1-i] = temp;",
+                            "    }",
+                            "}"
+                        ],
+                        solution: "for (int i = 0; i < len/2; i++) {",
+                        hint: "Loop to middle of string",
+                        explanation: "String reversal swaps characters from both ends."
+                    },
+                    {
+                        language: "javascript",
+                        code: [
+                            "const isPalindrome = (str) => {",
+                            "    const cleaned = str.toLowerCase().replace(/[^a-z0-9]/g, '');",
+                            "    {{INPUT}}",
+                            "};"
+                        ],
+                        solution: "return cleaned === cleaned.split('').reverse().join('');",
+                        hint: "Compare string with its reverse",
+                        explanation: "Palindromes read the same forwards and backwards."
+                    },
+                    {
+                        language: "python",
+                        code: [
+                            "class Stack:",
+                            "    def __init__(self):",
+                            "        self.items = []",
+                            "    ",
+                            "    def push(self, item):",
+                            "        {{INPUT}}",
+                            "    ",
+                            "    def pop(self):",
+                            "        return self.items.pop() if self.items else None"
+                        ],
+                        solution: "self.items.append(item)",
+                        hint: "Add item to the list",
+                        explanation: "Stack push operation adds to the end."
+                    },
+                    {
+                        language: "c",
+                        code: [
+                            "bool is_prime(int n) {",
+                            "    if (n <= 1) return false;",
+                            "    {{INPUT}}",
+                            "        if (n % i == 0) return false;",
+                            "    return true;",
+                            "}"
+                        ],
+                        solution: "for (int i = 2; i * i <= n; i++)",
+                        hint: "Check divisors up to square root",
+                        explanation: "Prime check only needs to test up to square root of n."
+                    },
+                    {
+                        language: "javascript",
+                        code: [
+                            "function throttle(func, limit) {",
+                            "    let inThrottle;",
+                            "    return function(...args) {",
+                            "        {{INPUT}}",
+                            "        inThrottle = true;",
+                            "        func.apply(this, args);",
+                            "        setTimeout(() => inThrottle = false, limit);",
+                            "    };",
+                            "}"
+                        ],
+                        solution: "if (inThrottle) return;",
+                        hint: "Check if already in throttle period",
+                        explanation: "Throttle prevents function execution during cooldown."
+                    },
+                    {
+                        language: "python",
+                        code: [
+                            "def merge_sort(arr):",
+                            "    if len(arr) <= 1: return arr",
+                            "    mid = len(arr) // 2",
+                            "    {{INPUT}}",
+                            "    right = merge_sort(arr[mid:])",
+                            "    return merge(left, right)"
+                        ],
+                        solution: "left = merge_sort(arr[:mid])",
+                        hint: "Recursively sort left half",
+                        explanation: "Merge sort divides array and recursively sorts halves."
+                    }
+                ];
+            }
+
+            initializeAchievements() {
+                return [
+                    {
+                        id: 'first_code',
+                        name: 'First Lines of Code',
+                        description: 'Complete your first coding task',
+                        icon: '👨‍💻',
+                        unlocked: false,
+                        check: (state) => state.codingTasksCompleted >= 1
+                    },
+                    {
+                        id: 'first_job',
+                        name: 'First Paycheck',
+                        description: 'Complete your first freelance work',
+                        icon: '💵',
+                        unlocked: false,
+                        check: (state) => state.completedQuestions >= 1
+                    },
+                    {
+                        id: 'money_maker',
+                        name: 'Money Maker',
+                        description: 'Earn $500',
+                        icon: '💰',
+                        unlocked: false,
+                        check: (state) => state.money >= 500
+                    },
+                    {
+                        id: 'money_master',
+                        name: 'Money Master',
+                        description: 'Earn $1000',
+                        icon: '💎',
+                        unlocked: false,
+                        check: (state) => state.money >= 1000
+                    },
+                    {
+                        id: 'millionaire',
+                        name: 'Tech Millionaire',
+                        description: 'Accumulate $2000',
+                        icon: '🤑',
+                        unlocked: false,
+                        check: (state) => state.money >= 2000
+                    },
+                    {
+                        id: 'coding_beginner',
+                        name: 'Coding Beginner',
+                        description: 'Complete 5 coding tasks',
+                        icon: '⌨️',
+                        unlocked: false,
+                        check: (state) => state.codingTasksCompleted >= 5
+                    },
+                    {
+                        id: 'coding_intermediate',
+                        name: 'Intermediate Developer',
+                        description: 'Complete 10 coding tasks',
+                        icon: '�',
+                        unlocked: false,
+                        check: (state) => state.codingTasksCompleted >= 10
+                    },
+                    {
+                        id: 'coding_pro',
+                        name: 'Pro Developer',
+                        description: 'Complete 20 coding tasks',
+                        icon: '🚀',
+                        unlocked: false,
+                        check: (state) => state.codingTasksCompleted >= 20
+                    },
+                    {
+                        id: 'coding_master',
+                        name: 'Code Master',
+                        description: 'Complete 30 coding tasks',
+                        icon: '🎯',
+                        unlocked: false,
+                        check: (state) => state.codingTasksCompleted >= 30
+                    },
+                    {
+                        id: 'quiz_novice',
+                        name: 'Quiz Novice',
+                        description: 'Answer 10 questions correctly',
+                        icon: '📚',
+                        unlocked: false,
+                        check: (state) => state.correctAnswers >= 10
+                    },
+                    {
+                        id: 'quiz_expert',
+                        name: 'Quiz Expert',
+                        description: 'Answer 25 questions correctly',
+                        icon: '🎓',
+                        unlocked: false,
+                        check: (state) => state.correctAnswers >= 25
+                    },
+                    {
+                        id: 'quiz_master',
+                        name: 'Quiz Master',
+                        description: 'Answer 50 questions correctly',
+                        icon: '🏆',
+                        unlocked: false,
+                        check: (state) => state.correctAnswers >= 50
+                    },
+                    {
+                        id: 'os_started',
+                        name: 'OS Development Started',
+                        description: 'Reach 25% OS completion',
+                        icon: '🔨',
+                        unlocked: false,
+                        check: (state) => state.osProgress >= 25
+                    },
+                    {
+                        id: 'os_halfway',
+                        name: 'Halfway There',
+                        description: 'Reach 50% OS completion',
+                        icon: '⚙️',
+                        unlocked: false,
+                        check: (state) => state.osProgress >= 50
+                    },
+                    {
+                        id: 'os_almost',
+                        name: 'Almost Complete',
+                        description: 'Reach 75% OS completion',
+                        icon: '🔩',
+                        unlocked: false,
+                        check: (state) => state.osProgress >= 75
+                    },
+                    {
+                        id: 'os_completed',
+                        name: 'OS Architect',
+                        description: 'Complete your operating system 100%',
+                        icon: '💻',
+                        unlocked: false,
+                        check: (state) => state.osProgress >= 100
+                    },
+                    {
+                        id: 'healthy_lifestyle',
+                        name: 'Healthy Developer',
+                        description: 'Maintain all stats above 80% for 10 minutes',
+                        icon: '❤️',
+                        unlocked: false,
+                        check: (state) => state.gameTime >= 200 && state.health > 80 && state.hunger > 80 && state.thirst > 80 && state.energy > 80 && state.mood > 80
+                    },
+                    {
+                        id: 'workaholic',
+                        name: 'Workaholic',
+                        description: 'Complete 100 total tasks',
+                        icon: '🔥',
+                        unlocked: false,
+                        check: (state) => (state.completedQuestions + state.codingTasksCompleted) >= 100
+                    },
+                    {
+                        id: 'perfectionist',
+                        name: 'Perfectionist',
+                        description: 'Answer 10 questions correctly in a row',
+                        icon: '✨',
+                        unlocked: false,
+                        check: (state) => state.correctStreak >= 10
+                    },
+                    {
+                        id: 'survivor',
+                        name: 'Survivor',
+                        description: 'Survive with health below 20%',
+                        icon: '🩹',
+                        unlocked: false,
+                        check: (state) => state.health > 0 && state.health < 20 && state.gameTime > 50
+                    }
+                ];
+            }
+        }
+
+        // Initialize the game when the page loads
+        window.addEventListener('load', () => {
+            window.game = new OSTycoonGame();
+        });
+    </script>
+</body>
+</html>
+    
