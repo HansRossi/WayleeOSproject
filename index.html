@@ -3573,6 +3573,9 @@
                     return;
                 }
                 
+                // CRITICAL: Reset processing flag BEFORE loading new task
+                this.isProcessingCode = false;
+                
                 this.currentCodingTask = this.codingTasks[Math.floor(Math.random() * this.codingTasks.length)];
                 console.log('Loaded coding task:', this.currentCodingTask);
                 this.displayCodingTask(this.currentCodingTask);
@@ -3624,43 +3627,49 @@
                 // Display code options as clickable buttons
                 const optionsContainer = document.getElementById('codeOptionsContainer');
                 if (optionsContainer && task.options && task.options.length > 0) {
-                    // CRITICAL: Clear container completely to remove old buttons with classes
-                    optionsContainer.innerHTML = '';
-                    
-                    // Reset processing flag for new question
-                    this.isProcessingCode = false;
-                    
-                    // Create array with options and mark which is correct
-                    const optionsWithCorrectness = task.options.map((option, idx) => ({
-                        text: option,
-                        isCorrect: idx === 0 // First option is always correct
-                    }));
-                    
-                    // Shuffle options to randomize order
-                    for (let i = optionsWithCorrectness.length - 1; i > 0; i--) {
-                        const j = Math.floor(Math.random() * (i + 1));
-                        [optionsWithCorrectness[i], optionsWithCorrectness[j]] = [optionsWithCorrectness[j], optionsWithCorrectness[i]];
+                    // CRITICAL: First, remove ALL old buttons completely
+                    while (optionsContainer.firstChild) {
+                        optionsContainer.removeChild(optionsContainer.firstChild);
                     }
                     
-                    optionsWithCorrectness.forEach((optionData, index) => {
-                        const button = document.createElement('button');
-                        button.className = 'code-option-button'; // Clean class, no correct/incorrect
-                        button.dataset.isCorrect = optionData.isCorrect;
-                        button.disabled = false; // Ensure button is clickable
-                        button.style.cursor = 'pointer'; // Ensure cursor is pointer
+                    // Double-check with innerHTML too
+                    optionsContainer.innerHTML = '';
+                    
+                    // Small delay to ensure DOM is clean
+                    setTimeout(() => {
+                        // Create array with options and mark which is correct
+                        const optionsWithCorrectness = task.options.map((option, idx) => ({
+                            text: option,
+                            isCorrect: idx === 0 // First option is always correct
+                        }));
                         
-                        const letter = String.fromCharCode(65 + index); // A, B, C, D
+                        // Shuffle options to randomize order
+                        for (let i = optionsWithCorrectness.length - 1; i > 0; i--) {
+                            const j = Math.floor(Math.random() * (i + 1));
+                            [optionsWithCorrectness[i], optionsWithCorrectness[j]] = [optionsWithCorrectness[j], optionsWithCorrectness[i]];
+                        }
                         
-                        button.innerHTML = `
-                            <span class="option-label">${letter}</span>
-                            <pre>${this.escapeHtml(optionData.text)}</pre>
-                        `;
-                        
-                        // Click handler
-                        button.onclick = () => this.handleCodeAnswer(button, optionData.isCorrect, task);
-                        
-                        optionsContainer.appendChild(button);
-                    });
+                        optionsWithCorrectness.forEach((optionData, index) => {
+                            const button = document.createElement('button');
+                            button.className = 'code-option-button'; // Clean class, no correct/incorrect
+                            button.dataset.isCorrect = optionData.isCorrect;
+                            button.disabled = false; // Ensure button is clickable
+                            button.style.cursor = 'pointer'; // Ensure cursor is pointer
+                            button.style.opacity = '1'; // Reset opacity
+                            
+                            const letter = String.fromCharCode(65 + index); // A, B, C, D
+                            
+                            button.innerHTML = `
+                                <span class="option-label">${letter}</span>
+                                <pre>${this.escapeHtml(optionData.text)}</pre>
+                            `;
+                            
+                            // Click handler
+                            button.onclick = () => this.handleCodeAnswer(button, optionData.isCorrect, task);
+                            
+                            optionsContainer.appendChild(button);
+                        });
+                    }, 10);
                 }
             }
 
