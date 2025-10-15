@@ -2991,7 +2991,12 @@
 
             saveGameState() {
                 try {
-                    localStorage.setItem('ostycoon_save', JSON.stringify(this.gameState));
+                    // Create copy of gameState WITHOUT availableCodingTasks
+                    // (question pool should reset each session)
+                    const stateToSave = { ...this.gameState };
+                    delete stateToSave.availableCodingTasks;
+                    
+                    localStorage.setItem('ostycoon_save', JSON.stringify(stateToSave));
                 } catch (e) {
                     console.error('Failed to save game:', e);
                 }
@@ -3003,7 +3008,14 @@
                     if (saved) {
                         const data = JSON.parse(saved);
                         if (data.osProgress < 100) {
+                            // CRITICAL: Don't load availableCodingTasks from save!
+                            // It must be reset from full codingTasks array each session
+                            delete data.availableCodingTasks;
+                            
                             Object.assign(this.gameState, data);
+                            
+                            // Force reset available tasks to full pool
+                            this.gameState.availableCodingTasks = [...this.codingTasks];
                         }
                     }
                 } catch (e) {
