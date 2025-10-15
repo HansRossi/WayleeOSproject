@@ -3624,7 +3624,11 @@
                 // Display code options as clickable buttons
                 const optionsContainer = document.getElementById('codeOptionsContainer');
                 if (optionsContainer && task.options && task.options.length > 0) {
+                    // CRITICAL: Clear container completely to remove old buttons with classes
                     optionsContainer.innerHTML = '';
+                    
+                    // Reset processing flag for new question
+                    this.isProcessingCode = false;
                     
                     // Create array with options and mark which is correct
                     const optionsWithCorrectness = task.options.map((option, idx) => ({
@@ -3640,8 +3644,10 @@
                     
                     optionsWithCorrectness.forEach((optionData, index) => {
                         const button = document.createElement('button');
-                        button.className = 'code-option-button';
+                        button.className = 'code-option-button'; // Clean class, no correct/incorrect
                         button.dataset.isCorrect = optionData.isCorrect;
+                        button.disabled = false; // Ensure button is clickable
+                        button.style.cursor = 'pointer'; // Ensure cursor is pointer
                         
                         const letter = String.fromCharCode(65 + index); // A, B, C, D
                         
