@@ -2963,6 +2963,10 @@
                 this.questions = this.initializeQuestions();
                 this.codingTasks = this.initializeCodingTasks();
                 this.achievements = this.initializeAchievements();
+                
+                // Available tasks pools (будут уменьшаться по мере ответов)
+                this.availableCodingTasks = [...this.codingTasks]; // Copy all tasks
+                
                 this.currentQuestion = null;
                 this.currentCodingTask = null;
                 this.currentCategory = 'databases';
@@ -3567,17 +3571,24 @@
             }
 
             loadRandomCodingTask() {
-                if (!this.codingTasks || this.codingTasks.length === 0) {
-                    console.error('No coding tasks available!');
-                    this.showNotification('No coding tasks available!', 'error');
-                    return;
+                // Check if there are available tasks
+                if (!this.availableCodingTasks || this.availableCodingTasks.length === 0) {
+                    // Reset pool if all tasks completed
+                    this.availableCodingTasks = [...this.codingTasks];
+                    this.showNotification('🎉 All tasks completed! Pool reset!', 'success');
                 }
                 
                 // CRITICAL: Reset processing flag BEFORE loading new task
                 this.isProcessingCode = false;
                 
-                this.currentCodingTask = this.codingTasks[Math.floor(Math.random() * this.codingTasks.length)];
-                console.log('Loaded coding task:', this.currentCodingTask);
+                // Get random index from AVAILABLE tasks
+                const randomIndex = Math.floor(Math.random() * this.availableCodingTasks.length);
+                
+                // Get task and REMOVE it from available pool
+                this.currentCodingTask = this.availableCodingTasks[randomIndex];
+                this.availableCodingTasks.splice(randomIndex, 1); // Remove this task
+                
+                console.log(`Loaded coding task (${this.availableCodingTasks.length} remaining):`, this.currentCodingTask);
                 this.displayCodingTask(this.currentCodingTask);
             }
 
@@ -3626,7 +3637,15 @@
                 
                 // Display code options as clickable buttons
                 const optionsContainer = document.getElementById('codeOptionsContainer');
+                console.log('🔍 DEBUG:', {
+                    hasContainer: !!optionsContainer,
+                    hasOptions: !!task.options,
+                    optionsLength: task.options?.length,
+                    taskLanguage: task.language
+                });
+                
                 if (optionsContainer && task.options && task.options.length > 0) {
+                    console.log('✅ Creating buttons for options:', task.options);
                     // CRITICAL: First, remove ALL old buttons completely
                     while (optionsContainer.firstChild) {
                         optionsContainer.removeChild(optionsContainer.firstChild);
@@ -5376,8 +5395,600 @@
                             "    return merge(left, right)"
                         ],
                         solution: "left = merge_sort(arr[:mid])",
+                        options: [
+                            "left = merge_sort(arr[:mid])",
+                            "left = arr[:mid].sort()",
+                            "left = sort(arr[:mid])",
+                            "left = arr.sort(mid)"
+                        ],
                         hint: "Recursively sort left half",
                         explanation: "Merge sort divides array and recursively sorts halves."
+                    },
+                    // НОВЫЕ ВОПРОСЫ - ДОХУЯ!!!
+                    {
+                        language: "c",
+                        code: [
+                            "void swap(int *a, int *b) {",
+                            "    int temp = *a;",
+                            "    {{INPUT}}",
+                            "    *b = temp;",
+                            "}"
+                        ],
+                        solution: "*a = *b;",
+                        options: [
+                            "*a = *b;",
+                            "a = b;",
+                            "*a = b;",
+                            "a = *b;"
+                        ],
+                        hint: "Assign value of b to a using pointers",
+                        explanation: "Pointer dereferencing swaps values in memory."
+                    },
+                    {
+                        language: "python",
+                        code: [
+                            "def factorial(n):",
+                            "    if n == 0: return 1",
+                            "    {{INPUT}}"
+                        ],
+                        solution: "return n * factorial(n - 1)",
+                        options: [
+                            "return n * factorial(n - 1)",
+                            "return n + factorial(n - 1)",
+                            "return factorial(n - 1)",
+                            "return n * factorial(n)"
+                        ],
+                        hint: "Multiply n by factorial of n-1",
+                        explanation: "Factorial uses recursion to multiply all numbers down to 1."
+                    },
+                    {
+                        language: "javascript",
+                        code: [
+                            "function fibonacci(n) {",
+                            "    if (n <= 1) return n;",
+                            "    {{INPUT}}"
+                        ],
+                        solution: "return fibonacci(n-1) + fibonacci(n-2);",
+                        options: [
+                            "return fibonacci(n-1) + fibonacci(n-2);",
+                            "return fibonacci(n) + fibonacci(n-1);",
+                            "return n-1 + n-2;",
+                            "return fib(n-1) + fib(n-2);"
+                        ],
+                        hint: "Sum of previous two fibonacci numbers",
+                        explanation: "Fibonacci sequence adds two previous numbers."
+                    },
+                    {
+                        language: "c",
+                        code: [
+                            "int find_max(int arr[], int size) {",
+                            "    int max = arr[0];",
+                            "    for(int i=1; i<size; i++)",
+                            "        {{INPUT}}",
+                            "    return max;",
+                            "}"
+                        ],
+                        solution: "if(arr[i] > max) max = arr[i];",
+                        options: [
+                            "if(arr[i] > max) max = arr[i];",
+                            "if(arr[i] < max) max = arr[i];",
+                            "max = arr[i];",
+                            "if(max > arr[i]) max = arr[i];"
+                        ],
+                        hint: "Update max if current element is larger",
+                        explanation: "Find maximum by comparing each element."
+                    },
+                    {
+                        language: "python",
+                        code: [
+                            "def is_prime(n):",
+                            "    if n < 2: return False",
+                            "    for i in range(2, int(n**0.5) + 1):",
+                            "        {{INPUT}}",
+                            "    return True"
+                        ],
+                        solution: "if n % i == 0: return False",
+                        options: [
+                            "if n % i == 0: return False",
+                            "if n / i == 0: return False",
+                            "if i % n == 0: return False",
+                            "if n % i != 0: return False"
+                        ],
+                        hint: "Check if n is divisible by i",
+                        explanation: "Prime numbers have no divisors except 1 and themselves."
+                    },
+                    {
+                        language: "javascript",
+                        code: [
+                            "function reverseString(str) {",
+                            "    {{INPUT}}"
+                        ],
+                        solution: "return str.split('').reverse().join('');",
+                        options: [
+                            "return str.split('').reverse().join('');",
+                            "return str.reverse().split('').join('');",
+                            "return str.join('').reverse().split('');",
+                            "return reverse(str);"
+                        ],
+                        hint: "Split into array, reverse, then join",
+                        explanation: "String reversal requires array manipulation."
+                    },
+                    {
+                        language: "c",
+                        code: [
+                            "char* string_copy(char* dest, char* src) {",
+                            "    int i = 0;",
+                            "    while(src[i] != '\\0') {",
+                            "        {{INPUT}}",
+                            "        i++;",
+                            "    }",
+                            "    dest[i] = '\\0';",
+                            "    return dest;",
+                            "}"
+                        ],
+                        solution: "dest[i] = src[i];",
+                        options: [
+                            "dest[i] = src[i];",
+                            "dest = src[i];",
+                            "dest[i] = src;",
+                            "src[i] = dest[i];"
+                        ],
+                        hint: "Copy character by character",
+                        explanation: "String copy transfers each character from source to destination."
+                    },
+                    {
+                        language: "python",
+                        code: [
+                            "def binary_search(arr, target):",
+                            "    left, right = 0, len(arr)-1",
+                            "    while left <= right:",
+                            "        mid = (left + right) // 2",
+                            "        if arr[mid] == target: return mid",
+                            "        elif arr[mid] < target:",
+                            "            {{INPUT}}",
+                            "        else: right = mid - 1",
+                            "    return -1"
+                        ],
+                        solution: "left = mid + 1",
+                        options: [
+                            "left = mid + 1",
+                            "right = mid + 1",
+                            "left = mid - 1",
+                            "left = mid"
+                        ],
+                        hint: "Search in right half",
+                        explanation: "Binary search eliminates half of remaining elements each iteration."
+                    },
+                    {
+                        language: "javascript",
+                        code: [
+                            "function countVowels(str) {",
+                            "    const vowels = 'aeiouAEIOU';",
+                            "    let count = 0;",
+                            "    for(let char of str)",
+                            "        {{INPUT}}",
+                            "    return count;",
+                            "}"
+                        ],
+                        solution: "if(vowels.includes(char)) count++;",
+                        options: [
+                            "if(vowels.includes(char)) count++;",
+                            "if(char.includes(vowels)) count++;",
+                            "if(vowels == char) count++;",
+                            "if(char in vowels) count++;"
+                        ],
+                        hint: "Check if character is in vowels string",
+                        explanation: "Count vowels by checking membership in vowels set."
+                    },
+                    {
+                        language: "c",
+                        code: [
+                            "void bubble_sort(int arr[], int n) {",
+                            "    for(int i=0; i<n-1; i++)",
+                            "        for(int j=0; j<n-i-1; j++)",
+                            "            if(arr[j] > arr[j+1]) {",
+                            "                {{INPUT}}",
+                            "            }",
+                            "}"
+                        ],
+                        solution: "swap(&arr[j], &arr[j+1]);",
+                        options: [
+                            "swap(&arr[j], &arr[j+1]);",
+                            "swap(arr[j], arr[j+1]);",
+                            "arr[j] = arr[j+1];",
+                            "swap(arr[j], arr[j-1]);"
+                        ],
+                        hint: "Swap adjacent elements",
+                        explanation: "Bubble sort swaps adjacent elements if they're in wrong order."
+                    },
+                    {
+                        language: "python",
+                        code: [
+                            "def remove_duplicates(lst):",
+                            "    {{INPUT}}"
+                        ],
+                        solution: "return list(set(lst))",
+                        options: [
+                            "return list(set(lst))",
+                            "return set(list(lst))",
+                            "return unique(lst)",
+                            "return lst.unique()"
+                        ],
+                        hint: "Convert to set then back to list",
+                        explanation: "Sets automatically remove duplicates."
+                    },
+                    {
+                        language: "javascript",
+                        code: [
+                            "function sumArray(arr) {",
+                            "    {{INPUT}}"
+                        ],
+                        solution: "return arr.reduce((a, b) => a + b, 0);",
+                        options: [
+                            "return arr.reduce((a, b) => a + b, 0);",
+                            "return arr.map((a, b) => a + b);",
+                            "return arr.sum();",
+                            "return reduce(arr, 0);"
+                        ],
+                        hint: "Use reduce to sum all elements",
+                        explanation: "Reduce accumulates values into single result."
+                    },
+                    {
+                        language: "c",
+                        code: [
+                            "int string_length(char* str) {",
+                            "    int len = 0;",
+                            "    {{INPUT}}",
+                            "    return len;",
+                            "}"
+                        ],
+                        solution: "while(str[len] != '\\0') len++;",
+                        options: [
+                            "while(str[len] != '\\0') len++;",
+                            "while(str[len] == '\\0') len++;",
+                            "for(len=0; str; len++);",
+                            "while(str != '\\0') len++;"
+                        ],
+                        hint: "Count until null terminator",
+                        explanation: "String length is count of characters before null terminator."
+                    },
+                    {
+                        language: "python",
+                        code: [
+                            "def flatten_list(nested):",
+                            "    flat = []",
+                            "    for item in nested:",
+                            "        if isinstance(item, list):",
+                            "            {{INPUT}}",
+                            "        else:",
+                            "            flat.append(item)",
+                            "    return flat"
+                        ],
+                        solution: "flat.extend(flatten_list(item))",
+                        options: [
+                            "flat.extend(flatten_list(item))",
+                            "flat.append(flatten_list(item))",
+                            "flat.add(flatten_list(item))",
+                            "flat += item"
+                        ],
+                        hint: "Recursively flatten nested lists",
+                        explanation: "Flatten nested lists by recursively extending result."
+                    },
+                    {
+                        language: "javascript",
+                        code: [
+                            "function isPalindrome(str) {",
+                            "    const cleaned = str.toLowerCase().replace(/[^a-z0-9]/g, '');",
+                            "    {{INPUT}}"
+                        ],
+                        solution: "return cleaned === cleaned.split('').reverse().join('');",
+                        options: [
+                            "return cleaned === cleaned.split('').reverse().join('');",
+                            "return cleaned == reverse(cleaned);",
+                            "return cleaned === cleaned.reverse();",
+                            "return str === str.reverse();"
+                        ],
+                        hint: "Compare string with its reverse",
+                        explanation: "Palindromes read same forwards and backwards."
+                    },
+                    {
+                        language: "c",
+                        code: [
+                            "int power(int base, int exp) {",
+                            "    if(exp == 0) return 1;",
+                            "    {{INPUT}}"
+                        ],
+                        solution: "return base * power(base, exp-1);",
+                        options: [
+                            "return base * power(base, exp-1);",
+                            "return power(base, exp-1);",
+                            "return base + power(base, exp-1);",
+                            "return base ^ exp;"
+                        ],
+                        hint: "Multiply base by power of base^(exp-1)",
+                        explanation: "Power function uses recursion to multiply base exp times."
+                    },
+                    {
+                        language: "python",
+                        code: [
+                            "def matrix_multiply(A, B):",
+                            "    result = [[0]*len(B[0]) for _ in range(len(A))]",
+                            "    for i in range(len(A)):",
+                            "        for j in range(len(B[0])):",
+                            "            for k in range(len(B)):",
+                            "                {{INPUT}}",
+                            "    return result"
+                        ],
+                        solution: "result[i][j] += A[i][k] * B[k][j]",
+                        options: [
+                            "result[i][j] += A[i][k] * B[k][j]",
+                            "result[i][j] = A[i][k] * B[k][j]",
+                            "result[i][j] += A[k][i] * B[j][k]",
+                            "result[i][j] = A[i][j] * B[i][j]"
+                        ],
+                        hint: "Accumulate product of corresponding elements",
+                        explanation: "Matrix multiplication sums products of row and column elements."
+                    },
+                    {
+                        language: "javascript",
+                        code: [
+                            "function debounce(func, delay) {",
+                            "    let timeout;",
+                            "    return function(...args) {",
+                            "        clearTimeout(timeout);",
+                            "        {{INPUT}}",
+                            "    };",
+                            "}"
+                        ],
+                        solution: "timeout = setTimeout(() => func(...args), delay);",
+                        options: [
+                            "timeout = setTimeout(() => func(...args), delay);",
+                            "timeout = setInterval(() => func(...args), delay);",
+                            "setTimeout(func, delay);",
+                            "timeout = delay(() => func(...args));"
+                        ],
+                        hint: "Set timeout to call function after delay",
+                        explanation: "Debounce delays function execution until after delay period."
+                    },
+                    {
+                        language: "c",
+                        code: [
+                            "void reverse_array(int arr[], int size) {",
+                            "    for(int i=0; i<size/2; i++) {",
+                            "        {{INPUT}}",
+                            "    }",
+                            "}"
+                        ],
+                        solution: "swap(&arr[i], &arr[size-1-i]);",
+                        options: [
+                            "swap(&arr[i], &arr[size-1-i]);",
+                            "swap(arr[i], arr[size-i]);",
+                            "arr[i] = arr[size-1-i];",
+                            "swap(&arr[i], &arr[i]);"
+                        ],
+                        hint: "Swap elements from both ends",
+                        explanation: "Array reversal swaps elements symmetrically from ends."
+                    },
+                    {
+                        language: "python",
+                        code: [
+                            "def quick_sort(arr):",
+                            "    if len(arr) <= 1: return arr",
+                            "    pivot = arr[len(arr)//2]",
+                            "    left = [x for x in arr if x < pivot]",
+                            "    middle = [x for x in arr if x == pivot]",
+                            "    {{INPUT}}",
+                            "    return quick_sort(left) + middle + quick_sort(right)"
+                        ],
+                        solution: "right = [x for x in arr if x > pivot]",
+                        options: [
+                            "right = [x for x in arr if x > pivot]",
+                            "right = [x for x in arr if x < pivot]",
+                            "right = [x for x in arr if x >= pivot]",
+                            "right = arr[x > pivot]"
+                        ],
+                        hint: "Select elements greater than pivot",
+                        explanation: "Quick sort partitions array around pivot value."
+                    },
+                    {
+                        language: "javascript",
+                        code: [
+                            "function deepClone(obj) {",
+                            "    if(obj === null || typeof obj !== 'object') return obj;",
+                            "    {{INPUT}}"
+                        ],
+                        solution: "return JSON.parse(JSON.stringify(obj));",
+                        options: [
+                            "return JSON.parse(JSON.stringify(obj));",
+                            "return Object.clone(obj);",
+                            "return obj.clone();",
+                            "return {...obj};"
+                        ],
+                        hint: "Use JSON methods for deep copy",
+                        explanation: "Deep cloning creates independent copy of nested objects."
+                    },
+                    {
+                        language: "c",
+                        code: [
+                            "int gcd(int a, int b) {",
+                            "    {{INPUT}}",
+                            "    return gcd(b, a % b);",
+                            "}"
+                        ],
+                        solution: "if(b == 0) return a;",
+                        options: [
+                            "if(b == 0) return a;",
+                            "if(a == 0) return b;",
+                            "if(b != 0) return a;",
+                            "while(b > 0) return a;"
+                        ],
+                        hint: "Base case when b becomes 0",
+                        explanation: "Euclidean algorithm finds GCD through recursive modulo."
+                    },
+                    {
+                        language: "python",
+                        code: [
+                            "def count_words(text):",
+                            "    {{INPUT}}"
+                        ],
+                        solution: "return len(text.split())",
+                        options: [
+                            "return len(text.split())",
+                            "return text.count(' ') + 1",
+                            "return len(text)",
+                            "return text.split().length"
+                        ],
+                        hint: "Split text and count resulting list",
+                        explanation: "Word count splits text by whitespace and counts elements."
+                    },
+                    {
+                        language: "javascript",
+                        code: [
+                            "function throttle(func, limit) {",
+                            "    let inThrottle;",
+                            "    return function(...args) {",
+                            "        if(!inThrottle) {",
+                            "            func(...args);",
+                            "            inThrottle = true;",
+                            "            {{INPUT}}",
+                            "        }",
+                            "    };",
+                            "}"
+                        ],
+                        solution: "setTimeout(() => inThrottle = false, limit);",
+                        options: [
+                            "setTimeout(() => inThrottle = false, limit);",
+                            "setInterval(() => inThrottle = false, limit);",
+                            "inThrottle = false;",
+                            "setTimeout(inThrottle = false, limit);"
+                        ],
+                        hint: "Reset throttle after limit period",
+                        explanation: "Throttle limits function calls to once per time period."
+                    },
+                    {
+                        language: "c",
+                        code: [
+                            "void insertion_sort(int arr[], int n) {",
+                            "    for(int i=1; i<n; i++) {",
+                            "        int key = arr[i];",
+                            "        int j = i-1;",
+                            "        while(j>=0 && arr[j]>key) {",
+                            "            {{INPUT}}",
+                            "            j--;",
+                            "        }",
+                            "        arr[j+1] = key;",
+                            "    }",
+                            "}"
+                        ],
+                        solution: "arr[j+1] = arr[j];",
+                        options: [
+                            "arr[j+1] = arr[j];",
+                            "arr[j] = arr[j+1];",
+                            "arr[j] = key;",
+                            "arr[j+1] = key;"
+                        ],
+                        hint: "Shift element to right",
+                        explanation: "Insertion sort shifts larger elements right to make space."
+                    },
+                    {
+                        language: "python",
+                        code: [
+                            "def find_missing(arr, n):",
+                            "    total = n * (n + 1) // 2",
+                            "    {{INPUT}}"
+                        ],
+                        solution: "return total - sum(arr)",
+                        options: [
+                            "return total - sum(arr)",
+                            "return sum(arr) - total",
+                            "return total / sum(arr)",
+                            "return n - sum(arr)"
+                        ],
+                        hint: "Expected sum minus actual sum",
+                        explanation: "Find missing number by comparing expected and actual sums."
+                    },
+                    {
+                        language: "javascript",
+                        code: [
+                            "function memoize(fn) {",
+                            "    const cache = {};",
+                            "    return function(...args) {",
+                            "        const key = JSON.stringify(args);",
+                            "        if(key in cache) return cache[key];",
+                            "        {{INPUT}}",
+                            "        return cache[key];",
+                            "    };",
+                            "}"
+                        ],
+                        solution: "cache[key] = fn(...args);",
+                        options: [
+                            "cache[key] = fn(...args);",
+                            "cache = fn(...args);",
+                            "return fn(...args);",
+                            "cache[key] = args;"
+                        ],
+                        hint: "Store function result in cache",
+                        explanation: "Memoization caches function results for performance."
+                    },
+                    {
+                        language: "c",
+                        code: [
+                            "int binary_to_decimal(char* binary) {",
+                            "    int decimal = 0;",
+                            "    for(int i=0; binary[i]!='\\0'; i++) {",
+                            "        decimal = decimal * 2;",
+                            "        {{INPUT}}",
+                            "    }",
+                            "    return decimal;",
+                            "}"
+                        ],
+                        solution: "if(binary[i] == '1') decimal++;",
+                        options: [
+                            "if(binary[i] == '1') decimal++;",
+                            "if(binary[i] == 1) decimal++;",
+                            "decimal += binary[i];",
+                            "if(binary[i]) decimal++;"
+                        ],
+                        hint: "Add 1 if current bit is '1'",
+                        explanation: "Binary to decimal conversion processes each bit left to right."
+                    },
+                    {
+                        language: "python",
+                        code: [
+                            "def rotate_array(arr, k):",
+                            "    k = k % len(arr)",
+                            "    {{INPUT}}"
+                        ],
+                        solution: "return arr[-k:] + arr[:-k]",
+                        options: [
+                            "return arr[-k:] + arr[:-k]",
+                            "return arr[k:] + arr[:k]",
+                            "return arr.rotate(k)",
+                            "return arr[-k] + arr[k]"
+                        ],
+                        hint: "Slice and concatenate array parts",
+                        explanation: "Array rotation moves elements from end to beginning."
+                    },
+                    {
+                        language: "javascript",
+                        code: [
+                            "function groupBy(arr, key) {",
+                            "    return arr.reduce((result, item) => {",
+                            "        {{INPUT}}",
+                            "        result[group].push(item);",
+                            "        return result;",
+                            "    }, {});",
+                            "}"
+                        ],
+                        solution: "const group = item[key]; (result[group] = result[group] || []);",
+                        options: [
+                            "const group = item[key]; (result[group] = result[group] || []);",
+                            "const group = key; result[group] = [];",
+                            "result[key] = item;",
+                            "group = item; result[group] = [];"
+                        ],
+                        hint: "Get group key and initialize array if needed",
+                        explanation: "GroupBy organizes array elements by common property."
                     }
                 ];
             }
