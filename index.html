@@ -349,7 +349,7 @@
 
         /* Character images */
         .character-pixel.tobias {
-            background: url('photos/horvath.png') center center / cover no-repeat !important;
+            background: url('photos/ivan.png') center center / cover no-repeat !important;
         }
 
         .character-pixel.vojtech {
@@ -361,7 +361,7 @@
         }
 
         .character-pixel.adam {
-            background: url('photos/hojer.png') center center / cover no-repeat !important;
+            background: url('photos/adam.png') center center / cover no-repeat !important;
         }
 
         .character-name {
@@ -476,7 +476,7 @@
         }
 
         .character-display.tobias {
-            background: url('photos/horvath.png') center center / cover no-repeat;
+            background: url('photos/ivan.png') center center / cover no-repeat;
         }
 
         .character-display.vojtech {
@@ -488,7 +488,7 @@
         }
 
         .character-display.adam {
-            background: url('photos/hojer.png') center center / cover no-repeat;
+            background: url('photos/adam.png') center center / cover no-repeat;
         }
 
         .character-details h2 {
@@ -1317,6 +1317,91 @@
             color: var(--text-secondary);
         }
 
+        /* New Freelance Modal Styles */
+        .freelance-modal {
+            max-width: 700px !important;
+        }
+
+        .freelance-header {
+            border-bottom: 2px solid rgba(88, 166, 255, 0.3);
+            padding-bottom: 20px !important;
+        }
+
+        .freelance-title-section {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        .freelance-category-badge {
+            background: linear-gradient(135deg, rgba(88, 166, 255, 0.2), rgba(88, 166, 255, 0.1));
+            border: 2px solid rgba(88, 166, 255, 0.4);
+            border-radius: 20px;
+            padding: 8px 20px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #58A6FF;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            animation: fadeIn 0.4s;
+        }
+
+        .freelance-reward-display {
+            display: flex;
+            gap: 15px;
+            margin: 20px 0;
+            padding: 15px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .reward-item {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 15px;
+            border-radius: 10px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+
+        .reward-correct {
+            background: linear-gradient(135deg, rgba(46, 204, 113, 0.15), rgba(39, 174, 96, 0.1));
+            border: 2px solid rgba(46, 204, 113, 0.3);
+        }
+
+        .reward-wrong {
+            background: linear-gradient(135deg, rgba(231, 76, 60, 0.15), rgba(192, 57, 43, 0.1));
+            border: 2px solid rgba(231, 76, 60, 0.3);
+        }
+
+        .reward-icon {
+            font-size: 18px;
+        }
+
+        .reward-label {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 13px;
+        }
+
+        .reward-value {
+            margin-left: auto;
+            font-size: 16px;
+            font-weight: 700;
+        }
+
+        .reward-correct .reward-value {
+            color: #2ECC71;
+        }
+
+        .reward-wrong .reward-value {
+            color: #E74C3C;
+        }
+
         .question-container {
             background: var(--bg-tertiary);
             border-radius: 10px;
@@ -1783,6 +1868,144 @@
 
         .submit-button:active {
             transform: translateY(0);
+        }
+
+        /* New Coding Modal Styles */
+        .coding-modal-header {
+            border-bottom: 2px solid rgba(76, 175, 80, 0.3);
+            padding-bottom: 20px !important;
+        }
+
+        .coding-title-section {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        .coding-file-badge {
+            background: linear-gradient(135deg, rgba(76, 175, 80, 0.2), rgba(76, 175, 80, 0.1));
+            border: 2px solid rgba(76, 175, 80, 0.4);
+            border-radius: 20px;
+            padding: 8px 20px;
+            font-size: 14px;
+            font-weight: 600;
+            color: #4caf50;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .coding-task-description {
+            background: rgba(76, 175, 80, 0.1);
+            border-left: 4px solid #4caf50;
+            padding: 15px 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+        }
+
+        .task-title {
+            color: #4caf50;
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .task-explanation {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 14px;
+        }
+
+        .code-editor-wrapper {
+            background: #1e1e1e;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .code-completion-section {
+            margin-top: 25px;
+        }
+
+        .completion-label {
+            color: var(--text-primary);
+            font-size: 15px;
+            font-weight: 600;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .code-options-container {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+        }
+
+        .code-option-button {
+            background: var(--bg-tertiary);
+            border: 2px solid var(--border);
+            border-radius: 10px;
+            padding: 20px;
+            text-align: left;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            font-size: 13px;
+            color: #d4d4d4;
+            line-height: 1.6;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .code-option-button:hover {
+            border-color: var(--primary);
+            background: rgba(88, 166, 255, 0.05);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(88, 166, 255, 0.2);
+        }
+
+        .code-option-button.correct {
+            border-color: #4caf50;
+            background: linear-gradient(135deg, rgba(76, 175, 80, 0.2), rgba(76, 175, 80, 0.1));
+            animation: correctPulse 0.5s ease;
+        }
+
+        .code-option-button.incorrect {
+            border-color: #f44336;
+            background: linear-gradient(135deg, rgba(244, 67, 54, 0.2), rgba(244, 67, 54, 0.1));
+            animation: incorrectShake 0.5s ease;
+        }
+
+        @keyframes correctPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.03); }
+        }
+
+        @keyframes incorrectShake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .code-option-button pre {
+            margin: 0;
+            white-space: pre-wrap;
+            word-wrap: break-word;
+        }
+
+        .code-option-button .option-label {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 11px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.6);
         }
 
         /* Custom scrollbar for code editor */
@@ -2296,10 +2519,18 @@
         
         <div class="characters-grid">
             <!-- Tobias Horvart - Databases -->
+            <!-- Ivan Alipov - Database -->
             <div class="character-card" data-character="tobias">
                 <div class="character-pixel tobias"></div>
-                <div class="character-name">Tobias Horvarth</div>
+                <div class="character-name">Ivan Alipov</div>
                 <div class="character-bonus">Database Architect • <strong>+20% Database Earnings</strong></div>
+            </div>
+            
+            <!-- Adam Hojer - Programming -->
+            <div class="character-card" data-character="adam">
+                <div class="character-pixel adam"></div>
+                <div class="character-name">Adam Hojer</div>
+                <div class="character-bonus">Programming Guru • <strong>+20% Coding Progress</strong></div>
             </div>
             
             <!-- Vojtech Aloy - Networks -->
@@ -2314,13 +2545,6 @@
                 <div class="character-pixel hynek"></div>
                 <div class="character-name">Hynek Schiffner</div>
                 <div class="character-bonus">Hardware Engineer • <strong>+20% Hardware Earnings</strong></div>
-            </div>
-            
-            <!-- Adam Hojer - Programming -->
-            <div class="character-card" data-character="adam">
-                <div class="character-pixel adam"></div>
-                <div class="character-name">Adam Hojer</div>
-                <div class="character-bonus">Programming Guru • <strong>+20% Coding Progress</strong></div>
             </div>
         </div>
         
@@ -2508,37 +2732,29 @@
 
     <!-- Work Modal -->
     <div class="modal" id="workModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2 class="modal-title" data-icon="💼">Freelance Development Work</h2>
-                <button class="close-button" id="closeWorkModal">&times;</button>
+        <div class="modal-content freelance-modal">
+            <div class="modal-header freelance-header">
+                <div class="freelance-title-section">
+                    <h2 class="modal-title" data-icon="💼">Freelance Development Work</h2>
+                    <div class="freelance-category-badge" id="currentCategoryBadge">🗄️ Database</div>
+                </div>
             </div>
             
-            <div class="work-categories">
-                <div class="category-button active" data-category="databases">
-                    <div class="category-icon">🗄️</div>
-                    <div class="category-name">Databases</div>
-                    <div class="category-bonus" id="databasesBonus">+$15-25</div>
+            <div class="freelance-reward-display">
+                <div class="reward-item reward-correct">
+                    <span class="reward-icon">✅</span>
+                    <span class="reward-label">Correct Answer:</span>
+                    <span class="reward-value" id="correctReward">+$20</span>
                 </div>
-                <div class="category-button" data-category="networks">
-                    <div class="category-icon">🌐</div>
-                    <div class="category-name">Networks</div>
-                    <div class="category-bonus" id="networksBonus">+$15-25</div>
-                </div>
-                <div class="category-button" data-category="hardware">
-                    <div class="category-icon">🔧</div>
-                    <div class="category-name">Hardware</div>
-                    <div class="category-bonus" id="hardwareBonus">+$15-25</div>
-                </div>
-                <div class="category-button" data-category="economics">
-                    <div class="category-icon">📈</div>
-                    <div class="category-name">Economics</div>
-                    <div class="category-bonus" id="economicsBonus">+$15-25</div>
+                <div class="reward-item reward-wrong">
+                    <span class="reward-icon">❌</span>
+                    <span class="reward-label">Wrong Answer:</span>
+                    <span class="reward-value" id="wrongReward">-$5</span>
                 </div>
             </div>
             
             <div class="question-container">
-                <div class="question-text" id="questionText">Select a category to start working...</div>
+                <div class="question-text" id="questionText">Loading question...</div>
                 <div class="options-container" id="optionsContainer"></div>
             </div>
         </div>
@@ -2547,47 +2763,34 @@
     <!-- Coding Modal -->
     <div class="modal" id="codingModal">
         <div class="modal-content coding-modal-content">
-            <div class="modal-header" style="border-bottom: none; padding-bottom: 0;">
-                <h2 class="modal-title" data-icon="💻">OS Development - Code Editor</h2>
-                <button class="close-button" id="closeCodingModal">&times;</button>
+            <div class="modal-header coding-modal-header">
+                <div class="coding-title-section">
+                    <h2 class="modal-title" data-icon="💻">OS Development - Code Editor</h2>
+                    <div class="coding-file-badge" id="codingFileBadge">📄 main.c</div>
+                </div>
             </div>
             
             <div class="coding-container">
-                <!-- VS Code Style Editor Header -->
-                <div class="coding-editor-header">
-                    <div class="editor-tab">
-                        <div class="file-icon">📄</div>
-                        <span id="fileName">main.c</span>
-                        <div class="language-badge" id="languageBadge">C</div>
-                    </div>
+                <!-- Code Task Display -->
+                <div class="coding-task-description">
+                    <div class="task-title" id="taskTitle">Complete the code:</div>
+                    <div class="task-explanation" id="taskExplanation">Choose the correct code to complete the implementation</div>
                 </div>
                 
-                <!-- Code Editor Area -->
-                <div class="coding-task" id="codingTask">
+                <!-- Code Editor Area with incomplete code -->
+                <div class="code-editor-wrapper">
                     <div class="code-editor" id="codeEditor">
                         <!-- Code will be inserted here by JavaScript -->
                     </div>
                 </div>
                 
-                <!-- Options Section -->
-                <div class="code-options-section">
-                    <div class="options-label">💡 Choose the correct code and type it below:</div>
-                    <div class="code-options-grid" id="codeOptionsGrid">
-                        <!-- Options will be inserted here by JavaScript -->
+                <!-- Code Completion Options -->
+                <div class="code-completion-section">
+                    <div class="completion-label">🎯 Select the correct code completion:</div>
+                    <div class="code-options-container" id="codeOptionsContainer">
+                        <!-- Code options will be inserted here by JavaScript -->
                     </div>
                 </div>
-                
-                <!-- Input Section -->
-                <div class="code-input-section">
-                    <div class="input-label">Type your answer here:</div>
-                    <input type="text" class="code-input" id="codeInput" placeholder="Type the correct code here..." autocomplete="off" spellcheck="false">
-                    
-                    <div class="code-hint" id="codeHint">
-                        <span id="hintText">Hint: Complete the code above</span>
-                    </div>
-                </div>
-                
-                <button class="submit-button" id="submitCode">▶ Compile & Run</button>
             </div>
         </div>
     </div>
@@ -2767,8 +2970,12 @@
                 this.notificationId = 0;
                 this.isSubmitting = false; // Prevent multiple code submissions
                 this.rewardAlreadyGiven = false; // Prevent duplicate rewards
-                this.isAnswering = false; // Prevent multiple answer clicks in freelance work
+                this.isAnswering = false; // Prevent modal closing during question
+                this.isProcessingAnswer = false; // Prevent multiple answer clicks
+                this.isCoding = false; // Prevent modal closing during coding task
+                this.isProcessingCode = false; // Prevent multiple code option clicks
                 this.workModalTimeout = null; // Store timeout ID for auto-closing work modal
+                this.codingModalTimeout = null; // Store timeout ID for auto-closing coding modal
                 
                 this.initializeGame();
             }
@@ -2870,9 +3077,7 @@
                 document.getElementById('codeButton').addEventListener('click', () => this.showCodingModal());
                 document.getElementById('restButton').addEventListener('click', () => this.showRestModal());
 
-                // Modal close buttons
-                document.getElementById('closeWorkModal').addEventListener('click', () => this.closeModal('workModal'));
-                document.getElementById('closeCodingModal').addEventListener('click', () => this.closeModal('codingModal'));
+                // Modal close buttons (workModal and codingModal close automatically after answer)
                 document.getElementById('closeRestModal').addEventListener('click', () => this.closeModal('restModal'));
                 document.getElementById('closeAchievementsModal').addEventListener('click', () => this.closeModal('achievementsModal'));
                 document.getElementById('closeSettingsModal').addEventListener('click', () => this.closeModal('settingsModal'));
@@ -2881,20 +3086,9 @@
                 document.getElementById('achievementsBtn').addEventListener('click', () => this.showAchievementsModal());
                 document.getElementById('settingsBtn').addEventListener('click', () => this.showSettingsModal());
 
-                // Work category selection
-                document.querySelectorAll('.category-button').forEach(button => {
-                    button.addEventListener('click', () => this.selectCategory(button));
-                });
-
                 // Rest actions
                 document.querySelectorAll('.rest-option').forEach(option => {
                     option.addEventListener('click', () => this.handleRestAction(option.dataset.action));
-                });
-
-                // Code submission
-                document.getElementById('submitCode').addEventListener('click', () => this.submitCode());
-                document.getElementById('codeInput').addEventListener('keypress', (e) => {
-                    if (e.key === 'Enter') this.submitCode();
                 });
 
                 // Close modals on outside click
@@ -3130,38 +3324,63 @@
                     return;
                 }
 
-                this.currentCategory = 'databases';
-                this.updateCategoryBonuses();
+                // Randomly select category from available ones
+                const categories = ['databases', 'networks', 'hardware', 'programming'];
+                this.currentCategory = categories[Math.floor(Math.random() * categories.length)];
+                
+                // Update category badge
+                const categoryIcons = {
+                    databases: '🗄️ Database',
+                    networks: '🌐 Network',
+                    hardware: '🔧 Hardware',
+                    programming: '💻 Programming'
+                };
+                document.getElementById('currentCategoryBadge').textContent = categoryIcons[this.currentCategory];
+                
+                // Calculate and display rewards
+                this.updateRewardDisplay();
+                
+                // Load random question from selected category
                 this.loadRandomQuestion();
+                
+                // Show modal (cannot be closed until answered)
                 this.showModal('workModal');
-
+                
                 // Deduct energy for working
                 this.gameState.energy = Math.max(0, this.gameState.energy - 8);
                 this.updateUI();
             }
 
-            updateCategoryBonuses() {
-                const baseBonus = '+$10-20';
-                const boostedBonus = '+$12-24'; // +20% бонус
+            updateRewardDisplay() {
+                const baseCorrect = 20;
+                const baseWrong = -10; // Changed to -10 for 2:1 ratio
                 
-                const bonuses = {
-                    databases: this.gameState.character === 'tobias' ? boostedBonus : baseBonus,
-                    networks: this.gameState.character === 'vojtech' ? boostedBonus : baseBonus,
-                    hardware: this.gameState.character === 'hynek' ? boostedBonus : baseBonus,
-                    economics: baseBonus // No specific character bonus for economics
+                // Apply character bonuses (+20%)
+                const bonusMultiplier = this.hasCharacterBonus() ? 1.2 : 1.0;
+                
+                // Apply difficulty multipliers
+                const difficultyEarnings = {
+                    easy: 1.3,
+                    normal: 1.0,
+                    hard: 0.7
                 };
-
-                document.getElementById('databasesBonus').textContent = bonuses.databases;
-                document.getElementById('networksBonus').textContent = bonuses.networks;
-                document.getElementById('hardwareBonus').textContent = bonuses.hardware;
-                document.getElementById('economicsBonus').textContent = bonuses.economics;
+                const earningsMultiplier = difficultyEarnings[this.difficulty] || 1.0;
+                
+                const correctReward = Math.floor(baseCorrect * bonusMultiplier * earningsMultiplier);
+                const wrongPenalty = Math.floor(baseWrong * earningsMultiplier);
+                
+                document.getElementById('correctReward').textContent = `+$${correctReward}`;
+                document.getElementById('wrongReward').textContent = `$${wrongPenalty}`;
             }
 
-            selectCategory(button) {
-                document.querySelectorAll('.category-button').forEach(btn => btn.classList.remove('active'));
-                button.classList.add('active');
-                this.currentCategory = button.dataset.category;
-                this.loadRandomQuestion();
+            hasCharacterBonus() {
+                const bonuses = {
+                    databases: 'tobias',
+                    networks: 'vojtech',
+                    hardware: 'hynek',
+                    programming: 'adam'
+                };
+                return this.gameState.character === bonuses[this.currentCategory];
             }
 
             loadRandomQuestion() {
@@ -3169,6 +3388,11 @@
                 if (!categoryQuestions || categoryQuestions.length === 0) return;
 
                 this.currentQuestion = categoryQuestions[Math.floor(Math.random() * categoryQuestions.length)];
+                
+                // Set flag to prevent modal closing ONLY during active question
+                this.isAnswering = true;
+                this.isProcessingAnswer = false; // Reset processing flag for new question
+                
                 this.displayQuestion(this.currentQuestion);
             }
 
@@ -3205,13 +3429,13 @@
             }
 
             handleAnswer(clickedButton, correctIndex, explanation) {
-                // Prevent multiple clicks - if already answering, ignore
-                if (this.isAnswering) {
+                // Prevent multiple clicks - if already processing an answer, ignore
+                if (this.isProcessingAnswer) {
                     return;
                 }
                 
                 // Set flag to prevent duplicate clicks
-                this.isAnswering = true;
+                this.isProcessingAnswer = true;
                 
                 const options = document.querySelectorAll('.option-button');
                 
@@ -3271,16 +3495,20 @@
 
                 // Set new timeout and save its ID
                 this.workModalTimeout = setTimeout(() => {
-                    this.closeModal('workModal');
-                    this.loadRandomQuestion();
-                    // Reset flag after modal closes
+                    // Reset flags BEFORE closing modal
                     this.isAnswering = false;
+                    this.isProcessingAnswer = false;
+                    this.closeModal('workModal');
                     this.workModalTimeout = null;
-                }, 2500);
+                }, 1000); // Changed to 1 second
             }
 
             handleCorrectAnswer() {
-                let baseEarnings = 10 + Math.floor(Math.random() * 11); // $10-20
+                let baseEarnings = 20; // Fixed $20 base reward
+                
+                // Character bonus +20%
+                const bonusMultiplier = this.hasCharacterBonus() ? 1.2 : 1.0;
+                baseEarnings = Math.floor(baseEarnings * bonusMultiplier);
                 
                 // Difficulty earnings multiplier
                 const difficultyEarnings = {
@@ -3289,13 +3517,6 @@
                     hard: 0.7     // -30% money
                 };
                 baseEarnings = Math.floor(baseEarnings * (difficultyEarnings[this.difficulty] || 1.0));
-                
-                // Character bonuses +20%
-                if ((this.gameState.character === 'tobias' && this.currentCategory === 'databases') ||
-                    (this.gameState.character === 'vojtech' && this.currentCategory === 'networks') ||
-                    (this.gameState.character === 'hynek' && this.currentCategory === 'hardware')) {
-                    baseEarnings = Math.floor(baseEarnings * 1.2);
-                }
 
                 // Combo bonus!
                 if (this.gameState.correctStreak >= 5) {
@@ -3306,11 +3527,20 @@
                 this.gameState.money += baseEarnings;
                 this.gameState.correctAnswers++;
                 this.gameState.mood = Math.min(100, this.gameState.mood + 3);
-                // Убрали прогресс ОС за ответы на вопросы!
             }
 
             handleIncorrectAnswer() {
-                this.gameState.money = Math.max(0, this.gameState.money - 5);
+                let penalty = 10; // Fixed $10 penalty (2:1 ratio with $20 reward)
+                
+                // Apply difficulty multiplier to penalty
+                const difficultyEarnings = {
+                    easy: 1.3,
+                    normal: 1.0,
+                    hard: 0.7
+                };
+                penalty = Math.floor(penalty * (difficultyEarnings[this.difficulty] || 1.0));
+                
+                this.gameState.money = Math.max(0, this.gameState.money - penalty);
                 this.gameState.mood = Math.max(0, this.gameState.mood - 5);
             }
 
@@ -3321,22 +3551,15 @@
                 }
 
                 // Reset flags for new task
-                this.isSubmitting = false;
-                this.rewardAlreadyGiven = false;
+                this.isCoding = true; // Prevent modal closing
+                this.isProcessingCode = false; // Allow clicking options
+                this.codingModalTimeout = null;
 
                 // Load random coding task BEFORE showing modal
                 this.loadRandomCodingTask();
                 
-                // Make sure modal is properly displayed
+                // Show modal
                 this.showModal('codingModal');
-                
-                // Focus on input after a short delay to ensure modal is visible
-                setTimeout(() => {
-                    const codeInput = document.getElementById('codeInput');
-                    if (codeInput) {
-                        codeInput.focus();
-                    }
-                }, 100);
 
                 // Deduct energy for coding
                 this.gameState.energy = Math.max(0, this.gameState.energy - 12);
@@ -3356,27 +3579,24 @@
             }
 
             displayCodingTask(task) {
-                const codeEditor = document.getElementById('codeEditor');
-                if (!codeEditor) {
-                    console.error('Code editor element not found!');
-                    return;
-                }
-                
-                // Update language badge and file name
+                // Update file badge
                 const languageMap = {
-                    'c': { name: 'C', icon: '📄', file: 'main.c' },
-                    'python': { name: 'Python', icon: '🐍', file: 'script.py' },
-                    'javascript': { name: 'JavaScript', icon: '📜', file: 'app.js' },
-                    'java': { name: 'Java', icon: '☕', file: 'Main.java' },
-                    'asm': { name: 'Assembly', icon: '⚙️', file: 'boot.asm' }
+                    'c': { file: '📄 main.c' },
+                    'python': { file: '🐍 script.py' },
+                    'javascript': { file: '📜 app.js' },
+                    'java': { file: '☕ Main.java' },
+                    'asm': { file: '⚙️ boot.asm' }
                 };
                 
-                const langInfo = languageMap[task.language] || { name: task.language.toUpperCase(), icon: '📄', file: 'code.txt' };
+                const langInfo = languageMap[task.language] || { file: '📄 code.txt' };
+                document.getElementById('codingFileBadge').textContent = langInfo.file;
                 
-                document.getElementById('languageBadge').textContent = langInfo.name;
-                document.getElementById('fileName').textContent = langInfo.file;
+                // Update task description
+                document.getElementById('taskTitle').textContent = task.title || 'Complete the code:';
+                document.getElementById('taskExplanation').textContent = task.explanation || 'Choose the correct code to complete the implementation';
                 
                 // Build code with syntax highlighting
+                const codeEditor = document.getElementById('codeEditor');
                 let htmlContent = '';
                 
                 task.code.forEach((line, index) => {
@@ -3389,26 +3609,20 @@
                             </div>
                         `;
                     } else {
-                        // Show placeholder for missing line with blinking cursor effect
+                        // Show placeholder for missing line
                         htmlContent += `
-                            <div class="code-line" style="background: rgba(88, 166, 255, 0.05);">
-                                <span class="line-number" style="color: var(--primary);">${index + 1}</span>
-                                <span class="code-content comment">    // ⟨ Complete this line below ⟩</span>
+                            <div class="code-line" style="background: rgba(76, 175, 80, 0.1); border-left: 3px solid #4caf50;">
+                                <span class="line-number" style="color: #4caf50;">${index + 1}</span>
+                                <span class="code-content comment">    // ⟨ Choose the correct completion below ⟩</span>
                             </div>
                         `;
                     }
                 });
                 
                 codeEditor.innerHTML = htmlContent;
-
-                // Update hint
-                const hintElement = document.getElementById('hintText');
-                if (hintElement) {
-                    hintElement.textContent = task.hint;
-                }
                 
-                // Display code options
-                const optionsContainer = document.getElementById('codeOptionsGrid');
+                // Display code options as clickable buttons
+                const optionsContainer = document.getElementById('codeOptionsContainer');
                 if (optionsContainer && task.options && task.options.length > 0) {
                     optionsContainer.innerHTML = '';
                     
@@ -3425,49 +3639,76 @@
                     }
                     
                     optionsWithCorrectness.forEach((optionData, index) => {
-                        const optionCard = document.createElement('div');
-                        optionCard.className = 'code-option';
-                        optionCard.dataset.index = index;
-                        optionCard.dataset.isCorrect = optionData.isCorrect;
-                        optionCard.dataset.code = optionData.text;
+                        const button = document.createElement('button');
+                        button.className = 'code-option-button';
+                        button.dataset.isCorrect = optionData.isCorrect;
                         
                         const letter = String.fromCharCode(65 + index); // A, B, C, D
                         
-                        optionCard.innerHTML = `
-                            <div class="option-letter">${letter}</div>
-                            <code class="option-code">${this.escapeHtml(optionData.text)}</code>
+                        button.innerHTML = `
+                            <span class="option-label">${letter}</span>
+                            <pre>${this.escapeHtml(optionData.text)}</pre>
                         `;
                         
-                        // Click handler to help user
-                        optionCard.addEventListener('click', () => {
-                            // Remove selected class from all options
-                            document.querySelectorAll('.code-option').forEach(opt => {
-                                opt.classList.remove('selected');
-                            });
-                            
-                            // Add selected class to clicked option
-                            optionCard.classList.add('selected');
-                            
-                            // Optionally auto-fill the input (user can still edit)
-                            const codeInput = document.getElementById('codeInput');
-                            if (codeInput) {
-                                codeInput.value = optionData.text;
-                                codeInput.focus();
-                            }
-                        });
+                        // Click handler
+                        button.onclick = () => this.handleCodeAnswer(button, optionData.isCorrect, task);
                         
-                        optionsContainer.appendChild(optionCard);
+                        optionsContainer.appendChild(button);
                     });
                 }
+            }
+
+            handleCodeAnswer(clickedButton, isCorrect, task) {
+                // Prevent multiple clicks
+                if (this.isProcessingCode) {
+                    return;
+                }
                 
-                // Focus on input field
-                setTimeout(() => {
-                    const codeInput = document.getElementById('codeInput');
-                    if (codeInput) {
-                        codeInput.value = '';
-                        codeInput.focus();
-                    }
-                }, 100);
+                this.isProcessingCode = true;
+                
+                const options = document.querySelectorAll('.code-option-button');
+                
+                // Disable all buttons
+                options.forEach(option => {
+                    option.disabled = true;
+                    option.style.cursor = 'not-allowed';
+                });
+
+                this.gameState.codingTasksCompleted++;
+
+                if (isCorrect) {
+                    // Correct answer
+                    clickedButton.classList.add('correct');
+                    
+                    this.handleSuccessfulCode();
+                    this.showNotification(`✓ Perfect! ${task.explanation}`, 'success');
+                } else {
+                    // Wrong answer
+                    clickedButton.classList.add('incorrect');
+                    
+                    // Highlight correct answer
+                    options.forEach(option => {
+                        if (option.dataset.isCorrect === 'true') {
+                            option.classList.add('correct');
+                        }
+                    });
+                    
+                    this.handleFailedCode();
+                    this.showNotification(`✗ Incorrect! ${task.explanation}`, 'error');
+                }
+
+                // Auto-close after 1 second
+                if (this.codingModalTimeout) {
+                    clearTimeout(this.codingModalTimeout);
+                }
+
+                this.codingModalTimeout = setTimeout(() => {
+                    // Reset flags BEFORE closing
+                    this.isCoding = false;
+                    this.isProcessingCode = false;
+                    this.closeModal('codingModal');
+                    this.codingModalTimeout = null;
+                }, 1000);
             }
 
             escapeHtml(text) {
@@ -3748,10 +3989,17 @@
                     }
                         
                     case 'walk': {
-                        // Проверка: нужна минимальная энергия для прогулки
-                        if (this.gameState.energy < 15) {
-                            this.showNotification("😫 Too tired for a walk! Need at least 15% energy.", 'error');
-                            return;
+                        // Если энергия критически мала (< 5), даем небольшой восстановительный эффект
+                        if (this.gameState.energy < 5) {
+                            // Короткий отдых на свежем воздухе - восстанавливает немного энергии
+                            const energyGain = 10;
+                            const moodGain = 5;
+                            
+                            this.gameState.energy = Math.min(100, this.gameState.energy + energyGain);
+                            this.gameState.mood = Math.min(100, this.gameState.mood + moodGain);
+                            
+                            this.showNotification(`🧘 Short rest outdoors! +${energyGain} Energy, +${moodGain} Mood\n(Too exhausted for a proper walk, just resting)`, 'success');
+                            break;
                         }
                         
                         // Проверка: нельзя гулять если настроение уже высокое
@@ -3856,6 +4104,18 @@
             }
 
             closeModal(modalId) {
+                // Block closing workModal if user is answering a question
+                if (modalId === 'workModal' && this.isAnswering) {
+                    this.showNotification('⚠️ Please answer the question first!', 'warning');
+                    return;
+                }
+                
+                // Block closing codingModal if user is completing a task
+                if (modalId === 'codingModal' && this.isCoding) {
+                    this.showNotification('⚠️ Please complete the coding task first!', 'warning');
+                    return;
+                }
+                
                 document.getElementById(modalId).style.display = 'none';
                 
                 // Clear work modal timeout if closing work modal
@@ -3863,6 +4123,15 @@
                     clearTimeout(this.workModalTimeout);
                     this.workModalTimeout = null;
                     this.isAnswering = false; // Reset answering flag too
+                    this.isProcessingAnswer = false; // Reset processing flag too
+                }
+                
+                // Clear coding modal timeout if closing coding modal
+                if (modalId === 'codingModal' && this.codingModalTimeout) {
+                    clearTimeout(this.codingModalTimeout);
+                    this.codingModalTimeout = null;
+                    this.isCoding = false; // Reset coding flag too
+                    this.isProcessingCode = false; // Reset processing flag too
                 }
             }
 
@@ -3906,7 +4175,7 @@
 
             getCharacterName() {
                 const names = {
-                    tobias: 'Tobias Horvarth',
+                    tobias: 'Ivan Alipov',
                     vojtech: 'Vojtech Aloy',
                     hynek: 'Hynek Schiffner',
                     adam: 'Adam Hojer'
@@ -4232,196 +4501,117 @@
                             explanation: "PCI Express is the standard interface for modern graphics cards."
                         }
                     ],
-                    economics: [
+                    programming: [
                         {
-                            question: "What are variable costs in software development?",
+                            question: "What is the purpose of a variable in programming?",
                             options: [
-                                "A) Costs that change with production levels",
-                                "B) Fixed monthly expenses",
-                                "C) One-time setup costs"
+                                "A) Store and manipulate data",
+                                "B) Execute code repeatedly",
+                                "C) Display output to users"
                             ],
                             correct: 0,
-                            explanation: "Variable costs scale with usage, like cloud computing expenses."
+                            explanation: "Variables are containers that hold data values in memory."
                         },
                         {
-                            question: "What does ROI measure?",
+                            question: "What is a function in programming?",
                             options: [
-                                "A) Return on Investment",
-                                "B) Rate of Interest",
-                                "C) Risk of Inflation"
+                                "A) Reusable block of code",
+                                "B) Type of variable",
+                                "C) Error message"
                             ],
                             correct: 0,
-                            explanation: "ROI calculates the profitability of an investment."
+                            explanation: "Functions are reusable code blocks that perform specific tasks."
                         },
                         {
-                            question: "What is opportunity cost?",
+                            question: "What does 'if statement' do?",
                             options: [
-                                "A) Value of the next best alternative",
-                                "B) Cost of opportunities",
-                                "C) Investment return rate"
+                                "A) Makes decisions based on conditions",
+                                "B) Creates loops",
+                                "C) Defines variables"
                             ],
                             correct: 0,
-                            explanation: "Opportunity cost is what you give up when choosing one option over another."
+                            explanation: "If statements control program flow based on boolean conditions."
                         },
                         {
-                            question: "Which pricing strategy uses psychological pricing?",
+                            question: "What is a loop used for?",
                             options: [
-                                "A) $9.99 instead of $10.00",
-                                "B) Cost-plus pricing",
-                                "C) Competitive pricing"
+                                "A) Repeat code multiple times",
+                                "B) Store data",
+                                "C) Handle errors"
                             ],
                             correct: 0,
-                            explanation: "Psychological pricing makes prices seem lower than they are."
+                            explanation: "Loops allow code to execute repeatedly while a condition is true."
                         },
                         {
-                            question: "What is a sunk cost?",
+                            question: "What is an array?",
                             options: [
-                                "A) Irrecoverable past expense",
-                                "B) Future investment cost",
-                                "C) Variable operating cost"
+                                "A) Collection of elements of the same type",
+                                "B) Single variable",
+                                "C) Function parameter"
                             ],
                             correct: 0,
-                            explanation: "Sunk costs are past expenses that cannot be recovered."
+                            explanation: "Arrays store multiple values in a single variable."
                         },
                         {
-                            question: "What does MVP stand for in business?",
+                            question: "What does OOP stand for?",
                             options: [
-                                "A) Minimum Viable Product",
-                                "B) Most Valuable Player",
-                                "C) Maximum Value Proposition"
+                                "A) Object-Oriented Programming",
+                                "B) Operational Output Process",
+                                "C) Online Operating Platform"
                             ],
                             correct: 0,
-                            explanation: "MVP is the simplest version of a product that can be released."
+                            explanation: "OOP is a programming paradigm based on objects and classes."
                         },
                         {
-                            question: "What is economies of scale?",
+                            question: "What is a class in programming?",
                             options: [
-                                "A) Cost advantages from increased production",
-                                "B) Scaling business operations",
-                                "C) Economic growth measurement"
+                                "A) Blueprint for creating objects",
+                                "B) Type of loop",
+                                "C) Error handler"
                             ],
                             correct: 0,
-                            explanation: "Larger production volumes lead to lower per-unit costs."
+                            explanation: "Classes define the structure and behavior of objects."
                         },
                         {
-                            question: "Which financial statement shows profitability?",
+                            question: "What is debugging?",
                             options: [
-                                "A) Income Statement",
-                                "B) Balance Sheet",
-                                "C) Cash Flow Statement"
+                                "A) Finding and fixing code errors",
+                                "B) Writing new code",
+                                "C) Deleting old code"
                             ],
                             correct: 0,
-                            explanation: "Income statement shows revenues, expenses, and profits."
+                            explanation: "Debugging is the process of identifying and removing bugs from code."
                         },
                         {
-                            question: "What is a monopoly?",
+                            question: "What is recursion?",
                             options: [
-                                "A) Single seller in a market",
-                                "B) Multiple competing sellers",
-                                "C) Government-controlled market"
+                                "A) Function calling itself",
+                                "B) Loop iteration",
+                                "C) Variable assignment"
                             ],
                             correct: 0,
-                            explanation: "Monopoly exists when one company dominates a market."
+                            explanation: "Recursion occurs when a function calls itself to solve a problem."
                         },
                         {
-                            question: "What does GDP measure?",
+                            question: "What is an API?",
                             options: [
-                                "A) Total economic output",
-                                "B) Government debt",
-                                "C) Personal income"
+                                "A) Application Programming Interface",
+                                "B) Advanced Programming Integration",
+                                "C) Automated Process Instruction"
                             ],
                             correct: 0,
-                            explanation: "GDP measures the total value of goods and services produced."
+                            explanation: "APIs allow different software systems to communicate with each other."
                         },
                         {
-                            question: "What is the function of a stored procedure?",
+                            question: "What is a pointer in programming?",
                             options: [
-                                "A) Execute pre-compiled database logic",
-                                "B) Store backup copies",
-                                "C) Encrypt database data"
+                                "A) Variable that stores memory address",
+                                "B) Type of loop",
+                                "C) Function return value"
                             ],
                             correct: 0,
-                            explanation: "Stored procedures improve performance by pre-compiling SQL statements."
-                        },
-                        {
-                            question: "Which technique prevents SQL injection attacks?",
-                            options: [
-                                "A) Parameterized queries",
-                                "B) String concatenation",
-                                "C) Direct user input"
-                            ],
                             correct: 0,
-                            explanation: "Parameterized queries separate SQL code from data."
-                        },
-                        {
-                            question: "What is database replication used for?",
-                            options: [
-                                "A) High availability and failover",
-                                "B) Deleting old records",
-                                "C) Compressing data"
-                            ],
-                            correct: 0,
-                            explanation: "Replication creates redundant copies for reliability."
-                        },
-                        {
-                            question: "Which isolation level prevents dirty reads?",
-                            options: [
-                                "A) READ COMMITTED",
-                                "B) READ UNCOMMITTED",
-                                "C) SERIALIZABLE"
-                            ],
-                            correct: 0,
-                            explanation: "READ COMMITTED ensures only committed data is read."
-                        },
-                        {
-                            question: "What is denormalization in database design?",
-                            options: [
-                                "A) Adding redundancy for performance",
-                                "B) Removing all relationships",
-                                "C) Encrypting sensitive data"
-                            ],
-                            correct: 0,
-                            explanation: "Denormalization trades storage for query speed."
-                        },
-                        {
-                            question: "What is CAP theorem about?",
-                            options: [
-                                "A) Consistency, Availability, Partition tolerance",
-                                "B) Cache, Application, Performance",
-                                "C) Create, Alter, Purge operations"
-                            ],
-                            correct: 0,
-                            explanation: "CAP theorem states you can only guarantee 2 of 3 properties in distributed systems."
-                        },
-                        {
-                            question: "Which command removes all records from a table?",
-                            options: [
-                                "A) TRUNCATE TABLE",
-                                "B) REMOVE TABLE",
-                                "C) CLEAR TABLE"
-                            ],
-                            correct: 0,
-                            explanation: "TRUNCATE quickly deletes all rows without logging individual deletions."
-                        },
-                        {
-                            question: "What is a composite key?",
-                            options: [
-                                "A) Primary key made of multiple columns",
-                                "B) Encrypted key",
-                                "C) Foreign key reference"
-                            ],
-                            correct: 0,
-                            explanation: "Composite keys use multiple columns to uniquely identify rows."
-                        },
-                        {
-                            question: "What does OLAP stand for?",
-                            options: [
-                                "A) Online Analytical Processing",
-                                "B) Object Linked Application Protocol",
-                                "C) Optimized Linear Access Pattern"
-                            ],
-                            correct: 0,
-                            explanation: "OLAP systems are optimized for complex analytical queries."
+                            explanation: "Pointers reference memory locations where values are stored."
                         },
                         {
                             question: "What is the OSI model used for?",
