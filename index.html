@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="cs">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>INFOS: Code for Life</title>
+    <title>INFOS: Kóduj pro život</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
@@ -2500,12 +2500,12 @@
     <div class="loading-screen" id="loadingScreen">
         <div class="loading-title">INF<span style="color: #6366f1;">OS</span></div>
         <div class="loading-container">
-            <div class="loading-text" id="loadingText">Initializing kernel modules...</div>
+            <div class="loading-text" id="loadingText">Inicializace modulů jádra...</div>
             <div class="loading-bar-container">
                 <div class="loading-bar" id="loadingBar"></div>
             </div>
             <div class="loading-details">
-                <span>Loading core systems</span>
+                <span>Načítání základních systémů</span>
                 <span id="loadingPercent">0%</span>
             </div>
         </div>
@@ -2515,7 +2515,7 @@
     <!-- Character Selection Screen -->
     <div class="character-selection" id="characterSelection">
         <h1 class="game-title">INF<span style="color: #6366f1;">OS</span></h1>
-        <div class="game-subtitle">Build Your Operating System from Scratch • Master IT & Economics • Become a Coding Legend</div>
+        <div class="game-subtitle">Vytvořte svůj operační systém od nuly • Ovládněte IT & ekonomiku • Staňte se legendou kódování</div>
         
         <div class="characters-grid">
             <!-- Tobias Horvart - Databases -->
@@ -2523,32 +2523,32 @@
             <div class="character-card" data-character="tobias">
                 <div class="character-pixel tobias"></div>
                 <div class="character-name">Ivan Alipov</div>
-                <div class="character-bonus">Database Architect • <strong>+20% Database Earnings</strong></div>
+                <div class="character-bonus">Databázový architekt • <strong>+20% příjem z databází</strong></div>
             </div>
             
             <!-- Adam Hojer - Programming -->
             <div class="character-card" data-character="adam">
                 <div class="character-pixel adam"></div>
                 <div class="character-name">Adam Hojer</div>
-                <div class="character-bonus">Programming Guru • <strong>+20% Coding Progress</strong></div>
+                <div class="character-bonus">Guru programování • <strong>+20% pokrok v kódování</strong></div>
             </div>
             
             <!-- Vojtech Aloy - Networks -->
             <div class="character-card" data-character="vojtech">
                 <div class="character-pixel vojtech"></div>
                 <div class="character-name">Vojtech Aloy</div>
-                <div class="character-bonus">Network Specialist • <strong>+20% Network Earnings</strong></div>
+                <div class="character-bonus">Síťový specialista • <strong>+20% příjem ze sítí</strong></div>
             </div>
             
             <!-- Hynek Schiffner - Hardware -->
             <div class="character-card" data-character="hynek">
                 <div class="character-pixel hynek"></div>
                 <div class="character-name">Hynek Schiffner</div>
-                <div class="character-bonus">Hardware Engineer • <strong>+20% Hardware Earnings</strong></div>
+                <div class="character-bonus">Hardwarový inženýr • <strong>+20% příjem z hardwaru</strong></div>
             </div>
         </div>
         
-        <button class="start-button" id="startButton">LAUNCH DEVELOPMENT</button>
+        <button class="start-button" id="startButton">SPUSTIT VÝVOJ</button>
     </div>
 
     <!-- Improved Game Interface -->
@@ -2559,8 +2559,8 @@
                 <div class="character-info">
                     <div class="character-display" id="currentCharacterDisplay"></div>
                     <div class="character-details">
-                        <h2 id="characterName">Select Character</h2>
-                        <div class="character-class" id="characterClass">Developer</div>
+                        <h2 id="characterName">Vyberte postavu</h2>
+                        <div class="character-class" id="characterClass">Vývojář</div>
                     </div>
                 </div>
                 
@@ -2568,8 +2568,8 @@
                     <div class="money-amount">$<span id="money">0</span></div>
                 </div>
                 
-                <div class="os-progress-display" data-percentage="0% COMPLETE">
-                    <div class="os-progress-text">OS Progress</div>
+                <div class="os-progress-display" data-percentage="0% HOTOVO">
+                    <div class="os-progress-text">Pokrok OS</div>
                     <div class="os-progress-bar">
                         <div class="os-progress-fill" id="osProgressBar"></div>
                     </div>
@@ -2580,12 +2580,12 @@
             <div class="game-content">
                 <!-- Left Panel - Stats -->
                 <div class="stats-panel">
-                    <h3>VITAL STATISTICS</h3>
+                    <h3>ŽIVOTNÍ STATISTIKY</h3>
                     <div class="stats-grid">
                         <div class="stat-item health">
                             <div class="stat-icon">❤️</div>
                             <div class="stat-info">
-                                <div class="stat-name">HEALTH</div>
+                                <div class="stat-name">ZDRAVÍ</div>
                                 <div class="stat-bar">
                                     <div class="stat-fill" id="healthBar" style="width: 100%"></div>
                                 </div>
@@ -2596,7 +2596,7 @@
                         <div class="stat-item hunger">
                             <div class="stat-icon">🍗</div>
                             <div class="stat-info">
-                                <div class="stat-name">HUNGER</div>
+                                <div class="stat-name">HLAD</div>
                                 <div class="stat-bar">
                                     <div class="stat-fill" id="hungerBar" style="width: 100%"></div>
                                 </div>
@@ -2607,7 +2607,7 @@
                         <div class="stat-item thirst">
                             <div class="stat-icon">💧</div>
                             <div class="stat-info">
-                                <div class="stat-name">THIRST</div>
+                                <div class="stat-name">ŽÍZEŇ</div>
                                 <div class="stat-bar">
                                     <div class="stat-fill" id="thirstBar" style="width: 100%"></div>
                                 </div>
@@ -2618,7 +2618,7 @@
                         <div class="stat-item energy">
                             <div class="stat-icon">⚡</div>
                             <div class="stat-info">
-                                <div class="stat-name">ENERGY</div>
+                                <div class="stat-name">ENERGIE</div>
                                 <div class="stat-bar">
                                     <div class="stat-fill" id="energyBar" style="width: 100%"></div>
                                 </div>
@@ -2629,7 +2629,7 @@
                         <div class="stat-item mood">
                             <div class="stat-icon">😊</div>
                             <div class="stat-info">
-                                <div class="stat-name">MOOD</div>
+                                <div class="stat-name">NÁLADA</div>
                                 <div class="stat-bar">
                                     <div class="stat-fill" id="moodBar" style="width: 100%"></div>
                                 </div>
@@ -2641,37 +2641,37 @@
 
                 <!-- Middle Panel - Actions -->
                 <div class="actions-panel">
-                    <h3>Actions</h3>
+                    <h3>Akce</h3>
                     <div class="actions-grid">
                         <button class="action-button" id="workButton">
                             <div class="action-icon">💼</div>
-                            <div class="action-name">FREELANCE WORK</div>
-                            <div class="action-description">Answer questions to earn money</div>
+                            <div class="action-name">PRÁCE NA VOLNÉ NOZE</div>
+                            <div class="action-description">Odpovídejte na otázky a vydělávejte peníze</div>
                         </button>
                         
                         <button class="action-button" id="codeButton">
                             <div class="action-icon">💻</div>
-                            <div class="action-name">DEVELOP OS</div>
-                            <div class="action-description">Write code to build your system</div>
+                            <div class="action-name">VYVINOUT OS</div>
+                            <div class="action-description">Pište kód a vytvořte svůj systém</div>
                         </button>
                         
                         <button class="action-button" id="restButton">
                             <div class="action-icon">😴</div>
-                            <div class="action-name">REST & RECOVER</div>
-                            <div class="action-description">Manage your basic needs</div>
+                            <div class="action-name">ODPOČINEK</div>
+                            <div class="action-description">Spravujte své základní potřeby</div>
                         </button>
                     </div>
                 </div>
 
                 <!-- Right Panel - OS Progress -->
                 <div class="os-panel">
-                    <h3>OS DEVELOPMENT ROADMAP</h3>
+                    <h3>PLÁN VÝVOJE OS</h3>
                     <div class="os-milestones" id="osMilestones">
                         <div class="milestone" id="milestone-kernel">
                             <div class="milestone-icon">1</div>
                             <div class="milestone-info">
-                                <div class="milestone-name">Kernel Development</div>
-                                <div class="milestone-description">Core system operations</div>
+                                <div class="milestone-name">Vývoj jádra</div>
+                                <div class="milestone-description">Základní systémové operace</div>
                             </div>
                             <div class="milestone-progress">0%</div>
                         </div>
@@ -2679,8 +2679,8 @@
                         <div class="milestone" id="milestone-memory">
                             <div class="milestone-icon">2</div>
                             <div class="milestone-info">
-                                <div class="milestone-name">Memory Management</div>
-                                <div class="milestone-description">RAM allocation and paging</div>
+                                <div class="milestone-name">Správa paměti</div>
+                                <div class="milestone-description">Alokace RAM a stránkování</div>
                             </div>
                             <div class="milestone-progress">0%</div>
                         </div>
@@ -2688,8 +2688,8 @@
                         <div class="milestone" id="milestone-filesystem">
                             <div class="milestone-icon">3</div>
                             <div class="milestone-info">
-                                <div class="milestone-name">File System</div>
-                                <div class="milestone-description">Storage and data management</div>
+                                <div class="milestone-name">Souborový systém</div>
+                                <div class="milestone-description">Úložiště a správa dat</div>
                             </div>
                             <div class="milestone-progress">0%</div>
                         </div>
@@ -2697,8 +2697,8 @@
                         <div class="milestone" id="milestone-drivers">
                             <div class="milestone-icon">4</div>
                             <div class="milestone-info">
-                                <div class="milestone-name">Device Drivers</div>
-                                <div class="milestone-description">Hardware communication</div>
+                                <div class="milestone-name">Ovladače zařízení</div>
+                                <div class="milestone-description">Komunikace s hardwarem</div>
                             </div>
                             <div class="milestone-progress">0%</div>
                         </div>
@@ -2706,8 +2706,8 @@
                         <div class="milestone" id="milestone-network">
                             <div class="milestone-icon">5</div>
                             <div class="milestone-info">
-                                <div class="milestone-name">Networking Stack</div>
-                                <div class="milestone-description">Internet and local connectivity</div>
+                                <div class="milestone-name">Síťový zásobník</div>
+                                <div class="milestone-description">Internet a lokální připojení</div>
                             </div>
                             <div class="milestone-progress">0%</div>
                         </div>
@@ -2715,8 +2715,8 @@
                         <div class="milestone" id="milestone-ui">
                             <div class="milestone-icon">6</div>
                             <div class="milestone-info">
-                                <div class="milestone-name">User Interface</div>
-                                <div class="milestone-description">GUI and user experience</div>
+                                <div class="milestone-name">Uživatelské rozhraní</div>
+                                <div class="milestone-description">GUI a uživatelská zkušenost</div>
                             </div>
                             <div class="milestone-progress">0%</div>
                         </div>
@@ -2725,8 +2725,8 @@
             </div>
 
             <!-- Floating Action Buttons -->
-            <div class="achievements-btn" id="achievementsBtn" title="Achievements">🏆</div>
-            <div class="settings-btn" id="settingsBtn" title="Settings">⚙️</div>
+            <div class="achievements-btn" id="achievementsBtn" title="Úspěchy">🏆</div>
+            <div class="settings-btn" id="settingsBtn" title="Nastavení">⚙️</div>
         </div>
     </div>
 
@@ -2735,27 +2735,27 @@
         <div class="modal-content freelance-modal">
             <div class="modal-header freelance-header">
                 <div class="freelance-title-section">
-                    <h2 class="modal-title" data-icon="💼">Freelance Development Work</h2>
-                    <div class="freelance-category-badge" id="currentCategoryBadge">🗄️ Database</div>
+                    <h2 class="modal-title" data-icon="💼">Práce na volné noze - Vývoj</h2>
+                    <div class="freelance-category-badge" id="currentCategoryBadge">🗄️ Databáze</div>
                 </div>
-                <button class="close-button" onclick="game.forceCloseWorkModal()" title="Force close (emergency)">&times;</button>
+                <button class="close-button" onclick="game.forceCloseWorkModal()" title="Vynucené zavření (nouzové)">&times;</button>
             </div>
             
             <div class="freelance-reward-display">
                 <div class="reward-item reward-correct">
                     <span class="reward-icon">✅</span>
-                    <span class="reward-label">Correct Answer:</span>
+                    <span class="reward-label">Správná odpověď:</span>
                     <span class="reward-value" id="correctReward">+$20</span>
                 </div>
                 <div class="reward-item reward-wrong">
                     <span class="reward-icon">❌</span>
-                    <span class="reward-label">Wrong Answer:</span>
+                    <span class="reward-label">Špatná odpověď:</span>
                     <span class="reward-value" id="wrongReward">-$5</span>
                 </div>
             </div>
             
             <div class="question-container">
-                <div class="question-text" id="questionText">Loading question...</div>
+                <div class="question-text" id="questionText">Načítání otázky...</div>
                 <div class="options-container" id="optionsContainer"></div>
             </div>
         </div>
@@ -2766,17 +2766,17 @@
         <div class="modal-content coding-modal-content">
             <div class="modal-header coding-modal-header">
                 <div class="coding-title-section">
-                    <h2 class="modal-title" data-icon="💻">OS Development - Code Editor</h2>
+                    <h2 class="modal-title" data-icon="💻">Vývoj OS - Editor kódu</h2>
                     <div class="coding-file-badge" id="codingFileBadge">📄 main.c</div>
                 </div>
-                <button class="close-button" onclick="game.forceCloseCodingModal()" title="Force close (emergency)">&times;</button>
+                <button class="close-button" onclick="game.forceCloseCodingModal()" title="Vynucené zavření (nouzové)">&times;</button>
             </div>
             
             <div class="coding-container">
                 <!-- Code Task Display -->
                 <div class="coding-task-description">
-                    <div class="task-title" id="taskTitle">Complete the code:</div>
-                    <div class="task-explanation" id="taskExplanation">Choose the correct code to complete the implementation</div>
+                    <div class="task-title" id="taskTitle">Dokončete kód:</div>
+                    <div class="task-explanation" id="taskExplanation">Vyberte správný kód pro dokončení implementace</div>
                 </div>
                 
                 <!-- Code Editor Area with incomplete code -->
@@ -2788,7 +2788,7 @@
                 
                 <!-- Code Completion Options -->
                 <div class="code-completion-section">
-                    <div class="completion-label">🎯 Select the correct code completion:</div>
+                    <div class="completion-label">🎯 Vyberte správné dokončení kódu:</div>
                     <div class="code-options-container" id="codeOptionsContainer">
                         <!-- Code options will be inserted here by JavaScript -->
                     </div>
@@ -2801,37 +2801,37 @@
     <div class="modal" id="restModal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2 class="modal-title" data-icon="😴">Rest & Recovery</h2>
+                <h2 class="modal-title" data-icon="😴">Odpočinek a zotavení</h2>
                 <button class="close-button" id="closeRestModal">&times;</button>
             </div>
             
             <div class="rest-options">
                 <div class="rest-option" data-action="sleep">
                     <div class="rest-icon">😴</div>
-                    <div class="rest-name">Sleep</div>
-                    <div class="rest-description">Rest when tired (Energy < 70%)<br>⚠️ Makes you hungry & thirsty!</div>
-                    <div class="rest-cost">+60 Energy, +10 Mood<br>-20 Hunger, -25 Thirst</div>
+                    <div class="rest-name">Spánek</div>
+                    <div class="rest-description">Odpočiňte si, když jste unaveni (Energie < 70%)<br>⚠️ Dělá vás hladovými a žíznivými!</div>
+                    <div class="rest-cost">+60 Energie, +10 Nálada<br>-20 Hlad, -25 Žízeň</div>
                 </div>
                 
                 <div class="rest-option" data-action="eat">
                     <div class="rest-icon">🍗</div>
-                    <div class="rest-name">Eat Food</div>
-                    <div class="rest-description">Satisfy hunger (when < 80%)<br>⚠️ Makes you thirsty!</div>
-                    <div class="rest-cost">-$25 • +45 Hunger, +8 Mood<br>-10 Thirst</div>
+                    <div class="rest-name">Jídlo</div>
+                    <div class="rest-description">Ukojte hlad (když < 80%)<br>⚠️ Dělá vás žíznivými!</div>
+                    <div class="rest-cost">-$25 • +45 Hlad, +8 Nálada<br>-10 Žízeň</div>
                 </div>
                 
                 <div class="rest-option" data-action="drink">
                     <div class="rest-icon">💧</div>
-                    <div class="rest-name">Drink Water</div>
-                    <div class="rest-description">Quench thirst (when < 85%)<br>Slightly reduces hunger</div>
-                    <div class="rest-cost">-$15 • +40 Thirst, +5 Mood<br>-5 Hunger</div>
+                    <div class="rest-name">Pití vody</div>
+                    <div class="rest-description">Uhaste žízeň (když < 85%)<br>Mírně snižuje hlad</div>
+                    <div class="rest-cost">-$15 • +40 Žízeň, +5 Nálada<br>-5 Hlad</div>
                 </div>
                 
                 <div class="rest-option" data-action="walk">
                     <div class="rest-icon">🚶</div>
-                    <div class="rest-name">Take a Walk</div>
-                    <div class="rest-description">Boost mood (when < 85%)<br>⚠️ Uses energy & resources!</div>
-                    <div class="rest-cost">+30 Mood<br>-12 Energy, -8 Hunger, -12 Thirst</div>
+                    <div class="rest-name">Procházka</div>
+                    <div class="rest-description">Zlepšete náladu (když < 85%)<br>⚠️ Využívá energii a zdroje!</div>
+                    <div class="rest-cost">+30 Nálada<br>-12 Energie, -8 Hlad, -12 Žízeň</div>
                 </div>
             </div>
         </div>
@@ -2841,7 +2841,7 @@
     <div class="modal achievements-modal" id="achievementsModal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2 class="modal-title" data-icon="🏆">Achievements</h2>
+                <h2 class="modal-title" data-icon="🏆">Úspěchy</h2>
                 <button class="close-button" id="closeAchievementsModal">&times;</button>
             </div>
             
@@ -2855,75 +2855,75 @@
     <div class="modal settings-modal" id="settingsModal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2 class="modal-title" data-icon="⚙️">Settings</h2>
+                <h2 class="modal-title" data-icon="⚙️">Nastavení</h2>
                 <button class="close-button" id="closeSettingsModal">&times;</button>
             </div>
             
             <div class="settings-content">
                 <div class="setting-section">
-                    <h3>🎮 Game Settings</h3>
+                    <h3>🎮 Nastavení hry</h3>
                     <div class="setting-item">
-                        <label>Difficulty Mode</label>
+                        <label>Obtížnost</label>
                         <select class="setting-select" id="difficultySelect">
-                            <option value="easy">Easy - Relaxed gameplay</option>
-                            <option value="normal" selected>Normal - Balanced challenge</option>
-                            <option value="hard">Hard - Intense survival</option>
+                            <option value="easy">Lehká - Relaxovaná hra</option>
+                            <option value="normal" selected>Normální - Vyvážená výzva</option>
+                            <option value="hard">Těžká - Intenzivní přežití</option>
                         </select>
                     </div>
                     <div class="setting-item">
-                        <label>Auto-save</label>
+                        <label>Automatické ukládání</label>
                         <input type="checkbox" class="setting-toggle" id="autoSaveToggle" checked>
                     </div>
                 </div>
 
                 <div class="setting-section">
-                    <h3>🎨 Display Settings</h3>
+                    <h3>🎨 Nastavení zobrazení</h3>
                     <div class="setting-item">
-                        <label>Show Notifications</label>
+                        <label>Zobrazit notifikace</label>
                         <input type="checkbox" class="setting-toggle" id="notificationsToggle" checked>
                     </div>
                     <div class="setting-item">
-                        <label>Show Stats Percentage</label>
+                        <label>Zobrazit procenta statistik</label>
                         <input type="checkbox" class="setting-toggle" id="statsPercentageToggle" checked>
                     </div>
                 </div>
 
                 <div class="setting-section">
-                    <h3>📊 Game Info</h3>
+                    <h3>📊 Informace o hře</h3>
                     <div class="info-grid">
                         <div class="info-item">
-                            <div class="info-label">Version</div>
+                            <div class="info-label">Verze</div>
                             <div class="info-value">1.0.0</div>
                         </div>
                         <div class="info-item">
-                            <div class="info-label">Total Playtime</div>
-                            <div class="info-value" id="playtimeValue">0 minutes</div>
+                            <div class="info-label">Celkový čas hry</div>
+                            <div class="info-value" id="playtimeValue">0 minut</div>
                         </div>
                         <div class="info-item">
-                            <div class="info-label">Total Money Earned</div>
+                            <div class="info-label">Celkem vyděláno</div>
                             <div class="info-value" id="totalMoneyValue">$0</div>
                         </div>
                         <div class="info-item">
-                            <div class="info-label">Tasks Completed</div>
+                            <div class="info-label">Dokončené úkoly</div>
                             <div class="info-value" id="tasksCompletedValue">0</div>
                         </div>
                     </div>
                 </div>
 
                 <div class="setting-section">
-                    <h3>🔧 Debug Tools</h3>
+                    <h3>🔧 Nástroje pro ladění</h3>
                     <div class="setting-item">
-                        <label>Reset Question Pools</label>
-                        <button class="settings-button warning" onclick="game.resetQuestionPools()" style="width: auto; padding: 8px 16px;">🔄 Reset All Questions</button>
+                        <label>Resetovat fondy otázek</label>
+                        <button class="settings-button warning" onclick="game.resetQuestionPools()" style="width: auto; padding: 8px 16px;">🔄 Resetovat všechny otázky</button>
                     </div>
                     <div class="info-text" style="color: rgba(255, 255, 255, 0.5); font-size: 12px; margin-top: 8px;">
-                        This will allow you to answer all questions and coding tasks again.
+                        To vám umožní odpovědět na všechny otázky a úkoly kódování znovu.
                     </div>
                 </div>
 
                 <div class="settings-footer">
-                    <button class="settings-button danger" onclick="game.resetGame()">🔄 Reset Game</button>
-                    <button class="settings-button success" onclick="game.closeModal('settingsModal')">✓ Save Changes</button>
+                    <button class="settings-button danger" onclick="game.resetGame()">🔄 Resetovat hru</button>
+                    <button class="settings-button success" onclick="game.closeModal('settingsModal')">✓ Uložit změny</button>
                 </div>
             </div>
         </div>
@@ -3055,7 +3055,7 @@
             }
 
             resetGame() {
-                if (confirm('Are you sure you want to reset all progress?')) {
+                if (confirm('Opravdu chcete resetovat veškerý pokrok?')) {
                     localStorage.removeItem('ostycoon_save');
                     location.reload();
                 }
@@ -3067,13 +3067,13 @@
                 const loadingPercent = document.getElementById('loadingPercent');
                 
                 const steps = [
-                    { text: 'Initializing kernel modules...', duration: 800 },
-                    { text: 'Loading memory management...', duration: 700 },
-                    { text: 'Setting up file systems...', duration: 900 },
-                    { text: 'Configuring network stack...', duration: 600 },
-                    { text: 'Compiling device drivers...', duration: 850 },
-                    { text: 'Initializing user interface...', duration: 750 },
-                    { text: 'Starting development environment...', duration: 500 }
+                    { text: 'Inicializace modulů jádra...', duration: 800 },
+                    { text: 'Načítání správy paměti...', duration: 700 },
+                    { text: 'Nastavení souborových systémů...', duration: 900 },
+                    { text: 'Konfigurace síťového zásobníku...', duration: 600 },
+                    { text: 'Kompilace ovladačů zařízení...', duration: 850 },
+                    { text: 'Inicializace uživatelského rozhraní...', duration: 750 },
+                    { text: 'Spouštění vývojového prostředí...', duration: 500 }
                 ];
 
                 let progress = 0;
@@ -3099,7 +3099,7 @@
                     } else {
                         loadingBar.style.width = '100%';
                         loadingPercent.textContent = '100%';
-                        loadingText.textContent = 'Ready to develop!';
+                        loadingText.textContent = 'Připraveno k vývoji!';
                         
                         setTimeout(() => {
                             document.getElementById('loadingScreen').style.display = 'none';
@@ -3160,7 +3160,7 @@
 
             startGame() {
                 if (!this.gameState.selectedCharacter) {
-                    this.showNotification('Please select a character first!', 'error');
+                    this.showNotification('Nejprve vyberte postavu!', 'error');
                     return;
                 }
 
@@ -3173,7 +3173,7 @@
                 this.updateUI();
                 this.startGameLoop();
 
-                this.showNotification(`Welcome, ${this.getCharacterName()}! Begin your OS development journey.`, 'success');
+                this.showNotification(`Vítejte, ${this.getCharacterName()}! Začněte svou cestu vývoje OS.`, 'success');
             }
 
             startGameLoop() {
@@ -3227,12 +3227,12 @@
 
             showWarningIfNeeded() {
                 if (this.gameState.hunger < 15 && !this.warningShownHunger) {
-                    this.showNotification('⚠️ Critical hunger level! Your health is decreasing!', 'warning');
+                    this.showNotification('⚠️ Kritická úroveň hladu! Vaše zdraví klesá!', 'warning');
                     this.warningShownHunger = true;
                     setTimeout(() => this.warningShownHunger = false, 30000);
                 }
                 if (this.gameState.thirst < 15 && !this.warningShownThirst) {
-                    this.showNotification('⚠️ Critical thirst level! Your health is decreasing!', 'warning');
+                    this.showNotification('⚠️ Kritická úroveň žízně! Vaše zdraví klesá!', 'warning');
                     this.warningShownThirst = true;
                     setTimeout(() => this.warningShownThirst = false, 30000);
                 }
@@ -3313,19 +3313,19 @@
 
             getMilestoneName(milestone) {
                 const names = {
-                    kernel: 'Kernel Development',
-                    memory: 'Memory Management',
-                    filesystem: 'File System',
-                    drivers: 'Device Drivers',
-                    network: 'Networking Stack',
-                    ui: 'User Interface'
+                    kernel: 'Vývoj jádra',
+                    memory: 'Správa paměti',
+                    filesystem: 'Souborový systém',
+                    drivers: 'Ovladače zařízení',
+                    network: 'Síťový zásobník',
+                    ui: 'Uživatelské rozhraní'
                 };
                 return names[milestone] || milestone;
             }
 
             gameOver() {
                 clearInterval(this.gameInterval);
-                this.showNotification('Game Over! Your health reached zero. Refresh to restart.', 'error');
+                this.showNotification('Konec hry! Vaše zdraví dosáhlo nuly. Obnovte stránku pro restart.', 'error');
                 document.querySelectorAll('.action-button').forEach(btn => btn.disabled = true);
             }
 
@@ -3367,7 +3367,7 @@
 
             showWorkModal() {
                 if (this.gameState.energy < 10) {
-                    this.showNotification("Too tired to work! Get some rest.", 'error');
+                    this.showNotification("Příliš unaveni na práci! Odpočiňte si.", 'error');
                     return;
                 }
 
@@ -3377,10 +3377,10 @@
                 
                 // Update category badge
                 const categoryIcons = {
-                    databases: '🗄️ Database',
-                    networks: '🌐 Network',
+                    databases: '🗄️ Databáze',
+                    networks: '🌐 Sítě',
                     hardware: '🔧 Hardware',
-                    programming: '💻 Programming'
+                    programming: '💻 Programování'
                 };
                 document.getElementById('currentCategoryBadge').textContent = categoryIcons[this.currentCategory];
                 
@@ -3438,7 +3438,7 @@
                 if (!available || available.length === 0) {
                     console.log(`[QUESTION] Pool empty for ${this.currentCategory}, resetting...`);
                     this.availableQuestions[this.currentCategory] = [...this.originalQuestions[this.currentCategory]];
-                    this.showNotification(`🎉 All ${this.currentCategory} questions completed! Starting over!`, 'success');
+                    this.showNotification(`🎉 Všechny otázky ${this.currentCategory} dokončeny! Začínáme znovu!`, 'success');
                 }
                 
                 // Выбираем случайный вопрос
@@ -3609,7 +3609,7 @@
 
             showCodingModal() {
                 if (this.gameState.energy < 15) {
-                    this.showNotification("Too tired to code! Get some rest.", 'error');
+                    this.showNotification("Příliš unaveni na kódování! Odpočiňte si.", 'error');
                     return;
                 }
 
@@ -3634,7 +3634,7 @@
                 if (!this.availableCodingTasks || this.availableCodingTasks.length === 0) {
                     console.log(`[CODING] Pool empty, resetting...`);
                     this.availableCodingTasks = [...this.originalCodingTasks];
-                    this.showNotification('🎉 All coding tasks completed! Starting over!', 'success');
+                    this.showNotification('🎉 Všechny úkoly kódování dokončeny! Začínáme znovu!', 'success');
                 }
                 
                 // Выбираем случайную задачу
@@ -3998,7 +3998,7 @@
                 this.gameState.mood = Math.min(100, this.gameState.mood + 5);
 
                 if (this.gameState.osProgress >= 100) {
-                    this.showNotification('🎉 CONGRATULATIONS! You completed your OS! You are the new Linus Torvalds!', 'success');
+                    this.showNotification('🎉 GRATULUJEME! Dokončili jste svůj OS! Jste nový Linus Torvalds!', 'success');
                     this.unlockAchievement('os_completed');
                 }
             }
@@ -4016,13 +4016,13 @@
                     case 'sleep': {
                         // Проверка: можно спать только если энергия меньше 70
                         if (this.gameState.energy >= 70) {
-                            this.showNotification("😴 You're not tired enough to sleep! (Need energy < 70%)", 'warning');
+                            this.showNotification("😴 Nejste dost unaveni na spánek! (Potřebujete energii < 70%)", 'warning');
                             return;
                         }
                         
                         // Спать можно только если есть минимум энергии для сна (не в обмороке)
                         if (this.gameState.energy < 5) {
-                            this.showNotification("😵 Too exhausted to sleep! Take a walk or rest first.", 'error');
+                            this.showNotification("😵 Příliš vyčerpaní na spánek! Nejprve se projděte nebo odpočiňte.", 'error');
                             return;
                         }
                         
@@ -4036,14 +4036,14 @@
                         this.gameState.thirst = Math.max(0, this.gameState.thirst - thirstLoss);
                         this.gameState.mood = Math.min(100, this.gameState.mood + 10);
                         
-                        this.showNotification(`😴 Good sleep! +${energyGain} Energy, +10 Mood\n⚠️ -${hungerLoss} Hunger, -${thirstLoss} Thirst`, 'success');
+                        this.showNotification(`😴 Dobrý spánek! +${energyGain} Energie, +10 Nálada\n⚠️ -${hungerLoss} Hlad, -${thirstLoss} Žízeň`, 'success');
                         break;
                     }
                         
                     case 'eat': {
                         // Проверка: нельзя есть если голод больше 80
                         if (this.gameState.hunger >= 80) {
-                            this.showNotification("🍽️ You're too full to eat! (Hunger must be < 80%)", 'warning');
+                            this.showNotification("🍽️ Jste příliš sytí na jídlo! (Hlad musí být < 80%)", 'warning');
                             return;
                         }
                         
@@ -4057,9 +4057,9 @@
                             this.gameState.thirst = Math.max(0, this.gameState.thirst - thirstLoss);
                             this.gameState.mood = Math.min(100, this.gameState.mood + moodGain);
                             
-                            this.showNotification(`🍗 Delicious! +${hungerGain} Hunger, +${moodGain} Mood, -$25\n💧 -${thirstLoss} Thirst (food makes you thirsty)`, 'success');
+                            this.showNotification(`🍗 Výborné! +${hungerGain} Hlad, +${moodGain} Nálada, -$25\n💧 -${thirstLoss} Žízeň (jídlo vás dělá žíznivými)`, 'success');
                         } else {
-                            this.showNotification("💰 Not enough money for food! Need $25", 'error');
+                            this.showNotification("💰 Nedostatek peněz na jídlo! Potřeba $25", 'error');
                             return;
                         }
                         break;
@@ -4068,7 +4068,7 @@
                     case 'drink': {
                         // Проверка: нельзя пить если жажда больше 85
                         if (this.gameState.thirst >= 85) {
-                            this.showNotification("💧 You're not thirsty! (Thirst must be < 85%)", 'warning');
+                            this.showNotification("💧 Nemáte žízeň! (Žízeň musí být < 85%)", 'warning');
                             return;
                         }
                         
@@ -4082,9 +4082,9 @@
                             this.gameState.hunger = Math.max(0, this.gameState.hunger - hungerLoss);
                             this.gameState.mood = Math.min(100, this.gameState.mood + moodGain);
                             
-                            this.showNotification(`💧 Refreshing! +${thirstGain} Thirst, +${moodGain} Mood, -$15`, 'success');
+                            this.showNotification(`💧 Osvěžující! +${thirstGain} Žízeň, +${moodGain} Nálada, -$15`, 'success');
                         } else {
-                            this.showNotification("💰 Not enough money for drinks! Need $15", 'error');
+                            this.showNotification("💰 Nedostatek peněz na nápoje! Potřeba $15", 'error');
                             return;
                         }
                         break;
@@ -4100,13 +4100,13 @@
                             this.gameState.energy = Math.min(100, this.gameState.energy + energyGain);
                             this.gameState.mood = Math.min(100, this.gameState.mood + moodGain);
                             
-                            this.showNotification(`🧘 Short rest outdoors! +${energyGain} Energy, +${moodGain} Mood\n(Too exhausted for a proper walk, just resting)`, 'success');
+                            this.showNotification(`🧘 Krátký odpočinek venku! +${energyGain} Energie, +${moodGain} Nálada\n(Příliš vyčerpaní na pořádnou procházku, jen odpočíváme)`, 'success');
                             break;
                         }
                         
                         // Проверка: нельзя гулять если настроение уже высокое
                         if (this.gameState.mood >= 85) {
-                            this.showNotification("😊 Your mood is already great! No need for a walk.", 'warning');
+                            this.showNotification("😊 Vaše nálada je již skvělá! Není potřeba procházka.", 'warning');
                             return;
                         }
                         
@@ -4120,7 +4120,7 @@
                         this.gameState.hunger = Math.max(0, this.gameState.hunger - hungerLoss);
                         this.gameState.thirst = Math.max(0, this.gameState.thirst - thirstLoss);
                         
-                        this.showNotification(`🚶 Nice walk! +${moodGain} Mood\n⚠️ -${energyLoss} Energy, -${hungerLoss} Hunger, -${thirstLoss} Thirst`, 'success');
+                        this.showNotification(`🚶 Pěkná procházka! +${moodGain} Nálada\n⚠️ -${energyLoss} Energie, -${hungerLoss} Hlad, -${thirstLoss} Žízeň`, 'success');
                         break;
                     }
                 }
@@ -4150,7 +4150,7 @@
                 };
                 this.availableCodingTasks = [...this.originalCodingTasks];
                 
-                this.showNotification('✅ All pools reset! You can answer everything again.', 'success');
+                this.showNotification('✅ Všechny fondy resetovány! Můžete odpovídat na vše znovu.', 'success');
                 console.log('[RESET] Complete!');
             }
 
@@ -4224,13 +4224,13 @@
             closeModal(modalId) {
                 // Block closing workModal if user is answering a question
                 if (modalId === 'workModal' && this.isAnswering) {
-                    this.showNotification('⚠️ Please answer the question first!', 'warning');
+                    this.showNotification('⚠️ Nejprve odpovězte na otázku!', 'warning');
                     return;
                 }
                 
                 // Block closing codingModal if user is completing a task
                 if (modalId === 'codingModal' && this.isCoding) {
-                    this.showNotification('⚠️ Please complete the coding task first!', 'warning');
+                    this.showNotification('⚠️ Nejprve dokončete úkol kódování!', 'warning');
                     return;
                 }
                 
@@ -4264,7 +4264,7 @@
                 }
                 // Закрываем модалку
                 document.getElementById('workModal').style.display = 'none';
-                this.showNotification('🔧 Modal force closed!', 'warning');
+                this.showNotification('🔧 Modální okno vynuceně zavřeno!', 'warning');
             }
 
             forceCloseCodingModal() {
@@ -4278,7 +4278,7 @@
                 }
                 // Закрываем модалку
                 document.getElementById('codingModal').style.display = 'none';
-                this.showNotification('🔧 Modal force closed!', 'warning');
+                this.showNotification('🔧 Modální okno vynuceně zavřeno!', 'warning');
             }
 
             showNotification(message, type = 'info') {
@@ -4295,11 +4295,18 @@
                     warning: '⚠️',
                     info: 'ℹ️'
                 };
+                
+                const titles = {
+                    success: 'Úspěch',
+                    error: 'Chyba',
+                    warning: 'Varování',
+                    info: 'Info'
+                };
 
                 notification.innerHTML = `
                     <div class="notification-icon">${icons[type]}</div>
                     <div class="notification-content">
-                        <div class="notification-title">${type.charAt(0).toUpperCase() + type.slice(1)}</div>
+                        <div class="notification-title">${titles[type]}</div>
                         <div class="notification-message">${message}</div>
                     </div>
                     <button class="notification-close" onclick="document.getElementById('notification-${notificationId}').remove()">&times;</button>
@@ -4331,12 +4338,12 @@
 
             getCharacterClass() {
                 const classes = {
-                    tobias: 'Database Architect',
-                    vojtech: 'Network Specialist',
-                    hynek: 'Hardware Engineer',
-                    adam: 'Programming Guru'
+                    tobias: 'Databázový architekt',
+                    vojtech: 'Síťový specialista',
+                    hynek: 'Hardwarový inženýr',
+                    adam: 'Guru programování'
                 };
-                return classes[this.gameState.character] || 'Developer';
+                return classes[this.gameState.character] || 'Vývojář';
             }
 
             initializeQuestions() {
@@ -6109,48 +6116,48 @@
                 return [
                     {
                         id: 'first_code',
-                        name: 'First Lines of Code',
-                        description: 'Complete your first coding task',
+                        name: 'První řádky kódu',
+                        description: 'Dokončete svůj první úkol kódování',
                         icon: '👨‍💻',
                         unlocked: false,
                         check: (state) => state.codingTasksCompleted >= 1
                     },
                     {
                         id: 'first_job',
-                        name: 'First Paycheck',
-                        description: 'Complete your first freelance work',
+                        name: 'První výplata',
+                        description: 'Dokončete svou první práci na volné noze',
                         icon: '💵',
                         unlocked: false,
                         check: (state) => state.completedQuestions >= 1
                     },
                     {
                         id: 'money_maker',
-                        name: 'Money Maker',
-                        description: 'Earn $500',
+                        name: 'Tvůrce peněz',
+                        description: 'Vydělat $500',
                         icon: '💰',
                         unlocked: false,
                         check: (state) => state.money >= 500
                     },
                     {
                         id: 'money_master',
-                        name: 'Money Master',
-                        description: 'Earn $1000',
+                        name: 'Mistr peněz',
+                        description: 'Vydělat $1000',
                         icon: '💎',
                         unlocked: false,
                         check: (state) => state.money >= 1000
                     },
                     {
                         id: 'millionaire',
-                        name: 'Tech Millionaire',
-                        description: 'Accumulate $2000',
+                        name: 'Tech milionář',
+                        description: 'Nahromadět $2000',
                         icon: '🤑',
                         unlocked: false,
                         check: (state) => state.money >= 2000
                     },
                     {
                         id: 'coding_beginner',
-                        name: 'Coding Beginner',
-                        description: 'Complete 5 coding tasks',
+                        name: 'Začátečník v kódování',
+                        description: 'Dokončit 5 úkolů kódování',
                         icon: '⌨️',
                         unlocked: false,
                         check: (state) => state.codingTasksCompleted >= 5
