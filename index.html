@@ -2738,6 +2738,7 @@
                     <h2 class="modal-title" data-icon="💼">Freelance Development Work</h2>
                     <div class="freelance-category-badge" id="currentCategoryBadge">🗄️ Database</div>
                 </div>
+                <button class="close-button" onclick="game.forceCloseWorkModal()" title="Force close (emergency)">&times;</button>
             </div>
             
             <div class="freelance-reward-display">
@@ -2768,6 +2769,7 @@
                     <h2 class="modal-title" data-icon="💻">OS Development - Code Editor</h2>
                     <div class="coding-file-badge" id="codingFileBadge">📄 main.c</div>
                 </div>
+                <button class="close-button" onclick="game.forceCloseCodingModal()" title="Force close (emergency)">&times;</button>
             </div>
             
             <div class="coding-container">
@@ -2908,6 +2910,17 @@
                     </div>
                 </div>
 
+                <div class="setting-section">
+                    <h3>🔧 Debug Tools</h3>
+                    <div class="setting-item">
+                        <label>Reset Question Pools</label>
+                        <button class="settings-button warning" onclick="game.resetQuestionPools()" style="width: auto; padding: 8px 16px;">🔄 Reset All Questions</button>
+                    </div>
+                    <div class="info-text" style="color: rgba(255, 255, 255, 0.5); font-size: 12px; margin-top: 8px;">
+                        This will allow you to answer all questions and coding tasks again.
+                    </div>
+                </div>
+
                 <div class="settings-footer">
                     <button class="settings-button danger" onclick="game.resetGame()">🔄 Reset Game</button>
                     <button class="settings-button success" onclick="game.closeModal('settingsModal')">✓ Save Changes</button>
@@ -2964,11 +2977,24 @@
                 this.codingTasks = this.initializeCodingTasks();
                 this.achievements = this.initializeAchievements();
                 
-                // Available tasks pools (будут уменьшаться по мере ответов)
-                this.availableCodingTasks = [...this.codingTasks]; // Copy all tasks
+                // НОВАЯ ПРОСТАЯ СИСТЕМА: Создаём копии пулов для каждой категории
+                // Когда ответили на вопрос - удаляем его из пула
+                // Когда пул пустой - копируем заново из оригинала
+                this.originalQuestions = JSON.parse(JSON.stringify(this.questions)); // Сохраняем оригинал
+                this.originalCodingTasks = JSON.parse(JSON.stringify(this.codingTasks)); // Сохраняем оригинал
+                
+                // Рабочие пулы (из них удаляем вопросы)
+                this.availableQuestions = {
+                    databases: [...this.questions.databases],
+                    networks: [...this.questions.networks],
+                    hardware: [...this.questions.hardware],
+                    programming: [...this.questions.programming]
+                };
+                this.availableCodingTasks = [...this.codingTasks];
                 
                 this.currentQuestion = null;
                 this.currentCodingTask = null;
+                this.currentTaskId = null; // Track current task ID to prevent stale clicks
                 this.currentCategory = 'databases';
                 this.gameInterval = null;
                 this.notificationId = 0;
@@ -2991,10 +3017,13 @@
 
             saveGameState() {
                 try {
-                    // Create copy of gameState WITHOUT availableCodingTasks
-                    // (question pool should reset each session)
+                    // Create copy of gameState WITHOUT question arrays
+                    // (question pools should reset each session to get updates)
                     const stateToSave = { ...this.gameState };
                     delete stateToSave.availableCodingTasks;
+                    delete stateToSave.codingTasks; // Don't save question pool!
+                    delete stateToSave.questions; // Don't save freelance questions!
+                    delete stateToSave.achievements; // Don't save achievements (can be updated)
                     
                     localStorage.setItem('ostycoon_save', JSON.stringify(stateToSave));
                 } catch (e) {
@@ -3008,13 +3037,15 @@
                     if (saved) {
                         const data = JSON.parse(saved);
                         if (data.osProgress < 100) {
-                            // CRITICAL: Don't load availableCodingTasks from save!
-                            // It must be reset from full codingTasks array each session
+                            // CRITICAL: Don't load task arrays from save!
+                            // They must be reset from fresh initialization each session
                             delete data.availableCodingTasks;
+                            delete data.codingTasks; // Don't load old question pool!
+                            delete data.questions; // Don't load old freelance questions!
                             
                             Object.assign(this.gameState, data);
                             
-                            // Force reset available tasks to full pool
+                            // Force reset available tasks to full pool from fresh init
                             this.gameState.availableCodingTasks = [...this.codingTasks];
                         }
                     }
@@ -3400,10 +3431,22 @@
             }
 
             loadRandomQuestion() {
-                const categoryQuestions = this.questions[this.currentCategory];
-                if (!categoryQuestions || categoryQuestions.length === 0) return;
-
-                this.currentQuestion = categoryQuestions[Math.floor(Math.random() * categoryQuestions.length)];
+                // Берём доступные вопросы для текущей категории
+                const available = this.availableQuestions[this.currentCategory];
+                
+                // Если пул пустой - копируем заново из оригинала
+                if (!available || available.length === 0) {
+                    console.log(`[QUESTION] Pool empty for ${this.currentCategory}, resetting...`);
+                    this.availableQuestions[this.currentCategory] = [...this.originalQuestions[this.currentCategory]];
+                    this.showNotification(`🎉 All ${this.currentCategory} questions completed! Starting over!`, 'success');
+                }
+                
+                // Выбираем случайный вопрос
+                const randomIndex = Math.floor(Math.random() * this.availableQuestions[this.currentCategory].length);
+                this.currentQuestion = this.availableQuestions[this.currentCategory][randomIndex];
+                this.currentQuestionIndex = randomIndex; // Сохраняем индекс для удаления после ответа
+                
+                console.log(`[QUESTION] Selected from ${this.currentCategory}: ${randomIndex}/${this.availableQuestions[this.currentCategory].length}`);
                 
                 // Set flag to prevent modal closing ONLY during active question
                 this.isAnswering = true;
@@ -3462,6 +3505,10 @@
                 });
 
                 this.gameState.completedQuestions++;
+
+                // УДАЛЯЕМ вопрос из пула - он больше не появится
+                this.availableQuestions[this.currentCategory].splice(this.currentQuestionIndex, 1);
+                console.log(`[QUESTION] Removed from pool. Remaining in ${this.currentCategory}: ${this.availableQuestions[this.currentCategory].length}`);
 
                 // Check if clicked button is correct
                 const isCorrect = clickedButton.dataset.isCorrect === 'true';
@@ -3583,28 +3630,32 @@
             }
 
             loadRandomCodingTask() {
-                // Check if there are available tasks
+                // Если пул пустой - копируем заново из оригинала
                 if (!this.availableCodingTasks || this.availableCodingTasks.length === 0) {
-                    // Reset pool if all tasks completed
-                    this.availableCodingTasks = [...this.codingTasks];
-                    this.showNotification('🎉 All tasks completed! Pool reset!', 'success');
+                    console.log(`[CODING] Pool empty, resetting...`);
+                    this.availableCodingTasks = [...this.originalCodingTasks];
+                    this.showNotification('🎉 All coding tasks completed! Starting over!', 'success');
                 }
                 
-                // CRITICAL: Reset processing flag BEFORE loading new task
-                this.isProcessingCode = false;
-                
-                // Get random index from AVAILABLE tasks
+                // Выбираем случайную задачу
                 const randomIndex = Math.floor(Math.random() * this.availableCodingTasks.length);
-                
-                // Get task and REMOVE it from available pool
                 this.currentCodingTask = this.availableCodingTasks[randomIndex];
-                this.availableCodingTasks.splice(randomIndex, 1); // Remove this task
+                this.currentCodingTaskIndex = randomIndex; // Сохраняем индекс для удаления после ответа
                 
-                console.log(`Loaded coding task (${this.availableCodingTasks.length} remaining):`, this.currentCodingTask);
+                // Generate unique task ID to prevent closure issues
+                this.currentTaskId = Date.now() + Math.random();
+                this.currentCodingTask._taskId = this.currentTaskId;
+                
+                console.log(`[CODING] Selected: ${randomIndex}/${this.availableCodingTasks.length}, ID: ${this.currentTaskId}`);
+                
+                // CRITICAL: Reset processing flag AFTER we set the new task
+                this.isProcessingCode = false;
                 this.displayCodingTask(this.currentCodingTask);
             }
 
             displayCodingTask(task) {
+                console.log(`[DISPLAY_TASK] Rendering task ${task._taskId}`);
+                
                 // Update file badge
                 const languageMap = {
                     'c': { file: '📄 main.c' },
@@ -3649,66 +3700,71 @@
                 
                 // Display code options as clickable buttons
                 const optionsContainer = document.getElementById('codeOptionsContainer');
-                console.log('🔍 DEBUG:', {
-                    hasContainer: !!optionsContainer,
-                    hasOptions: !!task.options,
-                    optionsLength: task.options?.length,
-                    taskLanguage: task.language
-                });
                 
                 if (optionsContainer && task.options && task.options.length > 0) {
-                    console.log('✅ Creating buttons for options:', task.options);
-                    // CRITICAL: First, remove ALL old buttons completely
-                    while (optionsContainer.firstChild) {
-                        optionsContainer.removeChild(optionsContainer.firstChild);
+                    // CRITICAL: Remove ALL existing buttons with event listeners
+                    // We must clone and replace the container to ensure no stale listeners remain
+                    const newContainer = optionsContainer.cloneNode(false);
+                    optionsContainer.parentNode.replaceChild(newContainer, optionsContainer);
+                    
+                    // Create array with options and mark which is correct
+                    const optionsWithCorrectness = task.options.map((option, idx) => ({
+                        text: option,
+                        isCorrect: idx === 0 // First option is always correct
+                    }));
+                    
+                    // Shuffle options to randomize order
+                    for (let i = optionsWithCorrectness.length - 1; i > 0; i--) {
+                        const j = Math.floor(Math.random() * (i + 1));
+                        [optionsWithCorrectness[i], optionsWithCorrectness[j]] = [optionsWithCorrectness[j], optionsWithCorrectness[i]];
                     }
                     
-                    // Double-check with innerHTML too
-                    optionsContainer.innerHTML = '';
+                    // Store current task ID for validation
+                    const taskId = task._taskId;
                     
-                    // Small delay to ensure DOM is clean
-                    setTimeout(() => {
-                        // Create array with options and mark which is correct
-                        const optionsWithCorrectness = task.options.map((option, idx) => ({
-                            text: option,
-                            isCorrect: idx === 0 // First option is always correct
-                        }));
+                    // Create fresh buttons with NO old state
+                    optionsWithCorrectness.forEach((optionData, index) => {
+                        const button = document.createElement('button');
+                        button.className = 'code-option-button'; // ONLY this class!
+                        button.dataset.isCorrect = optionData.isCorrect;
+                        button.dataset.taskId = taskId; // Store task ID on button
                         
-                        // Shuffle options to randomize order
-                        for (let i = optionsWithCorrectness.length - 1; i > 0; i--) {
-                            const j = Math.floor(Math.random() * (i + 1));
-                            [optionsWithCorrectness[i], optionsWithCorrectness[j]] = [optionsWithCorrectness[j], optionsWithCorrectness[i]];
-                        }
+                        const letter = String.fromCharCode(65 + index); // A, B, C, D
                         
-                        optionsWithCorrectness.forEach((optionData, index) => {
-                            const button = document.createElement('button');
-                            button.className = 'code-option-button'; // Clean class, no correct/incorrect
-                            button.dataset.isCorrect = optionData.isCorrect;
-                            button.disabled = false; // Ensure button is clickable
-                            button.style.cursor = 'pointer'; // Ensure cursor is pointer
-                            button.style.opacity = '1'; // Reset opacity
-                            
-                            const letter = String.fromCharCode(65 + index); // A, B, C, D
-                            
-                            button.innerHTML = `
-                                <span class="option-label">${letter}</span>
-                                <pre>${this.escapeHtml(optionData.text)}</pre>
-                            `;
-                            
-                            // Click handler
-                            button.onclick = () => this.handleCodeAnswer(button, optionData.isCorrect, task);
-                            
-                            optionsContainer.appendChild(button);
-                        });
-                    }, 10);
+                        button.innerHTML = `
+                            <span class="option-label">${letter}</span>
+                            <pre>${this.escapeHtml(optionData.text)}</pre>
+                        `;
+                        
+                        // Click handler with task ID validation
+                        button.onclick = () => {
+                            // Validate this button belongs to current task
+                            if (taskId !== this.currentTaskId) {
+                                console.warn(`[STALE_CLICK] Ignoring click on stale button (task ${taskId} vs current ${this.currentTaskId})`);
+                                return;
+                            }
+                            this.handleCodeAnswer(button, optionData.isCorrect, task);
+                        };
+                        
+                        newContainer.appendChild(button);
+                    });
                 }
             }
 
             handleCodeAnswer(clickedButton, isCorrect, task) {
-                // Prevent multiple clicks
-                if (this.isProcessingCode) {
+                // Validate task ID first
+                if (task._taskId !== this.currentTaskId) {
+                    console.error(`[ANSWER_REJECT] Rejecting answer for stale task ${task._taskId} (current: ${this.currentTaskId})`);
                     return;
                 }
+                
+                // Prevent multiple clicks
+                if (this.isProcessingCode) {
+                    console.warn(`[ANSWER_REJECT] Already processing answer`);
+                    return;
+                }
+                
+                console.log(`[ANSWER_START] Processing answer for task ${task._taskId}, isCorrect: ${isCorrect}`);
                 
                 this.isProcessingCode = true;
                 
@@ -3721,34 +3777,34 @@
                 });
 
                 this.gameState.codingTasksCompleted++;
-
+                
+                // УДАЛЯЕМ задачу из пула - она больше не появится
+                this.availableCodingTasks.splice(this.currentCodingTaskIndex, 1);
+                console.log(`[CODING] Removed from pool. Remaining: ${this.availableCodingTasks.length}`);
+                
                 if (isCorrect) {
                     // Correct answer
                     clickedButton.classList.add('correct');
-                    
                     this.handleSuccessfulCode();
                     this.showNotification(`✓ Perfect! ${task.explanation}`, 'success');
                 } else {
                     // Wrong answer
                     clickedButton.classList.add('incorrect');
-                    
                     // Highlight correct answer
                     options.forEach(option => {
                         if (option.dataset.isCorrect === 'true') {
                             option.classList.add('correct');
                         }
                     });
-                    
                     this.handleFailedCode();
                     this.showNotification(`✗ Incorrect! ${task.explanation}`, 'error');
                 }
-
                 // Auto-close after 1 second
                 if (this.codingModalTimeout) {
                     clearTimeout(this.codingModalTimeout);
                 }
-
                 this.codingModalTimeout = setTimeout(() => {
+                    console.log(`[ANSWER_COMPLETE] Closing modal for task ${task._taskId}`);
                     // Reset flags BEFORE closing
                     this.isCoding = false;
                     this.isProcessingCode = false;
@@ -4082,6 +4138,22 @@
                 this.showModal('settingsModal');
             }
 
+            resetQuestionPools() {
+                console.log('[RESET] Resetting all pools...');
+                
+                // Просто копируем заново из оригинала
+                this.availableQuestions = {
+                    databases: [...this.originalQuestions.databases],
+                    networks: [...this.originalQuestions.networks],
+                    hardware: [...this.originalQuestions.hardware],
+                    programming: [...this.originalQuestions.programming]
+                };
+                this.availableCodingTasks = [...this.originalCodingTasks];
+                
+                this.showNotification('✅ All pools reset! You can answer everything again.', 'success');
+                console.log('[RESET] Complete!');
+            }
+
             updateAchievementsDisplay() {
                 const grid = document.getElementById('achievementsGrid');
                 grid.innerHTML = '';
@@ -4179,6 +4251,34 @@
                     this.isCoding = false; // Reset coding flag too
                     this.isProcessingCode = false; // Reset processing flag too
                 }
+            }
+
+            forceCloseWorkModal() {
+                console.log('[FORCE_CLOSE] Forcing workModal close...');
+                // Сбрасываем все флаги
+                this.isAnswering = false;
+                this.isProcessingAnswer = false;
+                if (this.workModalTimeout) {
+                    clearTimeout(this.workModalTimeout);
+                    this.workModalTimeout = null;
+                }
+                // Закрываем модалку
+                document.getElementById('workModal').style.display = 'none';
+                this.showNotification('🔧 Modal force closed!', 'warning');
+            }
+
+            forceCloseCodingModal() {
+                console.log('[FORCE_CLOSE] Forcing codingModal close...');
+                // Сбрасываем все флаги
+                this.isCoding = false;
+                this.isProcessingCode = false;
+                if (this.codingModalTimeout) {
+                    clearTimeout(this.codingModalTimeout);
+                    this.codingModalTimeout = null;
+                }
+                // Закрываем модалку
+                document.getElementById('codingModal').style.display = 'none';
+                this.showNotification('🔧 Modal force closed!', 'warning');
             }
 
             showNotification(message, type = 'info') {
